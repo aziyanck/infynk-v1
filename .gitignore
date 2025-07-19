@@ -25,3 +25,6 @@ dist-ssr
 
 report.txt
 demo
+
+.env
+supabase
