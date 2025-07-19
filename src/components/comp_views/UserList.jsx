@@ -9,16 +9,24 @@ const UserList = () => {
   const [selectedUser, setSelectedUser] = useState(null); // 👈 Track selected user
 
 
-  const handleRemoveRoute = async (userId) => {
+  const handleRemoveRoute = async (user) => {
     try {
-      await removeRouteFromUser(userId.id);
+      await removeRouteFromUser(user.id);
       alert("Route removed successfully!");
-      // optionally re-fetch your user list or update UI here
+
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u.id === user.id
+            ? { ...u, route_id: null, route_status: null }
+            : u
+        )
+      );
     } catch (error) {
       console.error(error);
       alert("Failed to remove route: " + error.message);
     }
   };
+
 
 
 
@@ -128,7 +136,26 @@ const UserList = () => {
 
       {/* Modal for Assign Route */}
       {selectedUser && (
-        <AssignRoute user={selectedUser} onClose={() => setSelectedUser(null)} />
+        <AssignRoute
+          user={selectedUser}
+          onClose={() => setSelectedUser(null)}
+          onAssign={(updatedRoute) => {
+            setUsers((prevUsers) =>
+              prevUsers.map((u) =>
+                u.id === selectedUser.id
+                  ? {
+                    ...u,
+                    route_id: updatedRoute.route_id,
+                    route_status: updatedRoute.route_status,
+                  }
+                  : u
+              )
+            );
+            setSelectedUser(null);
+          }}
+        />
+
+
       )}
     </div>
   );

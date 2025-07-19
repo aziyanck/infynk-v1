@@ -2,33 +2,41 @@
 import React, { useState } from "react";
 import { assignRouteToUser } from "../../services/adminService";
 
-const AssignRoute = ({ user, onClose }) => {
+const AssignRoute = ({ user, onClose, onAssign }) => {
   const [routeId, setRouteId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+
+
+
   const handleAssign = async () => {
-    setLoading(true);
-    setError("");
+  try {
+    // Make the Edge Function call or insert route logic
+    const response = await assignRouteToUser(user.id, routeId); // however you’re assigning
 
-    const res = await assignRouteToUser(user.id, routeId);
-
-    if (res.success) {
-      alert("✅ Route assigned successfully!");
-      onClose();
+    if (response.success) {
+      // 🟢 Trigger parent update
+      onAssign({
+        route_id: routeId,
+        route_status: "Active", // or dynamic value from response
+      });
     } else {
-      setError(res.error || "Something went wrong");
+      alert("Assignment failed");
     }
+  } catch (error) {
+    console.error("Error assigning route:", error);
+    alert("Something went wrong");
+  }
+};
 
-    setLoading(false);
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
         <h3 className="text-xl font-semibold mb-4">Assign Route</h3>
         <p className="mb-2"><strong>User:</strong> {user.email}</p>
-        <p className="mb-4"><strong>Name:</strong> {user.user_metadata?.name || "—"}</p>
+        <p className="mb-4"><strong>Name:</strong> {user.name || "—"}</p>
 
         <label className="block mb-2">
           Route ID:
