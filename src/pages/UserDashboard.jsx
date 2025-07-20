@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import {Save, Bell, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Save, Bell, User } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fetchUserProfile, updateUserProfile, uploadProfileImage } from '../services/userService';
 
 // Brand icons
 import {
@@ -19,18 +20,17 @@ import {
 import EditableField from '../components/EditableField';
 
 const UserDashboard = () => {
-    const [personalInfo, setPersonalInfo] = useState({
-        name: 'John Doe',
-        role: 'Software Engineer',
-        bio: 'Passionate about building scalable web applications.',
-        phone: '+1 (123) 456-7890',
-        email: 'john.doe@example.com',
-        companyName: 'Infynk Solutions',
-        whatsapp: '1234567890',
-        profileImage: 'https://placehold.co/150x150/A78BFA/ffffff?text=JD',
-    });
+    const [profile, setProfile] = useState({
+        name: '',
+        bio: '',
+        phone: '',
+        email: '',
+        whatsapp: '',
+        pr_img: '',
+        designation: '',
 
-    const [socials, setSocials] = useState({
+        // social links
+        website: '',
         linkedin: '',
         twitter: '',
         instagram: '',
@@ -43,10 +43,9 @@ const UserDashboard = () => {
         pinterest: '',
         threads: '',
         behance: '',
-        website: '',
+        location: '',
         c_link1: '',
         c_link2: '',
-        location: '',
     });
 
     const [visibility, setVisibility] = useState({
@@ -73,8 +72,76 @@ const UserDashboard = () => {
         location: true,
     });
 
-    const socialFields = [
+    const [localImage, setLocalImage] = useState(null);
 
+
+
+    useEffect(() => {
+        const getProfile = async () => {
+            try {
+                const response = await fetchUserProfile();
+                console.log("Response from fetchUserProfile:", response);
+                const profileData = response;
+                console.log("Fetched profile:", profileData);
+
+
+                setProfile({
+                    id: profileData.id,
+                    name: profileData.name || '',
+                    bio: profileData.bio || '',
+                    phone: profileData.phone || '',
+                    email: profileData.email || '',
+                    whatsapp: profileData.whatsapp || '',
+                    pr_img: profileData.pr_img || '',
+                    designation: profileData.designation || '',
+
+
+                    website: profileData.website || '',
+                    linkedin: profileData.linkedin || '',
+                    twitter: profileData.twitter || '',
+                    instagram: profileData.instagram || '',
+                    facebook: profileData.facebook || '',
+                    youtube: profileData.youtube || '',
+                    github: profileData.github || '',
+                    tiktok: profileData.tiktok || '',
+                    telegram: profileData.telegram || '',
+                    spotify: profileData.spotify || '',
+                    pinterest: profileData.pinterest || '',
+                    threads: profileData.threads || '',
+                    behance: profileData.behance || '',
+                    location: profileData.location || '',
+                    c_link1: profileData.c_link1 || '',
+                    c_link2: profileData.c_link2 || '',
+                });
+                setVisibility({
+                    phone: profileData.show_phone,
+                    email: profileData.show_email,
+                    whatsapp: profileData.show_whatsapp,
+                    instagram: profileData.show_instagram,
+                    linkedin: profileData.show_linkedin,
+                    facebook: profileData.show_facebook,
+                    twitter: profileData.show_twitter,
+                    website: profileData.show_website,
+                    location: profileData.show_location,
+                    youtube: profileData.show_youtube,
+                    spotify: profileData.show_spotify,
+                    telegram: profileData.show_telegram,
+                    pinterest: profileData.show_pinterest,
+                    threads: profileData.show_threads,
+                    behance: profileData.show_behance
+                });
+
+                setLoadedImage(profileData.pr_img);
+
+            } catch (err) {
+                console.error("Failed to fetch profile:", err.message);
+            }
+        };
+
+        getProfile();
+    }, []);
+
+    const socialFields = [
         { type: 'website', icon: faGlobe, name: 'Website' },
         { type: 'linkedin', icon: faLinkedin, name: 'LinkedIn' },
         { type: 'twitter', icon: faTwitter, name: 'Twitter' },
@@ -88,43 +155,90 @@ const UserDashboard = () => {
         { type: 'pinterest', icon: faPinterest, name: 'Pinterest' },
         { type: 'threads', icon: faThreads, name: 'Threads' },
         { type: 'behance', icon: faBehance, name: 'Behance' },
-
         { type: 'location', icon: faLocationDot, name: 'Location' },
         { type: 'c_link1', icon: faLink, name: 'Custom Link 1' },
         { type: 'c_link2', icon: faLink, name: 'Custom Link 2' },
     ];
 
-    const handlePersonalInfoChange = (e) => {
+    const handleProfileChange = (e) => {
         const { name, value } = e.target;
-        setPersonalInfo((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSocialChange = (e) => {
-        const { name, value } = e.target;
-        setSocials((prev) => ({ ...prev, [name]: value }));
+        setProfile((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleVisibilityToggle = (field) => {
         setVisibility((prev) => ({ ...prev, [field]: !prev[field] }));
     };
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPersonalInfo({ ...personalInfo, profileImage: reader.result });
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+
+        try {
+            if (!profile.id) {
+                alert("Cannot upload image: User ID is missing.");
+                return;
+            }
+            const localURL = URL.createObjectURL(file);
+            
+            const imageUrl = await uploadProfileImage(file, profile.id, profile.pr_img);
+            console.log("id in handleImageUpload:", profile.id);
+            console.log("Image URL:", imageUrl);
+            setProfile((prev) => ({ ...prev, pr_img: imageUrl }));
+            alert("Profile image uploaded successfully!");
+            setLocalImage(localURL);
+        } catch (err) {
+            console.error("Image upload failed:", err.message);
+            alert("Image upload failed.");
         }
     };
 
-    const handleSave = () => {
-        console.log('Saving personal info:', personalInfo);
-        console.log('Saving socials:', socials);
-        console.log('Saving visibility settings:', visibility);
-        alert('Changes saved!');
+
+
+    const handleSave = async () => {
+        try {
+            // Combine profile and visibility into one object
+            console.log("Profile before update:", profile);
+            
+            const updatedData = {
+                ...profile,
+                show_phone: visibility.phone,
+                show_email: visibility.email,
+                show_whatsapp: visibility.whatsapp,
+                show_linkedin: visibility.linkedin,
+                show_twitter: visibility.twitter,
+                show_instagram: visibility.instagram,
+                show_facebook: visibility.facebook,
+                show_youtube: visibility.youtube,
+                show_github: visibility.github,
+                show_tiktok: visibility.tiktok,
+                show_telegram: visibility.telegram,
+                show_spotify: visibility.spotify,
+                show_pinterest: visibility.pinterest,
+                show_threads: visibility.threads,
+                show_behance: visibility.behance,
+                show_website: visibility.website,
+                show_location: visibility.location,
+                show_c_link1: visibility.c_link1,
+                show_c_link2: visibility.c_link2,
+                id: profile.id
+            };
+            // Ensure ID is present
+            if (!updatedData.id) {
+                alert("User ID missing. Cannot update profile.");
+                return;
+            }
+
+
+
+            // Call API
+            await updateUserProfile(updatedData);
+            alert("Profile updated successfully!");
+        } catch (err) {
+            console.error("Update failed:", err.message);
+            alert("Failed to save profile. Please try again.");
+        }
     };
+
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 sm:p-6">
@@ -143,7 +257,13 @@ const UserDashboard = () => {
                 {/* Profile Image */}
                 <div className="flex flex-col items-center mb-8">
                     <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-violet-300 shadow-lg">
-                        <img src={personalInfo.profileImage} alt="Profile" className="w-full h-full object-cover" />
+
+                        <img
+                            src={localImage || profile.pr_img || 'https://placehold.co/150x150/A78BFA/ffffff?text=JD'}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                        />
+
                         <label htmlFor="profile-image-upload" className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer">
                             Upload
                         </label>
@@ -155,17 +275,17 @@ const UserDashboard = () => {
                             onChange={handleImageUpload}
                         />
                     </div>
-                    <h2 className="text-3xl font-semibold text-gray-800">{personalInfo.name}</h2>
-                    <p className="text-md text-gray-600">{personalInfo.role}</p>
+                    <h2 className="text-3xl font-semibold text-gray-800">{profile.name}</h2>
+                    <p className="text-md text-gray-600">{profile.designation}</p>
                 </div>
 
                 {/* Personal Info Section */}
                 <div className="mb-8 p-4 bg-violet-50 rounded-xl shadow-inner">
                     <h3 className="text-xl font-semibold text-violet-700 mb-4">Personal Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input name="name" value={personalInfo.name} onChange={handlePersonalInfoChange} className="border p-2 rounded" placeholder="Name" />
-                        <input name="role" value={personalInfo.role} onChange={handlePersonalInfoChange} className="border p-2 rounded" placeholder="Role" />
-                        <textarea name="bio" value={personalInfo.bio} onChange={handlePersonalInfoChange} rows="3" className="border p-2 rounded col-span-full" placeholder="Bio" />
+                        <input name="name" value={profile.name} onChange={handleProfileChange} className="border p-2 rounded" placeholder="Name" />
+                        <input name="designation" value={profile.designation} onChange={handleProfileChange} className="border p-2 rounded" placeholder="designation" />
+                        <textarea name="bio" value={profile.bio} onChange={handleProfileChange} rows="3" className="border p-2 rounded col-span-full" placeholder="Bio" />
                     </div>
                 </div>
 
@@ -176,10 +296,10 @@ const UserDashboard = () => {
                         name="phone"
                         type="text"
                         placeholder="Phone Number"
-                        value={personalInfo.phone}
+                        value={profile.phone}
                         icon={faPhone}
                         visibility={visibility.phone}
-                        onChange={handlePersonalInfoChange}
+                        onChange={handleProfileChange}
                         onToggle={handleVisibilityToggle}
                     />
                     <EditableField
@@ -187,10 +307,10 @@ const UserDashboard = () => {
                         name="email"
                         type="email"
                         placeholder="Email"
-                        value={personalInfo.email}
+                        value={profile.email}
                         icon={faEnvelope}
                         visibility={visibility.email}
-                        onChange={handlePersonalInfoChange}
+                        onChange={handleProfileChange}
                         onToggle={handleVisibilityToggle}
                     />
                     <EditableField
@@ -198,10 +318,10 @@ const UserDashboard = () => {
                         name="whatsapp"
                         type="text"
                         placeholder="Whatsapp"
-                        value={personalInfo.whatsapp}
+                        value={profile.whatsapp}
                         icon={faWhatsapp}
                         visibility={visibility.whatsapp}
-                        onChange={handlePersonalInfoChange}
+                        onChange={handleProfileChange}
                         onToggle={handleVisibilityToggle}
                     />
                 </div>
@@ -216,10 +336,10 @@ const UserDashboard = () => {
                             name={field.type}
                             type="text"
                             placeholder={field.name}
-                            value={socials[field.type] || ''}
+                            value={profile[field.type] || ''}
                             icon={field.icon}
                             visibility={visibility[field.type]}
-                            onChange={handleSocialChange}
+                            onChange={handleProfileChange}
                             onToggle={handleVisibilityToggle}
                         />
                     ))}

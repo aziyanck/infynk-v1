@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import { loginUser } from '../services/supabaseService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -27,7 +30,9 @@ const LoginPage = () => {
       setErrorMsg(error.message);
     } else {
       setSuccessMsg("Logged in successfully!");
-      // navigate("/dashboard") or handle redirect
+      setTimeout(() => {
+        navigate("/user/dashboard"); // Change this to your actual route
+      }, 1000); // optional delay for UX
     }
   };
 

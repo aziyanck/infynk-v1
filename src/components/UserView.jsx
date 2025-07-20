@@ -17,7 +17,7 @@ const UserView = ({ user }) => {
 
   // Fallback helpers
   const fullName = user.name || user.fullName || 'Anonymous';
-  const profilePhoto = user.profile_photo || user.profilePhoto || '/placeholder.jpg';
+  const profilePhoto = user.pr_img || user.profilePhoto || '/placeholder.jpg';
   const designation = user.designation || 'User';
   const bio = user.bio || '';
   const vCardUrl = user.vcard_url || user.vCardUrl || '#';
