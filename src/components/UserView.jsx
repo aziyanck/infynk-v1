@@ -68,7 +68,7 @@ const UserView = ({ user }) => {
     { type: 'pinterest', href: socials.pinterest ? `https://pinterest.com/${socials.pinterest}` : null, icon: faPinterest, name: 'Pinterest' },
     { type: 'threads', href: socials.threads ? `https://threads.net/@${socials.threads}` : null, icon: faThreads, name: 'Threads' },
     { type: 'behance', href: socials.behance ? `https://behance.net/${socials.behance}` : null, icon: faBehance, name: 'Behance' },
-    { type: 'website', href: socials.website || null, icon: faLink, name: 'Website' },
+    { type: 'behance', href: socials.website ? `https://${socials.website}` : null, icon: faLink, name: 'Website' },
     { type: 'c_link1', href: socials.c_link1 || null, icon: faLink, name: 'Custom Link 1' },
     { type: 'c_link2', href: socials.c_link2 || null, icon: faLink, name: 'Custom Link 2' },
     { type: 'location', href: socials.location ? `https://maps.google.com/?q=${encodeURIComponent(socials.location)}` : null, icon: faLocationDot, name: 'Location' },
