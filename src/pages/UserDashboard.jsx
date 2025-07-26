@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Bell, User } from 'lucide-react';
+import { Save, Bell, User, LogOut } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchUserProfile, updateUserProfile, uploadProfileImage } from '../services/userService';
 import { useNavigate } from "react-router-dom";
@@ -25,11 +25,12 @@ import EditableField from '../components/EditableField';
 
 const UserDashboard = () => {
     const navigate = useNavigate();
+    const [sessionUser, setSessionUser] = useState(null);
     useEffect(() => {
         const checkUserRole = async () => {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (!session) return navigate("/user");
-
+            setSessionUser(session.user);
             const role = session.user.app_metadata?.role;
             if (role === "user") return navigate("/user/dashboard"); // admins kicked out
         };
@@ -92,6 +93,7 @@ const UserDashboard = () => {
     });
 
     const [localImage, setLocalImage] = useState(null);
+    const [showUserPop, setShowUserPop] = useState(false);
 
 
 
@@ -277,7 +279,42 @@ const UserDashboard = () => {
                 <h1 className="text-2xl font-bold text-violet-700">Infynk.</h1>
                 <div className="flex items-center space-x-4">
                     <Bell className="text-gray-600 cursor-pointer" size={24} />
-                    <User className="text-gray-600 cursor-pointer" size={24} />
+                    <div className="relative">
+                        <User
+                            className="text-gray-600 cursor-pointer"
+                            size={24}
+                            onClick={() => setShowUserPop((p) => !p)}
+                        />
+                        {showUserPop && (
+                            <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-50">
+                                <div className="flex items-center space-x-3">
+                                    <img
+                                        src={localImage || profile.pr_img || 'https://placehold.co/150x150/A78BFA/ffffff?text=JD'}
+                                        alt="avatar"
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <div>
+                                        <p className="font-semibold text-sm">
+                                            {sessionUser?.user_metadata?.full_name ||
+                                                sessionUser?.user_metadata?.name ||
+                                                'User'}
+                                        </p>
+                                        <p className="text-xs text-gray-500">{sessionUser?.email}</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={async () => {
+                                        await supabase.auth.signOut();
+                                        navigate('/user');
+                                    }}
+                                    className="mt-3 flex items-center space-x-2 text-sm text-red-600 hover:text-red-800 hover:cursor-pointer"
+                                >
+                                    <LogOut size={14} />
+                                    <span>Sign out</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </header>
 
