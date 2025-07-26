@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import NotActive from '../components/Notactive';
 import { ThreeDot } from 'react-loading-indicators';
+import Cropper from 'react-easy-crop';
+import { getCroppedImg } from '../crop/cropUtils';
 
 // Brand icons
 import {
@@ -27,6 +29,7 @@ const UserDashboard = () => {
     const navigate = useNavigate();
     const [sessionUser, setSessionUser] = useState(null);
     useEffect(() => {
+        if (sessionUser) return;
         const checkUserRole = async () => {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (!session) return navigate("/user");
@@ -35,10 +38,67 @@ const UserDashboard = () => {
             if (role === "user") return navigate("/user/dashboard"); // admins kicked out
         };
         checkUserRole();
-    }, [navigate]);
+    }, [navigate, sessionUser]);
 
     const [notActive, setNotActive] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    // Cropper
+    const [cropModal, setCropModal] = useState(() =>
+        localStorage.getItem('cropModal') === 'true'
+    );
+
+    const [cropImgSrc, setCropImgSrc] = useState(() =>
+        localStorage.getItem('cropImgSrc') || ''
+    );
+
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(() => {
+        const data = localStorage.getItem('croppedAreaPixels');
+        return data ? JSON.parse(data) : null;
+    });
+
+    const [crop, setCrop] = useState(() => {
+        const data = localStorage.getItem('crop');
+        return data ? JSON.parse(data) : { x: 0, y: 0 };
+    });
+
+    const [zoom, setZoom] = useState(() =>
+        parseFloat(localStorage.getItem('zoom')) || 1
+    );
+
+    const [rotation, setRotation] = useState(() =>
+        parseInt(localStorage.getItem('rotation')) || 0
+    );
+
+
+    useEffect(() => {
+        localStorage.setItem('cropModal', cropModal);
+    }, [cropModal]);
+
+    useEffect(() => {
+        if (cropImgSrc) localStorage.setItem('cropImgSrc', cropImgSrc);
+        else localStorage.removeItem('cropImgSrc');
+    }, [cropImgSrc]);
+
+    useEffect(() => {
+        if (croppedAreaPixels)
+            localStorage.setItem('croppedAreaPixels', JSON.stringify(croppedAreaPixels));
+    }, [croppedAreaPixels]);
+
+    useEffect(() => {
+        localStorage.setItem('crop', JSON.stringify(crop));
+    }, [crop]);
+
+    useEffect(() => {
+        localStorage.setItem('zoom', zoom.toString());
+    }, [zoom]);
+
+    useEffect(() => {
+        localStorage.setItem('rotation', rotation.toString());
+    }, [rotation]);
+
+
+
 
     const [profile, setProfile] = useState({
         name: '',
@@ -96,6 +156,11 @@ const UserDashboard = () => {
     const [showUserPop, setShowUserPop] = useState(false);
 
 
+    useEffect(() => {
+        const close = (e) => e.target.closest('.relative') || setShowUserPop(false);
+        if (showUserPop) document.addEventListener('click', close);
+        return () => document.removeEventListener('click', close);
+    }, [showUserPop]);
 
     useEffect(() => {
         const getProfile = async () => {
@@ -205,23 +270,15 @@ const UserDashboard = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        try {
-            if (!profile.id) {
-                alert("Cannot upload image: User ID is missing.");
-                return;
-            }
-            const localURL = URL.createObjectURL(file);
-
-            const imageUrl = await uploadProfileImage(file, profile.id, profile.pr_img);
-            console.log("id in handleImageUpload:", profile.id);
-            console.log("Image URL:", imageUrl);
-            setProfile((prev) => ({ ...prev, pr_img: imageUrl }));
-            alert("Profile image uploaded successfully!");
-            setLocalImage(localURL);
-        } catch (err) {
-            console.error("Image upload failed:", err.message);
-            alert("Image upload failed.");
-        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            setCropImgSrc(reader.result);
+            setCropModal(true);        // open modal
+            setCrop({ x: 0, y: 0 });
+            setZoom(1);
+            setRotation(0);
+        };
+        reader.readAsDataURL(file);
     };
 
 
@@ -270,6 +327,8 @@ const UserDashboard = () => {
             alert("Failed to save profile. Please try again.");
         }
     };
+
+
 
 
     return (
@@ -412,6 +471,110 @@ const UserDashboard = () => {
                     ))}
                 </div>
             </div>
+            {/* Crop Modal */}
+            {cropModal && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center">
+                    <div className="bg-white rounded-xl p-4 w-full max-w-lg mx-4">
+                        <h3 className="text-lg font-semibold mb-2">Crop your avatar</h3>
+                        <div className="relative h-64 md:h-80 w-full">
+                            <Cropper
+                                image={cropImgSrc}
+                                crop={crop}
+                                zoom={zoom}
+                                rotation={rotation}
+                                aspect={1}
+                                onCropChange={setCrop}
+                                onZoomChange={setZoom}
+                                onRotationChange={setRotation}
+                                onCropComplete={(_, croppedPixels) =>
+                                    setCroppedAreaPixels(croppedPixels)
+                                }
+                            />
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                            <label className="text-xs">Zoom</label>
+                            <input
+                                type="range"
+                                min={1}
+                                max={3}
+                                step={0.1}
+                                value={zoom}
+                                onChange={(e) => setZoom(e.target.value)}
+                            />
+                            {/* <label className="text-xs ml-2">Rotate</label>
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={360}
+                                    step={1}
+                                    value={rotation}
+                                    onChange={(e) => setRotation(e.target.value)}
+                                /> */}
+                        </div>
+
+                        <div className="mt-4 flex justify-end gap-2">
+                            <button
+                                className="px-4 py-2 rounded-lg text-sm bg-gray-200"
+                                onClick={() => {
+                                    setCropModal(false);
+                                    setCropImgSrc('');
+                                    localStorage.removeItem('cropModal');
+                                    localStorage.removeItem('cropImgSrc');
+                                }}
+
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="px-4 py-2 rounded-lg text-sm bg-violet-600 text-white"
+                                onClick={async () => {
+                                    try {
+                                        const croppedUrl = await getCroppedImg(
+                                            cropImgSrc,
+                                            croppedAreaPixels,
+                                            rotation
+                                        );
+                                        // convert dataURL → File
+                                        const blob = await (await fetch(croppedUrl)).blob();
+                                        const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+
+                                        if (!profile.id) {
+                                            alert('User ID missing');
+                                            return;
+                                        }
+                                        const imageUrl = await uploadProfileImage(file, profile.id, profile.pr_img);
+                                        setProfile((p) => ({ ...p, pr_img: imageUrl }));
+                                        setLocalImage(croppedUrl);
+                                        setCropModal(false);
+                                        setCropImgSrc('');
+                                        setCroppedAreaPixels(null);
+                                        setZoom(1);
+                                        setCrop({ x: 0, y: 0 });
+                                        setRotation(0);
+
+                                        localStorage.removeItem('cropModal');
+                                        localStorage.removeItem('cropImgSrc');
+                                        localStorage.removeItem('croppedAreaPixels');
+                                        localStorage.removeItem('zoom');
+                                        localStorage.removeItem('crop');
+                                        localStorage.removeItem('rotation');
+
+
+
+                                        alert('Avatar updated!');
+                                    } catch (err) {
+                                        console.error(err);
+                                        alert('Upload failed');
+                                    }
+                                }}
+                            >
+                                Crop & Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Save Button */}
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex justify-center z-10">
