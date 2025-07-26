@@ -1,9 +1,12 @@
 // src/pages/LoginPage.jsx
 import React, { useState } from 'react';
-import { loginUser } from '../services/supabaseService';
+import { loginAsUser } from '../services/supabaseService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
+
+
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -20,19 +23,23 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMsg('');
-    setSuccessMsg('');
+    setErrorMsg("");
+    setSuccessMsg("");
 
-    const { data, error } = await loginUser(formData);
-    setLoading(false);
+    try {
+      const session = await loginAsUser(formData);
 
-    if (error) {
-      setErrorMsg(error.message);
-    } else {
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+
       setSuccessMsg("Logged in successfully!");
-      setTimeout(() => {
-        navigate("/user/dashboard"); // Change this to your actual route
-      }, 1000); // optional delay for UX
+      setTimeout(() => navigate("/user/dashboard"), 1000); // <- regular user dashboard
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
