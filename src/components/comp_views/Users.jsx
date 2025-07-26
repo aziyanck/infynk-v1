@@ -54,8 +54,8 @@ const Users = () => {
         </button>
 
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md m-6">
               <h2 className="text-lg font-semibold mb-4">Add New User</h2>
 
               <input

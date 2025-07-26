@@ -32,8 +32,8 @@ const AssignRoute = ({ user, onClose, onAssign }) => {
 
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md m-6 relative">
         <h3 className="text-xl font-semibold mb-4">Assign Route</h3>
         <p className="mb-2"><strong>User:</strong> {user.email}</p>
         <p className="mb-4"><strong>Name:</strong> {user.name || "—"}</p>
