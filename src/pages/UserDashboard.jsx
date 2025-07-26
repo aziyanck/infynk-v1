@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchUserProfile, updateUserProfile, uploadProfileImage } from '../services/userService';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import NotActive from '../components/Notactive';
+import { ThreeDot } from 'react-loading-indicators';
 
 // Brand icons
 import {
@@ -33,6 +35,9 @@ const UserDashboard = () => {
         };
         checkUserRole();
     }, [navigate]);
+
+    const [notActive, setNotActive] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [profile, setProfile] = useState({
         name: '',
@@ -149,11 +154,22 @@ const UserDashboard = () => {
 
             } catch (err) {
                 console.error("Failed to fetch profile:", err.message);
+                await supabase.auth.signOut()
+                setNotActive(true);
+            } finally {
+                setLoading(false);   // <- hide loader no matter what
             }
         };
 
         getProfile();
     }, []);
+    if (notActive) return <NotActive />;
+    if (loading)
+        return (
+            <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+                <ThreeDot variant="pulsate" color="#3194cc" size="large" text="" textColor="" />
+            </div>
+        );
 
     const socialFields = [
         { type: 'website', icon: faGlobe, name: 'Website' },
