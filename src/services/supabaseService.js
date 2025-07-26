@@ -1,5 +1,5 @@
 // src/supabase/supabaseService.js
-import { supabase } from '../supabaseClient';
+import { supabase } from "../supabaseClient";
 
 export const loginUser = async ({ email, password }) => {
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -9,6 +9,53 @@ export const loginUser = async ({ email, password }) => {
 
   return { data, error };
 };
+
+export async function loginAsUser({ email, password }) {
+  const res = await fetch(
+    "https://yowckahgoxqfikadirov.supabase.co/functions/v1/user-login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlvd2NrYWhnb3hxZmlrYWRpcm92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMzcxODUsImV4cCI6MjA2NjcxMzE4NX0.tw75tUlGRtnRCNF-5IXzEYd1mUxXwyLLk0NAZRjxsuQ",
+      },
+      body: JSON.stringify({ email, password }),
+    }
+  );
+
+  const payload = await res.json();
+  if (!res.ok) {
+    throw new Error(payload.error || "Network error");
+  }
+
+  console.log("returned from edge:", payload.session);
+  return payload.session; // { access_token, refresh_token, user, ... }
+}
+
+export async function loginAsAdmin({ email, password }) {
+  const res = await fetch(
+    "https://yowckahgoxqfikadirov.supabase.co/functions/v1/admin-login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlvd2NrYWhnb3hxZmlrYWRpcm92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMzcxODUsImV4cCI6MjA2NjcxMzE4NX0.tw75tUlGRtnRCNF-5IXzEYd1mUxXwyLLk0NAZRjxsuQ",
+      },
+      body: JSON.stringify({ email, password }),
+    }
+  );
+
+  const payload = await res.json();
+
+  if (!res.ok) {
+    throw new Error(payload.error || "Network error");
+  }
+
+  console.log("returned from edge:", payload.session);
+  return payload.session; // { access_token, refresh_token, user, ... }
+}
 
 export const getSession = async () => {
   const {

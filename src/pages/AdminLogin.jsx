@@ -1,9 +1,10 @@
 // src/pages/LoginPage.jsx
 import React, { useState } from 'react';
-import { loginUser } from '../services/supabaseService';
+import { loginAsAdmin } from '../services/supabaseService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 
 const LoginPage = () => {
@@ -19,24 +20,32 @@ const LoginPage = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // at the top
+  // your pre-configured client
+
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setErrorMsg('');
-  setSuccessMsg('');
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
+    setSuccessMsg('');
 
-  const { data, error } = await loginUser(formData);
-  setLoading(false);
+    try {
+      const session = await loginAsAdmin(formData);
 
-  if (error) {
-    setErrorMsg(error.message);
-  } else {
-    setSuccessMsg("Logged in successfully!");
-    setTimeout(() => {
-      navigate("/admin/dashboard"); // Change this to your actual route
-    }, 1000); // optional delay for UX
-  }
-};
+      // 👇 use the Supabase client helper
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+
+      setSuccessMsg('Logged in successfully!');
+      setTimeout(() => navigate('/admin/dashboard'), 1000);
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
