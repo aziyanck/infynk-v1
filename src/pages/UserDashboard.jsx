@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Save, Bell, User } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchUserProfile, updateUserProfile, uploadProfileImage } from '../services/userService';
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 // Brand icons
 import {
@@ -20,6 +22,18 @@ import {
 import EditableField from '../components/EditableField';
 
 const UserDashboard = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const checkUserRole = async () => {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (!session) return navigate("/user");
+
+            const role = session.user.app_metadata?.role;
+            if (role === "user") return navigate("/user/dashboard"); // admins kicked out
+        };
+        checkUserRole();
+    }, [navigate]);
+
     const [profile, setProfile] = useState({
         name: '',
         bio: '',
@@ -131,7 +145,7 @@ const UserDashboard = () => {
                     behance: profileData.show_behance
                 });
 
-                setLoadedImage(profileData.pr_img);
+                setLocalImage(profileData.pr_img);
 
             } catch (err) {
                 console.error("Failed to fetch profile:", err.message);
@@ -179,7 +193,7 @@ const UserDashboard = () => {
                 return;
             }
             const localURL = URL.createObjectURL(file);
-            
+
             const imageUrl = await uploadProfileImage(file, profile.id, profile.pr_img);
             console.log("id in handleImageUpload:", profile.id);
             console.log("Image URL:", imageUrl);
@@ -198,7 +212,7 @@ const UserDashboard = () => {
         try {
             // Combine profile and visibility into one object
             console.log("Profile before update:", profile);
-            
+
             const updatedData = {
                 ...profile,
                 show_phone: visibility.phone,
