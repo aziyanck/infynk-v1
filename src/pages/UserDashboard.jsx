@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Bell, User, LogOut } from 'lucide-react';
+import { Save, Bell, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchUserProfile, updateUserProfile, uploadProfileImage } from '../services/userService';
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ import NotActive from '../components/Notactive';
 import { ThreeDot } from 'react-loading-indicators';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '../crop/cropUtils';
+import { themes } from '../services/themes';   // ➊ import the map
+import ThemeColorPicker from '../components/ThemeColorPicker';
 
 // Brand icons
 import {
@@ -39,6 +41,9 @@ const UserDashboard = () => {
         };
         checkUserRole();
     }, [navigate, sessionUser]);
+
+    // near the top of the component
+    const [themeKey, setThemeKey] = useState('sky');
 
     const [notActive, setNotActive] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -154,6 +159,8 @@ const UserDashboard = () => {
 
     const [localImage, setLocalImage] = useState(null);
     const [showUserPop, setShowUserPop] = useState(false);
+    const [showThemePop, setShowThemePop] = useState(false);
+
 
 
     useEffect(() => {
@@ -331,12 +338,23 @@ const UserDashboard = () => {
 
 
 
+    const lightbg = themes[themeKey].lightColor;
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 sm:p-6">
             {/* Header */}
             <header className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-4 mb-6 flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-violet-700">Infynk.</h1>
+                <h1 className="text-2xl font-bold"  style={{ color: themes[themeKey].textColor }} >Infynk.</h1>
                 <div className="flex items-center space-x-4">
+                    <div className='relative'>
+                        <LayoutDashboard className='text-gray-600 cursor-pointer' size={24} onClick={() => setShowThemePop((p) => !p)} />
+                        {showThemePop && (
+                            <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-50">
+                                <ThemeColorPicker themeKey={themeKey} setThemeKey={setThemeKey} />
+                            </div>
+                        )}
+
+                    </div>
                     <Bell className="text-gray-600 cursor-pointer" size={24} />
                     <div className="relative">
                         <User
@@ -382,7 +400,7 @@ const UserDashboard = () => {
 
                 {/* Profile Image */}
                 <div className="flex flex-col items-center mb-8">
-                    <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-violet-300 shadow-lg">
+                    <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4 border-4  shadow-lg" style={{ borderColor: lightbg }}>
 
                         <img
                             src={localImage || profile.pr_img || 'https://placehold.co/150x150/A78BFA/ffffff?text=JD'}
@@ -406,8 +424,8 @@ const UserDashboard = () => {
                 </div>
 
                 {/* Personal Info Section */}
-                <div className="mb-8 p-4 bg-violet-50 rounded-xl shadow-inner">
-                    <h3 className="text-xl font-semibold text-violet-700 mb-4">Personal Information</h3>
+                <div className="mb-8 p-4  rounded-xl shadow-inner" style={{ backgroundColor: lightbg }}>
+                    <h3 className="text-xl font-semibold mb-4" style={{ color: themes[themeKey].textColor }} >Personal Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input name="name" value={profile.name} onChange={handleProfileChange} className="border p-2 rounded" placeholder="Name" />
                         <input name="designation" value={profile.designation} onChange={handleProfileChange} className="border p-2 rounded" placeholder="designation" />
@@ -416,7 +434,7 @@ const UserDashboard = () => {
                 </div>
 
                 {/* Pinned Fields */}
-                <div className="mb-8 p-4 bg-violet-50 rounded-xl shadow-inner space-y-4">
+                <div className="mb-8 p-4  rounded-xl shadow-inner space-y-4" style={{ backgroundColor: lightbg }}>
                     <EditableField
                         label="Phone"
                         name="phone"
@@ -427,6 +445,7 @@ const UserDashboard = () => {
                         visibility={visibility.phone}
                         onChange={handleProfileChange}
                         onToggle={handleVisibilityToggle}
+                        themekey={themeKey}
                     />
                     <EditableField
                         label="Email"
@@ -438,6 +457,7 @@ const UserDashboard = () => {
                         visibility={visibility.email}
                         onChange={handleProfileChange}
                         onToggle={handleVisibilityToggle}
+                        themekey={themeKey}
                     />
                     <EditableField
                         label="Whatsapp"
@@ -449,12 +469,13 @@ const UserDashboard = () => {
                         visibility={visibility.whatsapp}
                         onChange={handleProfileChange}
                         onToggle={handleVisibilityToggle}
+                        themekey={themeKey}
                     />
                 </div>
 
                 {/* Social Fields */}
-                <div className="mb-8 p-4 bg-violet-50 rounded-xl shadow-inner space-y-4">
-                    <h3 className="text-xl font-semibold text-violet-700 mb-4">Manage Links</h3>
+                <div className="mb-8 p-4  rounded-xl shadow-inner space-y-4" style={{ backgroundColor: lightbg }}>
+                    <h3 className="text-xl font-semibold  mb-4" style={{ color: themes[themeKey].textColor }} >Manage Links</h3>
                     {socialFields.map(field => (
                         <EditableField
                             key={field.type}
@@ -467,6 +488,7 @@ const UserDashboard = () => {
                             visibility={visibility[field.type]}
                             onChange={handleProfileChange}
                             onToggle={handleVisibilityToggle}
+                            themekey={themeKey}
                         />
                     ))}
                 </div>
@@ -580,7 +602,8 @@ const UserDashboard = () => {
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex justify-center z-10">
                 <button
                     onClick={handleSave}
-                    className="bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
+                    className=" hover:bg-violet-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
+                    style={{ backgroundColor: themes[themeKey].primaryColor }}
                 >
                     <Save size={20} className="mr-2" /> Save Changes
                 </button>
