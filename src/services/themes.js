@@ -5,7 +5,7 @@ export const themes = {
     primaryColor: "#1a1b1c",
     textColor: "#dedfe0",
     bgColor: "#1a1b1c", 
-    lightColor: "#444b53",
+    lightColor: "#414345",
   },
 
   violet: {
@@ -19,7 +19,7 @@ export const themes = {
     primaryColor: "#0a5096",
     textColor: "#0a5096",
     bgColor: "#ffffff",
-    lightColor: "#c8e2fd",
+    lightColor: "#e9f4ff",
   },
 
   red: {

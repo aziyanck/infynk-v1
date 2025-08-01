@@ -177,6 +177,10 @@ const UserDashboard = () => {
                 const profileData = response;
                 console.log("Fetched profile:", profileData);
 
+                if (profileData.color) {
+                    setThemeKey(profileData.color);
+                }
+
 
                 setProfile({
                     id: profileData.id,
@@ -316,7 +320,8 @@ const UserDashboard = () => {
                 show_location: visibility.location,
                 show_c_link1: visibility.c_link1,
                 show_c_link2: visibility.c_link2,
-                id: profile.id
+                id: profile.id,
+                color: themeKey
             };
             // Ensure ID is present
             if (!updatedData.id) {
@@ -336,15 +341,15 @@ const UserDashboard = () => {
     };
 
 
-
-
+    const txtclr = themes[themeKey].textColor;
+    const bg = themes[themeKey].bgColor;
     const lightbg = themes[themeKey].lightColor;
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 sm:p-6">
             {/* Header */}
-            <header className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-4 mb-6 flex justify-between items-center">
-                <h1 className="text-2xl font-bold"  style={{ color: themes[themeKey].textColor }} >Infynk.</h1>
+            <header className="w-full max-w-4xl  rounded-2xl shadow-md p-4 mb-6 flex justify-between items-center" style={{ backgroundColor: bg }}>
+                <h1 className="text-2xl font-bold" style={{ color: themes[themeKey].textColor }} >Infynk.</h1>
                 <div className="flex items-center space-x-4">
                     <div className='relative'>
                         <LayoutDashboard className='text-gray-600 cursor-pointer' size={24} onClick={() => setShowThemePop((p) => !p)} />
@@ -396,7 +401,7 @@ const UserDashboard = () => {
             </header>
 
             {/* Main Content */}
-            <div className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-4 mb-20">
+            <div className="w-full max-w-4xl rounded-2xl shadow-md p-4 mb-20" style={{ backgroundColor: bg }}>
 
                 {/* Profile Image */}
                 <div className="flex flex-col items-center mb-8">
@@ -419,17 +424,17 @@ const UserDashboard = () => {
                             onChange={handleImageUpload}
                         />
                     </div>
-                    <h2 className="text-3xl font-semibold text-gray-800">{profile.name}</h2>
-                    <p className="text-md text-gray-600">{profile.designation}</p>
+                    <h2 className="text-3xl font-semibold " style={{ color: txtclr }} >{profile.name}</h2>
+                    <p className="text-md text-gray-500" >{profile.designation}</p>
                 </div>
 
                 {/* Personal Info Section */}
                 <div className="mb-8 p-4  rounded-xl shadow-inner" style={{ backgroundColor: lightbg }}>
-                    <h3 className="text-xl font-semibold mb-4" style={{ color: themes[themeKey].textColor }} >Personal Information</h3>
+                    <h3 className="text-xl font-semibold mb-4" style={{ color: txtclr }} >Personal Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input name="name" value={profile.name} onChange={handleProfileChange} className="border p-2 rounded" placeholder="Name" />
-                        <input name="designation" value={profile.designation} onChange={handleProfileChange} className="border p-2 rounded" placeholder="designation" />
-                        <textarea name="bio" value={profile.bio} onChange={handleProfileChange} rows="3" className="border p-2 rounded col-span-full" placeholder="Bio" />
+                        <input name="name" value={profile.name} onChange={handleProfileChange} className="border p-2 rounded bg-white/90" placeholder="Name" />
+                        <input name="designation" value={profile.designation} onChange={handleProfileChange} className="border p-2 rounded bg-white/90" placeholder="designation" />
+                        <textarea name="bio" value={profile.bio} onChange={handleProfileChange} rows="3" className="border p-2 rounded col-span-full bg-white/90" placeholder="Bio" />
                     </div>
                 </div>
 
