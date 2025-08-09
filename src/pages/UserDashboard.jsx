@@ -170,6 +170,14 @@ const UserDashboard = () => {
     }, [showUserPop]);
 
     useEffect(() => {
+        const close = (e) => e.target.closest('.relative') || setShowThemePop(false);
+        if (showThemePop) document.addEventListener('click', close);
+        return () => document.removeEventListener('click', close);
+    }, [showThemePop]);
+
+
+
+    useEffect(() => {
         const getProfile = async () => {
             try {
                 const response = await fetchUserProfile();
