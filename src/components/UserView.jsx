@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPhone, faEnvelope, faLink, faLocationDot, faBriefcase, faDownload
@@ -6,6 +6,9 @@ import {
 import {
   faWhatsapp, faLinkedin, faTwitter, faInstagram, faGithub, faFacebook, faYoutube, faTiktok, faTelegram, faSpotify, faPinterest, faThreads, faBehance
 } from '@fortawesome/free-brands-svg-icons';
+
+import { themes } from '../services/themes'
+import { generateVCard } from '../services/generateVCard'
 
 // Component
 const UserView = ({ user }) => {
@@ -15,12 +18,23 @@ const UserView = ({ user }) => {
     </div>
   );
 
+  const themeKey = user.color || 'sky';
+
+
+  const bg = themes[themeKey].bgColor;
+  const txtclr = themes[themeKey].textColor;
+  const lightbg = themes[themeKey].lightColor;
+  const primaryColor = themes[themeKey].primaryColor;
+
+
+
+
   // Fallback helpers
   const fullName = user.name || user.fullName || 'Anonymous';
   const profilePhoto = user.pr_img || user.profilePhoto || '/placeholder.jpg';
   const designation = user.designation || 'User';
   const bio = user.bio || '';
-  const vCardUrl = user.vcard_url || user.vCardUrl || '#';
+  
 
   const contact = {
     phone: user.phone || user.contact?.phone,
@@ -74,18 +88,33 @@ const UserView = ({ user }) => {
     { type: 'location', href: socials.location ? `https://maps.google.com/?q=${encodeURIComponent(socials.location)}` : null, icon: faLocationDot, name: 'Location' },
   ].filter(link => link.href);
 
+  const vCardData = useMemo(() => {
+    return generateVCard(fullName, designation, contact, socials);
+  }, [fullName, designation, contact, socials]);
+
+  // Create Blob URL for download
+  const vCardUrl = useMemo(() => {
+    const blob = new Blob([vCardData], { type: 'text/vcard' });
+    return URL.createObjectURL(blob);
+  }, [vCardData]);
+
 
   return (
     <div className="font-sans bg-slate-50 min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-6 md:p-8 flex flex-col space-y-6">
+      <div className="w-full max-w-md  rounded-3xl shadow-lg p-6 md:p-8 flex flex-col space-y-6" style={{ backgroundColor: bg }} >
 
         {/* Header */}
         <header className="text-center space-y-4">
           <img
             src={profilePhoto}
             alt={fullName}
-            className="w-28 h-28 rounded-full mx-auto ring-4 ring-slate-100 object-cover"
+            className="w-28 h-28 rounded-full mx-auto object-cover"
+            style={{
+              border: '4px solid',
+              borderColor: primaryColor
+            }}
           />
+
           <div>
             <h1 className="text-3xl font-bold text-slate-800">{fullName}</h1>
             <p className="text-md text-slate-500">{designation}</p>
@@ -98,9 +127,9 @@ const UserView = ({ user }) => {
 
         {/* Contact buttons */}
         <div className="grid grid-cols-3 gap-3 text-center">
-          {contact.phone && <ContactButton href={`tel:${contact.phone}`} icon={faPhone} text="Call" />}
-          {contact.email && <ContactButton href={`mailto:${contact.email}`} icon={faEnvelope} text="Email" />}
-          {contact.whatsapp && <ContactButton href={`https://wa.me/${contact.whatsapp}`} icon={faWhatsapp} text="WhatsApp" />}
+          {contact.phone && <ContactButton href={`tel:${contact.phone}`} icon={faPhone} text="Call" lightbg={lightbg} />}
+          {contact.email && <ContactButton href={`mailto:${contact.email}`} icon={faEnvelope} text="Email" lightbg={lightbg} />}
+          {contact.whatsapp && <ContactButton href={`https://wa.me/${contact.whatsapp}`} icon={faWhatsapp} text="WhatsApp" lightbg={lightbg} />}
         </div>
 
         {/* Socials/Extra links */}
@@ -114,6 +143,7 @@ const UserView = ({ user }) => {
                 rel="noopener noreferrer"
                 aria-label={link.name}
                 className="flex flex-col items-center justify-center gap-2 p-3 bg-slate-100 text-slate-600 rounded-2xl hover:bg-slate-200 hover:text-slate-800 transition-all duration-300"
+                style={{ backgroundColor: lightbg }}
               >
                 <FontAwesomeIcon icon={link.icon} className="h-7 w-7" />
                 <span className="text-xs font-semibold">{link.name}</span>
@@ -126,8 +156,9 @@ const UserView = ({ user }) => {
         <div className="pt-2 !mt-auto">
           <a
             href={vCardUrl}
-            download
-            className="w-full bg-slate-800 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-700 transition-all duration-300"
+            download={`${fullName}.vcf`}
+            className="w-full text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-700 transition-all duration-300"
+            style={{ backgroundColor: primaryColor }}
           >
             <FontAwesomeIcon icon={faDownload} className="w-5 h-5" />
             Save Contact
@@ -145,8 +176,14 @@ const UserView = ({ user }) => {
   );
 };
 
-const ContactButton = ({ href, icon, text }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center gap-1.5 bg-slate-100 p-3 rounded-2xl hover:bg-slate-200 transition-colors duration-300">
+const ContactButton = ({ href, icon, text, lightbg }) => (
+  <a href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex flex-col items-center justify-center gap-2 p-3 bg-slate-100 text-slate-600 rounded-2xl hover:bg-slate-200 hover:text-slate-800 transition-all duration-300"
+    style={{ backgroundColor: lightbg }}
+
+  >
     <FontAwesomeIcon icon={icon} className="h-6 w-6 text-slate-700" />
     <span className="text-xs font-semibold text-slate-600">{text}</span>
   </a>
