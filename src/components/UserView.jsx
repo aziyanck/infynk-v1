@@ -1,5 +1,7 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ThreeDot } from 'react-loading-indicators';
+
 import {
   faPhone, faEnvelope, faLink, faLocationDot, faBriefcase, faDownload
 } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +16,9 @@ import { generateVCard } from '../services/generateVCard'
 const UserView = ({ user }) => {
   if (!user) return (
     <div className="font-sans bg-slate-50 min-h-screen flex items-center justify-center">
-      Loading...
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <ThreeDot variant="pulsate" color="#3194cc" size="large" text="" textColor="" />
+      </div>
     </div>
   );
 
@@ -34,7 +38,7 @@ const UserView = ({ user }) => {
   const profilePhoto = user.pr_img || user.profilePhoto || '/placeholder.jpg';
   const designation = user.designation || 'User';
   const bio = user.bio || '';
-  
+
 
   const contact = {
     phone: user.phone || user.contact?.phone,

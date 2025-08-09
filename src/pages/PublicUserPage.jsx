@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { ThreeDot } from "react-loading-indicators";
 import { getUserProfileByRouteId } from "../services/userService";
 import UserView from "../components/UserView";
 
@@ -20,7 +21,11 @@ const PublicUserPage = () => {
     fetchUser();
   }, [routeId]);
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) return <div className="text-center py-10">
+    <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+      <ThreeDot variant="pulsate" color="#3194cc" size="large" text="" textColor="" />
+    </div>
+  </div>;
   if (notFound) return <div className="text-center py-10 text-red-500">User not found</div>;
 
   return <UserView user={user} />;
