@@ -105,9 +105,39 @@ const UserList = () => {
                       {new Date(user.created_at).toLocaleString()}
                     </td>
                     <td className="px-4 py-2">{user.route_id || "—"}</td>
+
                     <td className="px-4 py-2">
-                      {user.route_id ? user.route_status : "—"}
+                      {user.route_id ? (
+                        <button
+                          onClick={() => {
+                            const newStatus =
+                              user.route_status === "Active" ? "Inactive" : "Active";
+                            // Optional: update in backend here
+                            setUsers(prevUsers =>
+                              prevUsers.map(u =>
+                                u.id === user.id ? { ...u, route_status: newStatus } : u
+                              )
+                            );
+                          }}
+                          className="relative inline-flex h-6 w-10 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{
+                            backgroundColor:
+                              user.route_status === "Active" ? "red" : "#D1D5DB",
+                            "--tw-ring-color": "red",
+                          }}
+                        >
+                          <span className="sr-only">Toggle route status</span>
+                          <span
+                            className={`transform transition ease-in-out duration-200 ${user.route_status === "Active" ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 rounded-full bg-white`}
+                          />
+                        </button>
+                      ) : (
+                        "—"
+                      )}
                     </td>
+
+
                     <td className="px-4 py-2">
                       {user.route_id ? (
                         <button
