@@ -1,32 +1,43 @@
-import React, { useState } from "react";
+// Users.jsx
+import React, { useState, useEffect } from "react";
 import UserList from "./UserList";
+import { supabase } from "../../supabaseClient";
+
 const Users = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [statusMsg, setStatusMsg] = useState("");
+  const [users, setUsers] = useState([]);
+
+  const fetchUsers = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch(
+      "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-users",
+      { headers: { Authorization: `Bearer ${session?.access_token}` } }
+    );
+    const data = await res.json();
+    if (res.ok) setUsers(Array.isArray(data.users) ? data.users : []);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleInputChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleAddUser = async (role = "user") => {
     setStatusMsg(`Creating ${role}...`);
 
-    const res = await fetch("https://yowckahgoxqfikadirov.supabase.co/functions/v1/create-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role, // pass the role to Edge Function
-      }),
-    });
+    const res = await fetch(
+      "https://yowckahgoxqfikadirov.supabase.co/functions/v1/create-user",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, role }),
+      }
+    );
 
     const result = await res.json();
 
@@ -35,6 +46,10 @@ const Users = () => {
     } else {
       setStatusMsg(`✅ ${role === "admin" ? "Admin" : "User"} created successfully!`);
       setFormData({ name: "", email: "", password: "" });
+
+      // ✅ refresh list instantly
+      fetchUsers();
+
       setTimeout(() => {
         setShowModal(false);
         setStatusMsg("");
@@ -122,7 +137,7 @@ const Users = () => {
           </div>
         )}
       </div>
-      <UserList />
+      <UserList users={users} />
     </div>
   );
 };
