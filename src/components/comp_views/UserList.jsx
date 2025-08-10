@@ -83,6 +83,7 @@ const UserList = () => {
                 <th className="px-4 py-2 text-left">Email</th>
                 <th className="px-4 py-2 text-left">Joined</th>
                 <th className="px-4 py-2 text-left">Route ID</th>
+                <th className="px-4 py-2 text-left">Expire On</th>
                 <th className="px-4 py-2 text-left">Status</th>
                 <th className="px-4 py-2 text-left">Action</th>
               </tr>
@@ -102,9 +103,16 @@ const UserList = () => {
                     <td className="px-4 py-2">{user.name || "—"}</td>
                     <td className="px-4 py-2">{user.email}</td>
                     <td className="px-4 py-2">
-                      {new Date(user.created_at).toLocaleString()}
+                      {user.created_at
+                        ? new Date(user.created_at).toISOString().split("T")[0]
+                        : "-"}
                     </td>
                     <td className="px-4 py-2">{user.route_id || "—"}</td>
+                    <td className="px-4 py-2">
+                      {user.expiry_date
+                        ? new Date(user.expiry_date).toISOString().split("T")[0]
+                        : "-"}
+                    </td>
 
                     <td className="px-4 py-2">
                       {user.route_id ? (
