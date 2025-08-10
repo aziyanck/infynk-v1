@@ -9,19 +9,45 @@ const Users = () => {
   const [statusMsg, setStatusMsg] = useState("");
   const [users, setUsers] = useState([]);
 
+  const [loading, setLoading] = useState(true);
+
   const fetchUsers = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    const res = await fetch(
-      "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-users",
-      { headers: { Authorization: `Bearer ${session?.access_token}` } }
-    );
-    const data = await res.json();
-    if (res.ok) setUsers(Array.isArray(data.users) ? data.users : []);
+    try {
+      setLoading(true);
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch(
+        "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-users",
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+      console.log("Response from Edge Function:", data);
+
+      if (res.ok) {
+        setUsers(Array.isArray(data.users) ? data.users : []);
+      } else {
+        console.error(data.error || "Unknown error");
+        alert(data.error || "Failed to fetch users");
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
 
   const handleInputChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -137,7 +163,11 @@ const Users = () => {
           </div>
         )}
       </div>
+       {loading ? (
+        <p>Loading the Table</p>
+      ) : (
       <UserList users={users} />
+      )}
     </div>
   );
 };

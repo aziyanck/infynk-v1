@@ -6,6 +6,7 @@ import { removeRouteFromUser } from "../../services/adminService"
 
 const UserList = ({ users }) => {
 
+  const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null); // 👈 Track selected user
 
 
@@ -32,7 +33,7 @@ const UserList = ({ users }) => {
     <div className="p-6 bg-white shadow-md rounded-lg relative">
       <h2 className="text-2xl font-bold mb-4">All Users</h2>
 
-      
+     
       <div className="overflow-x-auto">
         <table className="table-auto w-full border border-gray-200">
           <thead className="bg-gray-100">
@@ -159,6 +160,7 @@ const UserList = ({ users }) => {
 
         </table>
       </div>
+      
       
 
       {/* Modal for Assign Route */}
