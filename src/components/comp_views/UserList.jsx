@@ -109,16 +109,46 @@ const UserList = () => {
                     <td className="px-4 py-2">
                       {user.route_id ? (
                         <button
-                          onClick={() => {
-                            const newStatus =
-                              user.route_status === "Active" ? "Inactive" : "Active";
-                            // Optional: update in backend here
-                            setUsers(prevUsers =>
-                              prevUsers.map(u =>
-                                u.id === user.id ? { ...u, route_status: newStatus } : u
-                              )
-                            );
+                          onClick={async () => {
+                            const newStatus = user.route_status === "Active" ? "Inactive" : "Active";
+
+                            try {
+                              const {
+                                data: { session },
+                              } = await supabase.auth.getSession();
+
+                              const res = await fetch(
+                                "https://yowckahgoxqfikadirov.supabase.co/functions/v1/toggle-route-status",
+                                {
+                                  method: "POST",
+                                  headers: {
+                                    Authorization: `Bearer ${session?.access_token}`,
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify({
+                                    route_id: user.route_id,
+                                    is_active: newStatus === "Active",
+                                  }),
+                                }
+                              );
+
+                              const result = await res.json();
+
+                              if (res.ok) {
+                                setUsers((prevUsers) =>
+                                  prevUsers.map((u) =>
+                                    u.id === user.id ? { ...u, route_status: newStatus } : u
+                                  )
+                                );
+                              } else {
+                                alert(result.error || "Failed to toggle route status");
+                              }
+                            } catch (err) {
+                              console.error(err);
+                              alert("Error toggling route status");
+                            }
                           }}
+
                           className="relative inline-flex h-6 w-10 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
                           style={{
                             backgroundColor:
