@@ -1,17 +1,21 @@
 import { supabase } from "../supabaseClient";
 
 export const getUserProfileByRouteId = async (routeId) => {
+  const today = new Date().toISOString().split("T")[0]; // format YYYY-MM-DD
+
   const { data, error } = await supabase
     .from("public_profiles")
     .select(`
       *,
       routes!inner (
         route_id,
-        is_active
+        is_active,
+        expiry_date
       )
     `)
     .eq("route_id", routeId)
     .eq("routes.is_active", true)
+    .gte("routes.expiry_date", today) // expiry_date >= today
     .single();
 
   console.log("Supabase data:", data);
@@ -19,6 +23,7 @@ export const getUserProfileByRouteId = async (routeId) => {
 
   return { data, error };
 };
+
 
 
 
