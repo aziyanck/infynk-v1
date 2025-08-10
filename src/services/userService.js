@@ -3,8 +3,15 @@ import { supabase } from "../supabaseClient";
 export const getUserProfileByRouteId = async (routeId) => {
   const { data, error } = await supabase
     .from("public_profiles")
-    .select("*")
+    .select(`
+      *,
+      routes!inner (
+        route_id,
+        is_active
+      )
+    `)
     .eq("route_id", routeId)
+    .eq("routes.is_active", true)
     .single();
 
   console.log("Supabase data:", data);
@@ -12,6 +19,8 @@ export const getUserProfileByRouteId = async (routeId) => {
 
   return { data, error };
 };
+
+
 
 export const fetchUserProfile = async () => {
   const {
