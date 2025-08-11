@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
+import QRCode from "qrcode";
 import AssignRoute from "./AssignRoute";
-import { removeRouteFromUser } from "../../services/adminService"
+import QrDisplay from "./QrDisplay"; // <-- New component
+import { removeRouteFromUser } from "../../services/adminService";
 
 const UserInfo = ({ user, onClose, setUsers }) => {
     const [currentUser, setCurrentUser] = useState(user);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [qrCodeUrl, setQrCodeUrl] = useState(null); // <-- Store QR code
 
-    // Sync if parent sends updated user props
     useEffect(() => {
         setCurrentUser(user);
     }, [user]);
 
     const toggleStatus = async () => {
         const newStatus = currentUser.route_status === "Active" ? "Inactive" : "Active";
-
         try {
             const {
                 data: { session },
@@ -36,16 +37,12 @@ const UserInfo = ({ user, onClose, setUsers }) => {
             );
 
             const result = await res.json();
-
             if (res.ok) {
-                // ✅ Update in parent
                 setUsers(prevUsers =>
                     prevUsers.map(u =>
                         u.id === currentUser.id ? { ...u, route_status: newStatus } : u
                     )
                 );
-
-                // ✅ Update locally for instant UI change
                 setCurrentUser(prev => ({ ...prev, route_status: newStatus }));
             } else {
                 alert(result.error || "Failed to toggle route status");
@@ -56,22 +53,31 @@ const UserInfo = ({ user, onClose, setUsers }) => {
         }
     };
 
+
+
+
+    const generateQr = async (routeId) => {
+        const urlToEncode = `https://pixic-xi.vercel.app/${routeId}`;
+        try {
+            const qrDataUrl = await QRCode.toDataURL(urlToEncode); // Base64 QR code
+            setQrCodeUrl(qrDataUrl); // Open QrDisplay component
+        } catch (err) {
+            console.error('Error generating QR code:', err);
+        }
+    };
+
     const handleRemoveRoute = async (user) => {
         try {
             await removeRouteFromUser(user.id);
             alert("Route removed successfully!");
-
-            // ✅ Update parent state
-            setUsers((prevUsers) =>
-                prevUsers.map((u) =>
+            setUsers(prevUsers =>
+                prevUsers.map(u =>
                     u.id === user.id
                         ? { ...u, route_id: null, route_status: null, expiry_date: null }
                         : u
                 )
             );
-
-            // ✅ Update local modal state instantly
-            setCurrentUser((prev) => ({
+            setCurrentUser(prev => ({
                 ...prev,
                 route_id: null,
                 route_status: null,
@@ -82,8 +88,6 @@ const UserInfo = ({ user, onClose, setUsers }) => {
             alert("Failed to remove route: " + error.message);
         }
     };
-
-
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
@@ -141,6 +145,20 @@ const UserInfo = ({ user, onClose, setUsers }) => {
 
                     {currentUser.route_id ? (
                         <button
+                            onClick={() => generateQr(currentUser.route_id)}
+                            className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
+                        >
+                            Get QR
+                        </button>
+                    ) : (
+                        <></>
+                    )}
+
+
+
+
+                    {currentUser.route_id ? (
+                        <button
                             onClick={() => handleRemoveRoute(currentUser)}
                             className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                         >
@@ -156,18 +174,16 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                     )}
                 </div>
             </div>
+
             {selectedUser && (
                 <AssignRoute
                     user={selectedUser}
                     onClose={() => setSelectedUser(null)}
                     onAssign={(updatedRoute) => {
-                        // 📅 Calculate expiry date (today + 365 days)
                         const expiryDate = new Date();
                         expiryDate.setDate(expiryDate.getDate() + 365);
-
-                        // ✅ Update parent users list
-                        setUsers((prevUsers) =>
-                            prevUsers.map((u) =>
+                        setUsers(prevUsers =>
+                            prevUsers.map(u =>
                                 u.id === selectedUser.id
                                     ? {
                                         ...u,
@@ -178,20 +194,19 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                                     : u
                             )
                         );
-
-                        // ✅ Update modal's local state immediately
-                        setCurrentUser((prev) => ({
+                        setCurrentUser(prev => ({
                             ...prev,
                             route_id: updatedRoute.route_id,
                             route_status: updatedRoute.route_status,
                             expiry_date: expiryDate.toISOString(),
                         }));
-
                         setSelectedUser(null);
                     }}
                 />
+            )}
 
-
+            {qrCodeUrl && (
+                <QrDisplay qrCodeUrl={qrCodeUrl} onClose={() => setQrCodeUrl(null)} />
             )}
         </div>
     );
