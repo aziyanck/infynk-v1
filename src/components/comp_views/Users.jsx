@@ -73,7 +73,6 @@ const Users = () => {
       setStatusMsg(`✅ ${role === "admin" ? "Admin" : "User"} created successfully!`);
       setFormData({ name: "", email: "", password: "" });
 
-      // ✅ refresh list instantly
       fetchUsers();
 
       setTimeout(() => {
@@ -166,7 +165,7 @@ const Users = () => {
        {loading ? (
         <p>Loading the Table</p>
       ) : (
-      <UserList users={users} />
+      <UserList users={users} setUsers={setUsers} />
       )}
     </div>
   );

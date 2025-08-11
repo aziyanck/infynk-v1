@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import AssignRoute from "./AssignRoute";
 import { removeRouteFromUser } from "../../services/adminService"
+import UserInfo from "./UserInfo";
 
-const UserList = ({ users }) => {
+const UserList = ({ users, setUsers }) => {
 
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null); // 👈 Track selected user
+  const [viewingUser, setViewingUser] = useState(null);
 
 
   const handleRemoveRoute = async (user) => {
@@ -18,7 +20,7 @@ const UserList = ({ users }) => {
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
           u.id === user.id
-            ? { ...u, route_id: null, route_status: null }
+            ? { ...u, route_id: null, expiry_date: null, route_status: null }
             : u
         )
       );
@@ -33,7 +35,7 @@ const UserList = ({ users }) => {
     <div className="p-6 bg-white shadow-md rounded-lg relative">
       <h2 className="text-2xl font-bold mb-4">All Users</h2>
 
-     
+
       <div className="overflow-x-auto">
         <table className="table-auto w-full border border-gray-200">
           <thead className="bg-gray-100">
@@ -41,7 +43,7 @@ const UserList = ({ users }) => {
               <th className="px-4 py-2 text-left">Sl. No</th>
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Joined</th>
+              {/* <th className="px-4 py-2 text-left">Joined</th> */}
               <th className="px-4 py-2 text-left">Route ID</th>
               <th className="px-4 py-2 text-left">Expire On</th>
               <th className="px-4 py-2 text-left">Status</th>
@@ -60,13 +62,19 @@ const UserList = ({ users }) => {
               users.map((user, index) => (
                 <tr key={user.id} className="border-t">
                   <td className="px-4 py-2">{index + 1}</td>
-                  <td className="px-4 py-2">{user.name || "—"}</td>
+                  <td
+                    className="px-4 py-2 text-blue-600 hover:underline cursor-pointer"
+                    onClick={() => setViewingUser(user)}
+                  >
+                    {user.name || "—"}
+                  </td>
+
                   <td className="px-4 py-2">{user.email}</td>
-                  <td className="px-4 py-2">
+                  {/* <td className="px-4 py-2">
                     {user.created_at
                       ? new Date(user.created_at).toISOString().split("T")[0]
                       : "-"}
-                  </td>
+                  </td> */}
                   <td className="px-4 py-2">{user.route_id || "—"}</td>
                   <td className="px-4 py-2">
                     {user.expiry_date
@@ -160,8 +168,8 @@ const UserList = ({ users }) => {
 
         </table>
       </div>
-      
-      
+
+
 
       {/* Modal for Assign Route */}
       {selectedUser && (
@@ -169,6 +177,8 @@ const UserList = ({ users }) => {
           user={selectedUser}
           onClose={() => setSelectedUser(null)}
           onAssign={(updatedRoute) => {
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 365);
             setUsers((prevUsers) =>
               prevUsers.map((u) =>
                 u.id === selectedUser.id
@@ -176,6 +186,7 @@ const UserList = ({ users }) => {
                     ...u,
                     route_id: updatedRoute.route_id,
                     route_status: updatedRoute.route_status,
+                    expiry_date: expiryDate.toISOString(),
                   }
                   : u
               )
@@ -186,6 +197,15 @@ const UserList = ({ users }) => {
 
 
       )}
+
+      {viewingUser && (
+        <UserInfo
+          user={viewingUser}
+          onClose={() => setViewingUser(null)}
+          setUsers={setUsers}
+        />
+      )}
+
 
     </div>
 
