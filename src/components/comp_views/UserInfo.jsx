@@ -154,9 +154,6 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                         <></>
                     )}
 
-
-
-
                     {currentUser.route_id ? (
                         <button
                             onClick={() => handleRemoveRoute(currentUser)}
