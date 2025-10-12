@@ -2,6 +2,9 @@ import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 
+import CubeScene from "./Land/CubeScene";
+import CardModel from "./Land/CardModel";
+import Services from "./Land/Services";
 import '../App.css';
 
 
@@ -29,32 +32,41 @@ export default function LandingPage() {
 
 
             {/* Hero Section */}
-            <section className=" w-screen h-[90vh] flex  items-center justify-center  ">
-                <div className=" w-[50vw] h-full">
-
-
+            <section className="w-screen h-auto md:h-[90vh] flex flex-col md:flex-row items-center justify-center bg-black px-6 md:px-12 py-10">
+                {/* Left side */}
+                <div className="w-full md:w-[50vw] h-[40vh] md:h-full flex items-center justify-center">
+                    <div className="w-full h-full">
+                        <CardModel />
+                        
+                        
+                    </div>
                 </div>
 
-                <div className=" w-[50vw] h-full flex flex-col gap-20 text-start items-center justify-center">
-
+                {/* Right side */}
+                <div className="w-full md:w-[50vw] h-auto md:h-full flex flex-col gap-10 text-center md:text-start items-center md:items-start justify-center">
+                    {/* Title + Subtitle */}
                     <div>
-                        <h1 className="text-6xl poppins-black text-white">Pixic</h1>
-                        <p className="mt-4 text-5xl poppins-bold">
-                            The All <span className="text-blue-400 ">NFC Solutions</span> <br /> You Need!
+                        <h1 className="text-4xl md:text-6xl poppins-black text-white">Pixic</h1>
+                        <p className="mt-4 text-2xl md:text-5xl poppins-bold">
+                            The All <span className="text-blue-400">NFC Solutions</span> <br /> You Need!
                         </p>
                     </div>
 
-
-                    <div class="relative rounded-lg w-40 h-10 overflow-clip bg-gray-300">
-                        <div class="absolute top-0 left-0 bg-white flex items-center justify-end box-border text-3xl pr-2 w-full h-full"><FontAwesomeIcon icon={faCaretRight} className="text-gray-800 ml-2" /></div>
-                        <div class="absolute top-0 left-0  bg-blue-500 w-[80%] h-full flex justify-center text-white poppins-bold items-center">Order Now!</div>
+                    {/* Button */}
+                    <div className="relative rounded-lg w-40 h-12 overflow-clip bg-gray-300">
+                        <div className="absolute top-0 left-0 bg-white flex items-center justify-end box-border text-2xl md:text-3xl pr-2 w-full h-full">
+                            <FontAwesomeIcon icon={faCaretRight} className="text-gray-800 ml-2" />
+                        </div>
+                        <div className="absolute top-0 left-0 bg-blue-500 w-[80%] h-full flex justify-center text-white poppins-bold items-center">
+                            Order Now!
+                        </div>
                     </div>
-
-
-
                 </div>
-
             </section>
+
+
+
+            <Services />
 
 
         </div>

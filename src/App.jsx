@@ -7,6 +7,7 @@ import UserDashboard from "./pages/UserDashboard"
 import AdminLogin from "./pages/AdminLogin"
 import AdminDashboard from "./pages/AdminDashboard"
 import NotFound from "./pages/NotFound"
+import GetInfo from "./pages/GetInfo"
 
 export default function App() {
   return (
@@ -17,7 +18,9 @@ export default function App() {
       <Route path="/admin" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/:slug" element={<PublicProfile />} />
+      <Route path="/getinfo" element={<GetInfo />} />
       <Route path="*" element={<NotFound />} />
+
     </Routes>
   )
 }
