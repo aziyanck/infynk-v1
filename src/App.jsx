@@ -8,6 +8,8 @@ import AdminLogin from "./pages/AdminLogin"
 import AdminDashboard from "./pages/AdminDashboard"
 import NotFound from "./pages/NotFound"
 import GetInfo from "./pages/GetInfo"
+import SuccessPage from "./pages/SuccessPage"
+
 
 export default function App() {
   return (
@@ -19,6 +21,7 @@ export default function App() {
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/:slug" element={<PublicProfile />} />
       <Route path="/getinfo" element={<GetInfo />} />
+      <Route path="/payment-success" element={<SuccessPage />} />
       <Route path="*" element={<NotFound />} />
 
     </Routes>
