@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ThreeDot } from 'react-loading-indicators';
 
 import {
-  faPhone, faEnvelope, faLink, faLocationDot, faBriefcase, faDownload
+  faPhone, faEnvelope, faLink, faLocationDot, faBriefcase, faDownload, faStar
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faWhatsapp, faLinkedin, faTwitter, faInstagram, faGithub, faFacebook, faYoutube, faTiktok, faTelegram, faSpotify, faPinterest, faThreads, faBehance
@@ -62,6 +62,7 @@ const UserView = ({ user }) => {
     behance: user.behance,
     github: user.github,
     tiktok: user.tiktok,
+    reviews: user.reviews,
     c_link1: user.c_link1,
     c_link2: user.c_link2,
   };
@@ -87,6 +88,7 @@ const UserView = ({ user }) => {
     { type: 'threads', href: socials.threads ? `https://threads.net/@${socials.threads}` : null, icon: faThreads, name: 'Threads' },
     { type: 'behance', href: socials.behance ? `https://behance.net/${socials.behance}` : null, icon: faBehance, name: 'Behance' },
     { type: 'website', href: socials.website ? `https://${socials.website}` : null, icon: faLink, name: 'Website' },
+    { type: 'reviews', href: socials.reviews || null, icon: faStar, name: 'Review Now' },
     { type: 'c_link1', href: socials.c_link1 || null, icon: faLink, name: 'Custom Link 1' },
     { type: 'c_link2', href: socials.c_link2 || null, icon: faLink, name: 'Custom Link 2' },
     { type: 'location', href: socials.location ? `https://maps.google.com/?q=${encodeURIComponent(socials.location)}` : null, icon: faLocationDot, name: 'Location' },
@@ -138,7 +140,7 @@ const UserView = ({ user }) => {
 
         {/* Socials/Extra links */}
         {links.length > 0 && (
-          <div className="grid grid-cols-3 gap-4 pt-2">
+          <div className={`grid ${links.length === 1 ? 'grid-cols-1' : 'grid-cols-3'} gap-4 pt-2`}>
             {links.map(link => (
               <a
                 key={link.type}

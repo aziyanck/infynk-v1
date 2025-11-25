@@ -22,7 +22,7 @@ import {
 import {
     faPhone, faEnvelope, faBuilding, faUser as faUserSolid,
     faLink, faLocationDot,
-    faGlobe
+    faGlobe, faStar
 } from '@fortawesome/free-solid-svg-icons';
 
 import EditableField from '../components/EditableField';
@@ -129,6 +129,7 @@ const UserDashboard = () => {
         threads: '',
         behance: '',
         location: '',
+        reviews: '',
         c_link1: '',
         c_link2: '',
     });
@@ -152,6 +153,7 @@ const UserDashboard = () => {
         threads: true,
         behance: true,
         website: true,
+        reviews: true,
         c_link1: true,
         c_link2: true,
         location: true,
@@ -215,6 +217,7 @@ const UserDashboard = () => {
                     threads: profileData.threads || '',
                     behance: profileData.behance || '',
                     location: profileData.location || '',
+                    reviews: profileData.reviews || '',
                     c_link1: profileData.c_link1 || '',
                     c_link2: profileData.c_link2 || '',
                 });
@@ -233,7 +236,8 @@ const UserDashboard = () => {
                     telegram: profileData.show_telegram,
                     pinterest: profileData.show_pinterest,
                     threads: profileData.show_threads,
-                    behance: profileData.show_behance
+                    behance: profileData.show_behance,
+                    reviews: profileData.show_reviews
                 });
 
                 setLocalImage(profileData.pr_img);
@@ -271,6 +275,7 @@ const UserDashboard = () => {
         { type: 'pinterest', icon: faPinterest, name: 'Pinterest' },
         { type: 'threads', icon: faThreads, name: 'Threads' },
         { type: 'behance', icon: faBehance, name: 'Behance' },
+        { type: 'reviews', icon: faStar, name: 'Reviews' },
         { type: 'location', icon: faLocationDot, name: 'Location' },
         { type: 'c_link1', icon: faLink, name: 'Custom Link 1' },
         { type: 'c_link2', icon: faLink, name: 'Custom Link 2' },
@@ -325,6 +330,7 @@ const UserDashboard = () => {
                 show_threads: visibility.threads,
                 show_behance: visibility.behance,
                 show_website: visibility.website,
+                show_reviews: visibility.reviews,
                 show_location: visibility.location,
                 show_c_link1: visibility.c_link1,
                 show_c_link2: visibility.c_link2,
