@@ -159,17 +159,19 @@ const UserView = ({ user }) => {
         )}
 
         {/* Save Contact */}
-        <div className="pt-2 !mt-auto">
-          <a
-            href={vCardUrl}
-            download={`${fullName}.vcf`}
-            className="w-full text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-700 transition-all duration-300"
-            style={{ backgroundColor: primaryColor }}
-          >
-            <FontAwesomeIcon icon={faDownload} className="w-5 h-5" />
-            Save Contact
-          </a>
-        </div>
+        {!(links.length === 1 && links[0].type === 'reviews') && (
+          <div className="pt-2 !mt-auto">
+            <a
+              href={vCardUrl}
+              download={`${fullName}.vcf`}
+              className="w-full text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-700 transition-all duration-300"
+              style={{ backgroundColor: primaryColor }}
+            >
+              <FontAwesomeIcon icon={faDownload} className="w-5 h-5" />
+              Save Contact
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
