@@ -40,26 +40,27 @@ const Services = () => {
   }, { scope: containerRef });
 
   const services = [
-    {
-      id: "01",
-      title: "Instant Sharing",
-      description: "Share your contact info, social profiles, and portfolio with just a single tap.",
-    },
-    {
-      id: "02",
-      title: "Custom Design",
-      description: "Express your brand identity with fully customizable card designs.",
-    },
-    {
-      id: "03",
-      title: "Real-time Updates",
-      description: "Update your profile instantly from our dashboard without reprinting.",
-    },
-    {
-      id: "04",
-      title: "Analytics",
-      description: "Track your networking performance and see who viewed your profile.",
-    },
+ {
+  id: "01",
+  title: "Instant Sharing",
+  description: "Share your contact info, social profiles, and portfolio with just a single tap.",
+},
+{
+  id: "02",
+  title: "Custom Design",
+  description: "Express your brand identity with fully customizable card designs.",
+},
+{
+  id: "03",
+  title: "Real-time Updates",
+  description: "Update your profile instantly from our dashboard without reprinting.",
+},
+{
+  id: "04",
+  title: "Custom Colour",
+  description: "Customize the colour of your digital profile anytime you want, a unique feature no other NFC business card company offers.",
+},
+
   ];
 
   return (

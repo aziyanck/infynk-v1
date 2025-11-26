@@ -52,12 +52,13 @@ const About = () => {
 
                 <div className="grid grid-cols-2 gap-4 md:gap-8" ref={statsRef}>
                     <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300">
-                        <span className="text-3xl md:text-6xl font-bold text-blue-600 mb-2">10k+</span>
-                        <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Active Users</span>
+                        <span className="text-3xl md:text-6xl font-bold text-blue-600 mb-2">0.2s</span>
+                        <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Scan Speed</span>
+
                     </div>
                     <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300 md:mt-12">
-                        <span className="text-3xl md:text-6xl font-bold text-white mb-2">50+</span>
-                        <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Countries</span>
+                        <span className="text-3xl md:text-6xl font-bold text-white mb-2">No. 01</span>
+                        <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Most Customizable</span>
                     </div>
                     <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300 md:-mt-12">
                         <span className="text-3xl md:text-6xl font-bold text-white mb-2">24/7</span>
