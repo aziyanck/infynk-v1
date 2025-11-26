@@ -40,31 +40,31 @@ const Services = () => {
   }, { scope: containerRef });
 
   const services = [
- {
-  id: "01",
-  title: "Instant Sharing",
-  description: "Share your contact info, social profiles, and portfolio with just a single tap.",
-},
-{
-  id: "02",
-  title: "Custom Design",
-  description: "Express your brand identity with fully customizable card designs.",
-},
-{
-  id: "03",
-  title: "Real-time Updates",
-  description: "Update your profile instantly from our dashboard without reprinting.",
-},
-{
-  id: "04",
-  title: "Custom Colour",
-  description: "Customize the colour of your digital profile anytime you want, a unique feature no other NFC business card company offers.",
-},
+    {
+      id: "01",
+      title: "Instant Sharing",
+      description: "Share your contact info, social profiles, and portfolio with just a single tap.",
+    },
+    {
+      id: "02",
+      title: "Custom Design",
+      description: "Express your brand identity with fully customizable card designs.",
+    },
+    {
+      id: "03",
+      title: "Real-time Updates",
+      description: "Update your profile instantly from our dashboard without reprinting.",
+    },
+    {
+      id: "04",
+      title: "Custom Colour",
+      description: "Customize the colour of your digital profile anytime you want, a unique feature no other NFC business card company offers.",
+    },
 
   ];
 
   return (
-    <section id="services" ref={containerRef} className="min-h-screen w-full bg-black text-white flex flex-col justify-center px-6 md:px-12 py-20 border-b border-white/10">
+    <section id="services" ref={containerRef} className="min-h-[90vh] w-full bg-black text-white flex flex-col justify-center px-6 md:px-12 py-20 border-b border-white/10">
 
       <div className="mb-16" ref={titleRef}>
         <h2 className="text-sm font-bold uppercase tracking-widest text-blue-500 mb-4">

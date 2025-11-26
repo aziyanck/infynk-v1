@@ -37,7 +37,7 @@ const About = () => {
     }, { scope: containerRef });
 
     return (
-        <section id="about" ref={containerRef} className="min-h-screen w-full bg-black text-white flex items-center justify-center px-6 md:px-12 py-20">
+        <section id="about" ref={containerRef} className="min-h-[90vh] w-full bg-black text-white flex items-center justify-center px-6 md:px-12 py-20">
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-20">
                 <div className="flex flex-col justify-center" ref={textRef}>

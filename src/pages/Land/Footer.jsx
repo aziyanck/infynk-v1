@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedin, faTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faArrowRight, faXmark, faEnvelope, faPhone } from '@fortawesome/free-solid-svg-icons';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 const Footer = () => {
     const [showContact, setShowContact] = useState(false);
+    const modalRef = useRef(null);
+    const backdropRef = useRef(null);
+    const containerRef = useRef(null);
 
     const socialLinks = [
         { name: 'Instagram', icon: faInstagram, url: '#' },
@@ -19,7 +24,7 @@ const Footer = () => {
             links: [
                 { name: 'Features', url: '#features' },
                 { name: 'Services', url: '#services' },
-                { name: 'Pricing', url: '#' }
+                { name: 'Pricing', url: '#pricing' }
             ]
         },
         {
@@ -46,14 +51,57 @@ const Footer = () => {
         }
     };
 
+    const closeModal = () => {
+        if (modalRef.current && backdropRef.current) {
+            const tl = gsap.timeline({
+                onComplete: () => setShowContact(false)
+            });
+
+            tl.to(modalRef.current, {
+                y: '100%',
+                opacity: 0,
+                duration: 0.4,
+                ease: "power3.in"
+            })
+                .to(backdropRef.current, {
+                    opacity: 0,
+                    duration: 0.3
+                }, "-=0.2");
+        }
+    };
+
+    useGSAP(() => {
+        if (showContact && modalRef.current && backdropRef.current) {
+            const tl = gsap.timeline();
+
+            tl.fromTo(backdropRef.current,
+                { opacity: 0 },
+                { opacity: 1, duration: 0.3 }
+            )
+                .fromTo(modalRef.current,
+                    { y: '100%', opacity: 0 },
+                    { y: '0%', opacity: 1, duration: 0.5, ease: "power3.out" },
+                    "-=0.1"
+                );
+        }
+    }, [showContact]);
+
     return (
-        <footer className="bg-black text-white border-t border-white/10 relative">
+        <footer ref={containerRef} className="bg-black text-white border-t border-white/10 relative">
             {/* Contact Modal */}
             {showContact && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm">
-                    <div className="bg-black border border-white/10 p-8 md:p-12 max-w-md w-full relative animate-in fade-in zoom-in duration-300">
+                <div
+                    ref={backdropRef}
+                    className="fixed inset-0 z-[60] flex items-end justify-center pb-20 md:pb-32 px-4 bg-black/60 backdrop-blur-[2px]"
+                    onClick={closeModal}
+                >
+                    <div
+                        ref={modalRef}
+                        className="bg-black border border-white/10 p-8 md:p-12 max-w-md w-full relative"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <button
-                            onClick={() => setShowContact(false)}
+                            onClick={closeModal}
                             className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
                         >
                             <FontAwesomeIcon icon={faXmark} className="text-xl" />

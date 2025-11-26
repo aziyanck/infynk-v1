@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CardModel from "./Land/CardModel";
 import Services from "./Land/Services";
 import Features from "./Land/Features";
+import Pricing from "./Land/Pricing";
 import About from "./Land/About";
 import Footer from "./Land/Footer";
 import '../App.css';
@@ -69,7 +70,7 @@ export default function LandingPage() {
             </header>
 
             {/* Hero Section */}
-            <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pt-20 z-10 border-b border-white/10">
+            <section className="relative min-h-[90vh] flex flex-col justify-center px-6 md:px-12 pt-20 z-10 border-b border-white/10">
                 <div className="flex flex-col md:flex-row items-end justify-between w-full h-full pb-20">
 
                     {/* Left: Typography */}
@@ -112,6 +113,7 @@ export default function LandingPage() {
 
             <Services />
             <Features />
+            <Pricing />
             <About />
             <Footer />
 

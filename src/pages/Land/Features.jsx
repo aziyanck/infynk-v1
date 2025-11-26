@@ -63,7 +63,7 @@ const Features = () => {
     ];
 
     return (
-        <section id="features" ref={containerRef} className="min-h-screen w-full bg-black text-white flex flex-col justify-center px-6 md:px-12 py-20 border-b border-white/10">
+        <section id="features" ref={containerRef} className="min-h-[90vh] w-full bg-black text-white flex flex-col justify-center px-6 md:px-12 py-20 border-b border-white/10">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 h-full">
                 <div className="flex flex-col justify-between" ref={titleRef}>
