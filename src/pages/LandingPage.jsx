@@ -9,6 +9,7 @@ import CardModel from "./Land/CardModel";
 import Services from "./Land/Services";
 import Features from "./Land/Features";
 import About from "./Land/About";
+import Footer from "./Land/Footer";
 import '../App.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -50,7 +51,9 @@ export default function LandingPage() {
 
             {/* Navbar */}
             <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 flex justify-between items-center mix-blend-difference">
-                <div className="text-2xl font-bold tracking-tighter uppercase">Pixic</div>
+                <a href="#" className="text-2xl font-bold tracking-tighter uppercase text-white hover:opacity-80 transition-opacity">
+                    Pixic
+                </a>
 
                 <nav className="hidden md:flex items-center gap-12 text-sm font-medium uppercase tracking-widest">
                     {['Services', 'Features', 'About'].map((item) => (
@@ -110,6 +113,7 @@ export default function LandingPage() {
             <Services />
             <Features />
             <About />
+            <Footer />
 
         </div>
     );
