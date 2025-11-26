@@ -30,6 +30,9 @@ const Users = () => {
 
       const data = await res.json();
       console.log("Response from Edge Function:", data);
+      if (data.users && data.users.length > 0) {
+        console.log("First user sample:", data.users[0]);
+      }
 
       if (res.ok) {
         setUsers(Array.isArray(data.users) ? data.users : []);
@@ -162,10 +165,10 @@ const Users = () => {
           </div>
         )}
       </div>
-       {loading ? (
+      {loading ? (
         <p>Loading the Table</p>
       ) : (
-      <UserList users={users} setUsers={setUsers} />
+        <UserList users={users} setUsers={setUsers} />
       )}
     </div>
   );

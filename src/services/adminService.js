@@ -63,3 +63,25 @@ export const removeRouteFromUser = async (userId) => {
   return result;
 };
 
+
+export const renewRouteExpiry = async (routeId) => {
+  const session = await supabase.auth.getSession();
+  const jwt = session.data.session.access_token;
+
+  const res = await fetch(
+    `https://yowckahgoxqfikadirov.supabase.co/functions/v1/renew-expiry`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({ route_id: routeId }),
+    }
+  );
+
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.message || "Failed to renew expiry");
+
+  return result;
+};

@@ -3,7 +3,7 @@ import { supabase } from "../../supabaseClient";
 import QRCode from "qrcode";
 import AssignRoute from "./AssignRoute";
 import QrDisplay from "./QrDisplay"; // <-- New component
-import { removeRouteFromUser } from "../../services/adminService";
+import { removeRouteFromUser, renewRouteExpiry } from "../../services/adminService";
 
 const UserInfo = ({ user, onClose, setUsers }) => {
     const [currentUser, setCurrentUser] = useState(user);
@@ -11,6 +11,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
     const [qrCodeUrl, setQrCodeUrl] = useState(null); // <-- Store QR code
 
     useEffect(() => {
+        console.log("UserInfo received user:", user);
         setCurrentUser(user);
     }, [user]);
 
@@ -73,7 +74,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
             setUsers(prevUsers =>
                 prevUsers.map(u =>
                     u.id === user.id
-                        ? { ...u, route_id: null, route_status: null, expiry_date: null }
+                        ? { ...u, route_id: null, route_status: null, expiry_date: null, activation_date: null }
                         : u
                 )
             );
@@ -82,10 +83,34 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                 route_id: null,
                 route_status: null,
                 expiry_date: null,
+                activation_date: null,
             }));
         } catch (error) {
             console.error(error);
             alert("Failed to remove route: " + error.message);
+        }
+    };
+
+    const handleRenew = async () => {
+        if (!currentUser.route_id) return;
+        if (!confirm("Are you sure you want to renew this route for 1 year?")) return;
+
+        try {
+            const result = await renewRouteExpiry(currentUser.route_id);
+            if (result.success) {
+                alert("Route renewed successfully!");
+                const newExpiry = result.new_expiry;
+
+                setUsers(prevUsers =>
+                    prevUsers.map(u =>
+                        u.id === currentUser.id ? { ...u, expiry_date: newExpiry } : u
+                    )
+                );
+                setCurrentUser(prev => ({ ...prev, expiry_date: newExpiry }));
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Failed to renew route: " + error.message);
         }
     };
 
@@ -107,9 +132,28 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                     </div>
                 </div>
 
-                <div className="flex justify-between p-4 rounded-xl bg-gray-200">
+                <div className="flex flex-col gap-2 p-4 rounded-xl bg-gray-200">
                     <p><strong>Route ID:</strong> {currentUser.route_id || "—"}</p>
-                    <p><strong>Expiry:</strong> {currentUser.expiry_date ? new Date(currentUser.expiry_date).toLocaleDateString() : "—"}</p>
+                    <div className="flex justify-between items-center">
+                        <p>
+                            <strong className="hidden md:inline">Activated:</strong>{" "}
+                            {currentUser.activation_date
+                                ? new Date(currentUser.activation_date).toLocaleDateString()
+                                : "—"}
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <p><strong>Expiry:</strong> {currentUser.expiry_date ? new Date(currentUser.expiry_date).toLocaleDateString() : "—"}</p>
+                            {currentUser.route_id && (
+                                <button
+                                    onClick={handleRenew}
+                                    className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200 transition-colors"
+                                    title="Renew for 1 year"
+                                >
+                                    +1 Year
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex justify-between p-4 rounded-xl bg-gray-200">
