@@ -11,6 +11,7 @@ import Features from "./Land/Features";
 import Pricing from "./Land/Pricing";
 import About from "./Land/About";
 import Footer from "./Land/Footer";
+import Chatbot from "../components/Chatbot";
 import '../App.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -116,7 +117,7 @@ export default function LandingPage() {
             <Pricing />
             <About />
             <Footer />
-
+            <Chatbot />
         </div>
     );
 }
