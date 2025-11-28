@@ -71,7 +71,7 @@ export default function LandingPage() {
 
             {/* Hero Section */}
             <section className="relative min-h-[90vh] flex flex-col justify-center px-6 md:px-12 pt-20 z-10 border-b border-white/10">
-                <div className="flex flex-col md:flex-row items-end justify-between w-full h-full pb-20">
+                <div className="flex flex-col-reverse md:flex-row items-end justify-between w-full h-full pb-20">
 
                     {/* Left: Typography */}
                     <div className="w-full md:w-2/3" ref={heroTextRef}>
