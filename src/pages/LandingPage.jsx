@@ -58,7 +58,7 @@ export default function LandingPage() {
                 </a>
 
                 <nav className="hidden md:flex items-center gap-12 text-sm font-medium uppercase tracking-widest">
-                    {['Services', 'Features', 'About'].map((item) => (
+                    {['Services', 'Features', 'Pricing', 'About'].map((item) => (
                         <a key={item} href={`#${item.toLowerCase()}`} className="hover:text-blue-500 transition-colors">
                             {item}
                         </a>

@@ -61,6 +61,11 @@ const Services = () => {
       description: "Customize the colour of your digital profile anytime you want, a unique feature no other NFC business card company offers.",
     },
 
+    {
+      id: "05",
+      title: "AI Assistant",
+      description: "24/7 AI assistant to resolve all your doubts instantly.",
+    },
   ];
 
   return (

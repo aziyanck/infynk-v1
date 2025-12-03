@@ -62,7 +62,7 @@ const About = () => {
                     </div>
                     <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300 md:-mt-12">
                         <span className="text-3xl md:text-6xl font-bold text-white mb-2">24/7</span>
-                        <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Support</span>
+                        <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">AI Chat Assistant</span>
                     </div>
                     <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300">
                         <span className="text-3xl md:text-6xl font-bold text-blue-600 mb-2">100%</span>
