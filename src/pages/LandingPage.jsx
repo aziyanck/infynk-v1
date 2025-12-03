@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import CardModel from "./Land/CardModel";
+import NfcAnimation from "./Land/NfcAnimation";
 import Services from "./Land/Services";
 import Features from "./Land/Features";
 import Pricing from "./Land/Pricing";
@@ -71,7 +71,7 @@ export default function LandingPage() {
             </header>
 
             {/* Hero Section */}
-            <section className="relative min-h-[90vh] flex flex-col justify-center px-6 md:px-12 pt-20 z-10 border-b border-white/10">
+            <section className="relative min-h-[90vh] flex flex-col justify-center  px-6 md:px-12 pt-20 z-10 border-b border-white/10">
                 <div className="flex flex-col-reverse md:flex-row items-end justify-between w-full h-full pb-20">
 
                     {/* Left: Typography */}
@@ -106,7 +106,7 @@ export default function LandingPage() {
                     {/* Right: 3D Card */}
                     <div className="w-full md:w-1/3 h-[30vh] md:h-[60vh] relative mt-10 md:mt-0" ref={cardRef}>
                         <div className="absolute inset-0">
-                            <CardModel />
+                            <NfcAnimation />
                         </div>
                     </div>
                 </div>
