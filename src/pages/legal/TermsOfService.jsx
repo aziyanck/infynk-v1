@@ -14,46 +14,92 @@ export default function TermsOfService() {
                 </header>
 
                 <div className="space-y-8 text-gray-300 leading-relaxed">
-                    <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">1. Agreement to Terms</h2>
-                        <p>
-                            By accessing our website, you agree to be bound by these Terms of Service and to comply with all applicable laws and regulations. If you do not agree with these terms, you are prohibited from using or accessing this site.
-                        </p>
-                    </section>
+                    <p>
+                        By using Pixiic services, you agree to the following terms.
+                    </p>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">2. Use License</h2>
-                        <p>
-                            Permission is granted to temporarily download one copy of the materials (information or software) on Pixic's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
-                        </p>
-                        <ul className="list-disc pl-6 mt-4 space-y-2">
-                            <li>modify or copy the materials;</li>
-                            <li>use the materials for any commercial purpose, or for any public display (commercial or non-commercial);</li>
-                            <li>attempt to decompile or reverse engineer any software contained on Pixic's website;</li>
-                            <li>remove any copyright or other proprietary notations from the materials; or</li>
-                            <li>transfer the materials to another person or "mirror" the materials on any other server.</li>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">1. User Agreement</h2>
+                        <p>By creating an account or placing an order, you acknowledge:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>You choose to share your data with us for service-related purposes.</li>
+                            <li>Admins may access your data (except passwords) for support and card preparation.</li>
+                            <li>You understand that your digital profile will contain the information you choose to make visible.</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">3. Disclaimer</h2>
-                        <p>
-                            The materials on Pixic's website are provided on an 'as is' basis. Pixic makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
-                        </p>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">2. Orders, Payments & Designs</h2>
+
+                        <h3 className="text-xl font-bold text-white mt-4 mb-2">2.1 Payment Requirement</h3>
+                        <p>To order a Pixiic NFC business card, full payment must be made during checkout.</p>
+
+                        <h3 className="text-xl font-bold text-white mt-4 mb-2">2.2 WhatsApp Follow-Up</h3>
+                        <p>After payment:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>Our team will contact you via WhatsApp to discuss your card design.</li>
+                            <li>You must confirm the final design.</li>
+                        </ul>
+
+                        <h3 className="text-xl font-bold text-white mt-4 mb-2">2.3 Design Confirmation</h3>
+                        <p>Once the design is confirmed:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>No further changes are allowed.</li>
+                            <li>We will proceed with printing.</li>
+                        </ul>
+
+                        <h3 className="text-xl font-bold text-white mt-4 mb-2">2.4 Card Printing & Delivery</h3>
+                        <p>After confirmation:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>The card is printed.</li>
+                            <li>Your digital profile link is set up.</li>
+                            <li>The card is couriered to the address you provided during ordering.</li>
+                            <li>We will send your initial password via WhatsApp and also include it with the card courier package.</li>
+                        </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">4. Limitations</h2>
-                        <p>
-                            In no event shall Pixic or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Pixic's website, even if Pixic or a Pixic authorized representative has been notified orally or in writing of the possibility of such damage.
-                        </p>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">3. Subscription & Pricing</h2>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>After the first order, users can renew their profile access for ₹300 per year.</li>
+                            <li>Prices may change over time without prior notice.</li>
+                        </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">5. Governing Law</h2>
-                        <p>
-                            These terms and conditions are governed by and construed in accordance with the laws and you irrevocably submit to the exclusive jurisdiction of the courts in that location.
-                        </p>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">4. No Refund Policy</h2>
+                        <p>Pixiic follows a strict no refund policy because:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>The card is custom-printed after your design confirmation.</li>
+                            <li>Each card is personalized and cannot be reused or resold.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">5. User Responsibilities</h2>
+                        <p>You agree to:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>Provide accurate information during ordering.</li>
+                            <li>Keep your login details safe.</li>
+                            <li>Not misuse or attempt to harm the service.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">6. Data Access</h2>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>Admins can access your profile data only to support your order and account.</li>
+                            <li>Admins cannot access your password — it is encrypted by Supabase.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">7. Contact & Support</h2>
+                        <p>For any help or concerns:</p>
+                        <ul className="list-none mt-2 space-y-1">
+                            <li>WhatsApp / Call: <a href="tel:+919188802136" className="text-blue-500 hover:text-blue-400">+91 91888 02136</a></li>
+                            <li>Email: <a href="mailto:support@pixiic.com" className="text-blue-500 hover:text-blue-400">support@pixiic.com</a></li>
+                        </ul>
                     </section>
                 </div>
 

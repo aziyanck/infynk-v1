@@ -14,49 +14,92 @@ export default function PrivacyPolicy() {
                 </header>
 
                 <div className="space-y-8 text-gray-300 leading-relaxed">
-                    <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">1. Introduction</h2>
-                        <p>
-                            Welcome to Pixic. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
-                        </p>
-                    </section>
+                    <p>
+                        Your privacy is important to us. This policy explains how Pixiic collects, stores, and uses your data when you use our digital business card services.
+                    </p>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">2. Data We Collect</h2>
-                        <p>
-                            We may collect, use, store and transfer different kinds of personal data about you which we have grouped together follows:
-                        </p>
-                        <ul className="list-disc pl-6 mt-4 space-y-2">
-                            <li><strong>Identity Data</strong> includes first name, maiden name, last name, username or similar identifier.</li>
-                            <li><strong>Contact Data</strong> includes billing address, delivery address, email address and telephone numbers.</li>
-                            <li><strong>Technical Data</strong> includes internet protocol (IP) address, your login data, browser type and version, time zone setting and location, browser plug-in types and versions, operating system and platform and other technology on the devices you use to access this website.</li>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">1. Data We Collect</h2>
+                        <p>When you create an account or use Pixiic, you may provide:</p>
+
+                        <h3 className="text-xl font-bold text-white mt-4 mb-2">Personal & Contact Information</h3>
+                        <ul className="list-disc pl-6 space-y-1">
+                            <li>Name</li>
+                            <li>Email address</li>
+                            <li>Phone number</li>
+                            <li>Social media links</li>
+                            <li>Profile image</li>
+                            <li>Business information</li>
+                            <li>Address (for card delivery)</li>
+                        </ul>
+
+                        <h3 className="text-xl font-bold text-white mt-4 mb-2">Authentication Information</h3>
+                        <ul className="list-disc pl-6 space-y-1">
+                            <li>Email & password (passwords are securely hashed by Supabase — we never see or store them)</li>
+                        </ul>
+
+                        <h3 className="text-xl font-bold text-white mt-4 mb-2">Technical Information</h3>
+                        <ul className="list-disc pl-6 space-y-1">
+                            <li>Device information</li>
+                            <li>IP address (handled by Supabase)</li>
+                            <li>Basic analytics (only for service improvement)</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">3. How We Use Your Data</h2>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">2. How We Store Your Data</h2>
                         <p>
-                            We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances:
+                            All user data is stored safely in our Supabase database, which follows industry-standard security practices, encryption, and access controls.
                         </p>
-                        <ul className="list-disc pl-6 mt-4 space-y-2">
-                            <li>Where we need to perform the contract we are about to enter into or have entered into with you.</li>
-                            <li>Where it is necessary for our legitimate interests (or those of a third party) and your interests and fundamental rights do not override those interests.</li>
-                            <li>Where we need to comply with a legal or regulatory obligation.</li>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>Passwords are never accessible to us.</li>
+                            <li>Only authorized admin staff can access user data for support and account management.</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">4. Data Security</h2>
-                        <p>
-                            We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know.
-                        </p>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">3. How Your Data Appears on Your Digital Profile</h2>
+                        <p>Each user can choose what information is shown publicly on their digital card profile.</p>
+                        <p className="mt-2">You control:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>Which fields are visible / hidden</li>
+                            <li>What information you upload</li>
+                            <li>When you want to update or remove data</li>
+                        </ul>
+                        <p className="mt-2">Your digital profile will only display data that you explicitly enable.</p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">5. Contact Us</h2>
-                        <p>
-                            If you have any questions about this privacy policy or our privacy practices, please contact us.
-                        </p>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">4. What We Use Your Data For</h2>
+                        <p>We use your data to:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>Create and manage your Pixiic account</li>
+                            <li>Provide your digital business card profile</li>
+                            <li>Print and deliver physical NFC cards</li>
+                            <li>Communicate updates or service information</li>
+                            <li>Offer customer support via WhatsApp, phone, or email</li>
+                        </ul>
+                        <p className="mt-4">We do not sell or share your data with advertisers.</p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">5. Your Rights</h2>
+                        <p>You can:</p>
+                        <ul className="list-disc pl-6 mt-2 space-y-1">
+                            <li>View your data</li>
+                            <li>Edit or update your data</li>
+                            <li>Delete your profile information</li>
+                            <li>Contact us for changes or removal</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">6. Contact for Privacy Matters</h2>
+                        <p>You can reach us at:</p>
+                        <ul className="list-none mt-2 space-y-1">
+                            <li>WhatsApp / Call: <a href="tel:+919188802136" className="text-blue-500 hover:text-blue-400">+91 91888 02136</a></li>
+                            <li>Email: <a href="mailto:support@pixiic.com" className="text-blue-500 hover:text-blue-400">support@pixiic.com</a></li>
+                        </ul>
                     </section>
                 </div>
 
