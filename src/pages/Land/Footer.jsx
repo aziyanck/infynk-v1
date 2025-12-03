@@ -37,9 +37,9 @@ const Footer = () => {
         {
             title: 'Legal',
             links: [
-                { name: 'Privacy Policy', url: '#' },
-                { name: 'Terms of Service', url: '#' },
-                { name: 'Cookie Policy', url: '#' }
+                { name: 'Privacy Policy', url: '/privacy-policy' },
+                { name: 'Terms of Service', url: '/terms-of-service' },
+                { name: 'Cookie Policy', url: '/cookie-policy' }
             ]
         },
     ];
@@ -173,6 +173,8 @@ const Footer = () => {
                                         href={link.url}
                                         onClick={(e) => handleLinkClick(e, link.name)}
                                         className="text-lg font-medium hover:text-blue-500 transition-colors block"
+                                        target={column.title === 'Legal' ? "_blank" : undefined}
+                                        rel={column.title === 'Legal' ? "noopener noreferrer" : undefined}
                                     >
                                         {link.name}
                                     </a>

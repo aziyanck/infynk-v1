@@ -9,6 +9,9 @@ import AdminDashboard from "./pages/AdminDashboard"
 import NotFound from "./pages/NotFound"
 import GetInfo from "./pages/GetInfo"
 import SuccessPage from "./pages/SuccessPage"
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy"
+import TermsOfService from "./pages/legal/TermsOfService"
+import CookiePolicy from "./pages/legal/CookiePolicy"
 
 
 export default function App() {
@@ -22,6 +25,9 @@ export default function App() {
       <Route path="/:slug" element={<PublicProfile />} />
       <Route path="/getinfo" element={<GetInfo />} />
       <Route path="/payment-success" element={<SuccessPage />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="/cookie-policy" element={<CookiePolicy />} />
       <Route path="*" element={<NotFound />} />
 
     </Routes>
