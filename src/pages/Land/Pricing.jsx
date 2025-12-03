@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import gsap from 'gsap';
@@ -11,6 +12,11 @@ const Pricing = () => {
     const containerRef = useRef(null);
     const titleRef = useRef(null);
     const cardsRef = useRef(null);
+    const navigate = useNavigate();
+
+    const handleNavigation = () => {
+        navigate('/getinfo');
+    };
 
     useGSAP(() => {
         const tl = gsap.timeline({
@@ -98,7 +104,7 @@ const Pricing = () => {
                         ))}
                     </div>
 
-                    <button className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-blue-500">
+                    <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-blue-500">
                         Select Plan <FontAwesomeIcon icon={faArrowRight} />
                     </button>
                 </div>

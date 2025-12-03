@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import gsap from 'gsap';
@@ -20,6 +21,11 @@ export default function LandingPage() {
     const containerRef = useRef();
     const heroTextRef = useRef();
     const cardRef = useRef();
+    const navigate = useNavigate();
+
+    const handleNavigation = () => {
+        navigate('/getinfo');
+    };
 
     useGSAP(() => {
         const tl = gsap.timeline();
@@ -65,7 +71,7 @@ export default function LandingPage() {
                     ))}
                 </nav>
 
-                <button className="text-sm font-bold uppercase tracking-widest border border-white px-6 py-2 hover:bg-white hover:text-black transition-all duration-300">
+                <button onClick={handleNavigation} className="text-sm font-bold uppercase tracking-widest border border-white px-6 py-2 hover:bg-white hover:text-black transition-all duration-300">
                     Get Started
                 </button>
             </header>
@@ -93,7 +99,7 @@ export default function LandingPage() {
                             </p>
 
                             <div className="mt-8 flex items-center gap-4">
-                                <button className="group flex items-center gap-4 text-lg font-medium hover:text-blue-500 transition-colors">
+                                <button onClick={handleNavigation} className="group flex items-center gap-4 text-lg font-medium hover:text-blue-500 transition-colors">
                                     <span className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-blue-500 transition-colors">
                                         <FontAwesomeIcon icon={faArrowRight} className="group-hover:-rotate-45 transition-transform duration-300" />
                                     </span>
