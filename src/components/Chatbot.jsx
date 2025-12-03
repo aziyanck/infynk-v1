@@ -9,6 +9,7 @@ export default function Chatbot() {
     ]);
     const [inputText, setInputText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isBotReady, setIsBotReady] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -19,7 +20,32 @@ export default function Chatbot() {
         scrollToBottom();
     }, [messages, isOpen]);
 
+    // Wake up the bot on mount
+    useEffect(() => {
+        const wakeUpBot = async () => {
+            try {
+                // Sending a dummy request to wake up the server
+                await fetch('https://aziyan-my-n8n-bot.hf.space/webhook/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ chatInput: "wake up" }),
+                });
+                setIsBotReady(true);
+            } catch (error) {
+                console.error("Error waking up bot:", error);
+                // Even if it fails, we might want to let the user try or keep it disabled.
+                // For now, let's enable it so they can see the error message if they try to chat.
+                setIsBotReady(true);
+            }
+        };
+
+        wakeUpBot();
+    }, []);
+
     const toggleChat = () => {
+        if (!isBotReady) return;
         setIsOpen(!isOpen);
     };
 
@@ -70,11 +96,16 @@ export default function Chatbot() {
             {/* Chat Bubble Button */}
             <button
                 onClick={toggleChat}
-                className={`fixed bottom-5 right-5 w-16 h-16 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50 hover:scale-110 transition-transform cursor-pointer hover:bg-blue-700 ${isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}
+                disabled={!isBotReady}
+                className={`fixed bottom-5 right-5 w-16 h-16 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50 hover:scale-110 transition-transform cursor-pointer hover:bg-blue-700 ${isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'} ${!isBotReady ? 'opacity-70 cursor-wait' : ''}`}
                 style={{ transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}
                 aria-label="Open Chat"
             >
-                <FontAwesomeIcon icon={faComment} />
+                {!isBotReady ? (
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                    <FontAwesomeIcon icon={faComment} />
+                )}
             </button>
 
             {/* Chat Window */}
@@ -102,10 +133,10 @@ export default function Chatbot() {
                         <div
                             key={index}
                             className={`px-4 py-2 max-w-[85%] break-words text-sm ${msg.sender === 'user'
-                                    ? 'bg-blue-600 text-white self-end rounded-2xl rounded-tr-sm'
-                                    : msg.isError
-                                        ? 'bg-red-900/50 text-red-200 border border-red-800 self-start rounded-2xl rounded-tl-sm'
-                                        : 'bg-zinc-800 text-gray-200 self-start rounded-2xl rounded-tl-sm'
+                                ? 'bg-blue-600 text-white self-end rounded-2xl rounded-tr-sm'
+                                : msg.isError
+                                    ? 'bg-red-900/50 text-red-200 border border-red-800 self-start rounded-2xl rounded-tl-sm'
+                                    : 'bg-zinc-800 text-gray-200 self-start rounded-2xl rounded-tl-sm'
                                 }`}
                         >
                             {msg.text}
