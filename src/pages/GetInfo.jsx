@@ -9,7 +9,7 @@ import { supabase } from '../supabaseClient';
 // ---------------------------------------------------------
 // CONFIGURATION
 // ---------------------------------------------------------
-const RAZORPAY_KEY_ID = "rzp_test_RhsOXSuSehdzJ1";
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_RhsOXSuSehdzJ1";
 
 const GetInfo = () => {
   const [fullName, setFullName] = useState('');
@@ -306,7 +306,7 @@ const GetInfo = () => {
             <button
               onClick={handleFormSubmit}
               disabled={loading}
-              className={`form-item w-full mt-8 py-4 px-6 bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-300 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full mt-8 py-4 px-6 bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-300 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
