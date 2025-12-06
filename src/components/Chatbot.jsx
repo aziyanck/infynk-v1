@@ -25,7 +25,7 @@ export default function Chatbot() {
         const wakeUpBot = async () => {
             try {
                 // Sending a dummy request to wake up the server
-                await fetch('https://aziyan-my-n8n-bot.hf.space/webhook/chat', {
+                await fetch('https://aziyan-my-n8n-bot.hf.space/webhook/pixybo', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function Chatbot() {
         setIsLoading(true);
 
         try {
-            const response = await fetch('https://aziyan-my-n8n-bot.hf.space/webhook/chat', {
+            const response = await fetch('https://aziyan-my-n8n-bot.hf.space/webhook/pixybo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
