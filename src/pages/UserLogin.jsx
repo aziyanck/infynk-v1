@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { loginAsUser } from '../services/supabaseService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 
@@ -91,6 +91,11 @@ const LoginPage = () => {
                 required
               />
             </div>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Link to="/forgot-password" className="text-sm text-violet-600 hover:underline">
+              Forgot Password?
+            </Link>
           </div>
 
           {/* Alerts */}
