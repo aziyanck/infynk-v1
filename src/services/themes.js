@@ -4,7 +4,7 @@ export const themes = {
   black: {
     primaryColor: "#1a1b1c",
     textColor: "#dedfe0",
-    bgColor: "#1a1b1c", 
+    bgColor: "#1a1b1c",
     lightColor: "#414345",
   },
 
@@ -30,17 +30,24 @@ export const themes = {
   },
 
   emerald: {
-    primaryColor: "#0c450c", 
-    textColor: "#0c450c", 
-    bgColor: "#ffffff", 
+    primaryColor: "#0c450c",
+    textColor: "#0c450c",
+    bgColor: "#ffffff",
     lightColor: "#c5eac7",
   },
 
   yellow: {
-    primaryColor: "#cba200", 
-    textColor: "#cba200", 
+    primaryColor: "#cba200",
+    textColor: "#cba200",
     bgColor: "#1a1b1c",
     lightColor: "#f3ecd1",
+  },
+
+  pixic: {
+    primaryColor: "#2563eb",
+    textColor: "#3b82f6",
+    bgColor: "#000000",
+    lightColor: "#111111",
   },
 
 };
