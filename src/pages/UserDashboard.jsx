@@ -680,7 +680,18 @@ const UserDashboard = () => {
                                             return;
                                         }
                                         const imageUrl = await uploadProfileImage(file, profile.id, profile.pr_img);
+
+                                        // Update local state
                                         setProfile((p) => ({ ...p, pr_img: imageUrl }));
+
+                                        // Auto-save to database (Partial Update)
+                                        const updatedData = {
+                                            id: profile.id,
+                                            pr_img: imageUrl
+                                        };
+
+                                        await updateUserProfile(updatedData);
+
                                         setLocalImage(croppedUrl);
                                         setImgLoading(true);
                                         setImgError(false);
@@ -700,7 +711,7 @@ const UserDashboard = () => {
 
 
 
-                                        alert('Avatar updated!');
+                                        alert('Avatar updated and saved!');
                                     } catch (err) {
                                         console.error(err);
                                         alert('Upload failed');
