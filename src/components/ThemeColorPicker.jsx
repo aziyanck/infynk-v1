@@ -12,7 +12,7 @@ const ThemeColorPicker = ({ themeKey, setThemeKey }) => {
         <div className="space-y-3">
             <h5 className="text-sm font-medium text-gray-700">Pick theme</h5>
             <h5>{themeKey}</h5>
-            <div className="flex items-center space-x-2">
+            <div className="grid grid-cols-5 gap-2">
                 {Object.keys(themes).map((key) => (
                     <button
                         key={key}

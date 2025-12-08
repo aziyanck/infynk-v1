@@ -61,7 +61,7 @@ export const themes = {
     primaryColor: "#2563eb",
     textColor: "#2563eb",
     bgColor: "#ffffff",
-    lightColor: "#eff6ff", // blue-50 equivalent
+    lightColor: "#eff6ff", 
   },
 
 };
