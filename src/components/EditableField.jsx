@@ -14,12 +14,13 @@ const EditableField = ({
   visibility,
   onChange,
   onToggle,
- 
+
   themekey = "sky"
 }) => {
 
-  const color = themes[themekey]?.primaryColor || "#0A66C2";
-  const primaryColor = themes[themekey]?.primaryColor || "#7c3aed";
+  const color = "#4b5563"; // Neutral gray for icons (text-gray-600)
+  const primaryColor = themes.pixic_light.primaryColor; // Consistent editor theme (blue)
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-white rounded-md shadow-sm w-full">
 

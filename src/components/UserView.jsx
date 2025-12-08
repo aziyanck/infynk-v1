@@ -17,10 +17,13 @@ import { generateVCard } from '../services/generateVCard'
 // Component
 const UserView = ({ user }) => {
   const containerRef = useRef();
+  const hasAnimated = useRef(false);
 
   // Animations when user data loads
   useGSAP(() => {
-    if (!user) return;
+    if (!user || hasAnimated.current) return;
+
+    hasAnimated.current = true;
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 

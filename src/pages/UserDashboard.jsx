@@ -167,6 +167,7 @@ const UserDashboard = () => {
     const [showUserPop, setShowUserPop] = useState(false);
     const [showThemePop, setShowThemePop] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
+    const [showPreviewThemePop, setShowPreviewThemePop] = useState(false);
 
 
 
@@ -364,9 +365,12 @@ const UserDashboard = () => {
 
 
     const currentTheme = themes[themeKey] || themes.sky;
-    const txtclr = currentTheme.textColor;
-    const bg = currentTheme.bgColor;
-    const lightbg = currentTheme.lightColor;
+
+    // Editor always uses pixic_light
+    const editorTheme = themes.pixic_light;
+    const txtclr = editorTheme.textColor;
+    const bg = editorTheme.bgColor;
+    const lightbg = editorTheme.lightColor;
     // Construct preview object
     const previewUser = {
         ...profile,
@@ -402,20 +406,9 @@ const UserDashboard = () => {
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 sm:p-6">
             {/* Header */}
             <header className="w-full max-w-4xl  rounded-2xl shadow-md p-4 mb-6 flex justify-between items-center" style={{ backgroundColor: bg }}>
-                <h1 className="text-2xl font-bold" style={{ color: currentTheme.textColor }} >Infynk.</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Infynk.</h1>
                 <div className="flex items-center space-x-4">
-                    <div className='relative'>
-                        <LayoutDashboard className='text-gray-600 cursor-pointer' size={24} onClick={() => {
-                            setShowThemePop((p) => !p);
-                            setShowUserPop(false);
-                        }} />
-                        {showThemePop && (
-                            <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-50">
-                                <ThemeColorPicker themeKey={themeKey} setThemeKey={setThemeKey} />
-                            </div>
-                        )}
 
-                    </div>
                     <Eye
                         className="text-gray-600 cursor-pointer hover:text-gray-800 transition-colors"
                         size={24}
@@ -425,39 +418,39 @@ const UserDashboard = () => {
                         <User
                             className="text-gray-600 cursor-pointer"
                             size={24}
-                            onClick={() => {
-                                setShowUserPop((p) => !p);
-                                setShowThemePop(false);
-                            }}
+                            onClick={() => setShowUserPop((p) => !p)}
                         />
                         {showUserPop && (
-                            <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-50">
-                                <div className="flex items-center space-x-3">
-                                    <img
-                                        src={localImage || profile.pr_img || 'https://placehold.co/150x150/A78BFA/ffffff?text=JD'}
-                                        alt="avatar"
-                                        className="w-10 h-10 rounded-full object-cover"
-                                    />
-                                    <div>
-                                        <p className="font-semibold text-sm">
-                                            {sessionUser?.user_metadata?.full_name ||
-                                                sessionUser?.user_metadata?.name ||
-                                                'User'}
-                                        </p>
-                                        <p className="text-xs text-gray-500">{sessionUser?.email}</p>
+                            <>
+                                <div className="fixed inset-0 z-40" onClick={() => setShowUserPop(false)} />
+                                <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-50">
+                                    <div className="flex items-center space-x-3">
+                                        <img
+                                            src={localImage || profile.pr_img || 'https://placehold.co/150x150/A78BFA/ffffff?text=JD'}
+                                            alt="avatar"
+                                            className="w-10 h-10 rounded-full object-cover"
+                                        />
+                                        <div>
+                                            <p className="font-semibold text-sm">
+                                                {sessionUser?.user_metadata?.full_name ||
+                                                    sessionUser?.user_metadata?.name ||
+                                                    'User'}
+                                            </p>
+                                            <p className="text-xs text-gray-500">{sessionUser?.email}</p>
+                                        </div>
                                     </div>
+                                    <button
+                                        onClick={async () => {
+                                            await supabase.auth.signOut();
+                                            navigate('/user');
+                                        }}
+                                        className="mt-3 flex items-center space-x-2 text-sm text-red-600 hover:text-red-800 hover:cursor-pointer"
+                                    >
+                                        <LogOut size={14} />
+                                        <span>Sign out</span>
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={async () => {
-                                        await supabase.auth.signOut();
-                                        navigate('/user');
-                                    }}
-                                    className="mt-3 flex items-center space-x-2 text-sm text-red-600 hover:text-red-800 hover:cursor-pointer"
-                                >
-                                    <LogOut size={14} />
-                                    <span>Sign out</span>
-                                </button>
-                            </div>
+                            </>
                         )}
                     </div>
                 </div>
@@ -543,7 +536,7 @@ const UserDashboard = () => {
 
                 {/* Social Fields */}
                 <div className="mb-8 p-4  rounded-xl shadow-inner space-y-4" style={{ backgroundColor: lightbg }}>
-                    <h3 className="text-xl font-semibold  mb-4" style={{ color: currentTheme.textColor }} >Manage Links</h3>
+                    <h3 className="text-xl font-semibold  mb-4" style={{ color: txtclr }} >Manage Links</h3>
                     {socialFields.map(field => (
                         <EditableField
                             key={field.type}
@@ -676,7 +669,7 @@ const UserDashboard = () => {
                     onClick={handleSave}
                     disabled={saving}
                     className={`hover:bg-violet-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}
-                    style={{ backgroundColor: currentTheme.primaryColor }}
+                    style={{ backgroundColor: editorTheme.primaryColor }}
                 >
                     {saving ? <Spinner /> : <><Save size={20} className="mr-2" /> Save Changes</>}
                 </button>
@@ -685,6 +678,24 @@ const UserDashboard = () => {
             {/* Preview Modal */}
             {showPreview && (
                 <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
+                    {/* Theme Picker in Preview */}
+                    <div className="fixed top-6 right-20 z-[101]">
+                        <button
+                            className="bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all text-gray-800"
+                            onClick={() => setShowPreviewThemePop((p) => !p)}
+                        >
+                            <LayoutDashboard size={28} />
+                        </button>
+                        {showPreviewThemePop && (
+                            <>
+                                <div className="fixed inset-0 z-[101]" onClick={() => setShowPreviewThemePop(false)} />
+                                <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-[102]">
+                                    <ThemeColorPicker themeKey={themeKey} setThemeKey={setThemeKey} />
+                                </div>
+                            </>
+                        )}
+                    </div>
+
                     <button
                         className="fixed top-6 right-6 z-[101] bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all text-gray-800"
                         onClick={() => setShowPreview(false)}
