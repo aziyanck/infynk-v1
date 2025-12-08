@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { ThreeDot } from "react-loading-indicators";
 import { getUserProfileByRouteId } from "../services/userService";
 import UserView from "../components/UserView";
+import UserNotFound from "./UserNotFound";
 
 const PublicUserPage = () => {
   const [user, setUser] = useState(null);
@@ -26,7 +27,7 @@ const PublicUserPage = () => {
       <ThreeDot variant="pulsate" color="#3194cc" size="large" text="" textColor="" />
     </div>
   </div>;
-  if (notFound) return <div className="text-center py-10 text-red-500">User not found</div>;
+  if (notFound) return <UserNotFound />;
 
   return <UserView user={user} />;
 };
