@@ -51,6 +51,8 @@ const UserDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
+    const [imgLoading, setImgLoading] = useState(true);
+    const [imgError, setImgError] = useState(false);
 
     // Cropper
     const [cropModal, setCropModal] = useState(() =>
@@ -468,13 +470,29 @@ const UserDashboard = () => {
                 <div className="flex flex-col items-center mb-8">
                     <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4 border-4  shadow-lg" style={{ borderColor: lightbg }}>
 
-                        <img
-                            src={localImage || profile.pr_img || 'https://placehold.co/150x150/A78BFA/ffffff?text=JD'}
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                        />
+                        {imgLoading && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
+                                <Spinner size="md" color="text-gray-500" />
+                            </div>
+                        )}
+                        {imgError ? (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                                <FontAwesomeIcon icon={faUserSolid} className="w-16 h-16" />
+                            </div>
+                        ) : (
+                            <img
+                                src={localImage || profile.pr_img || 'https://placehold.co/150x150/A78BFA/ffffff?text=JD'}
+                                alt="Profile"
+                                className={`w-full h-full object-cover ${imgLoading ? 'opacity-0' : 'opacity-100'}`}
+                                onLoad={() => setImgLoading(false)}
+                                onError={() => {
+                                    setImgLoading(false);
+                                    setImgError(true);
+                                }}
+                            />
+                        )}
 
-                        <label htmlFor="profile-image-upload" className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+                        <label htmlFor="profile-image-upload" className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer z-20">
                             Upload
                         </label>
                         <input
@@ -636,6 +654,8 @@ const UserDashboard = () => {
                                         const imageUrl = await uploadProfileImage(file, profile.id, profile.pr_img);
                                         setProfile((p) => ({ ...p, pr_img: imageUrl }));
                                         setLocalImage(croppedUrl);
+                                        setImgLoading(true);
+                                        setImgError(false);
                                         setCropModal(false);
                                         setCropImgSrc('');
                                         setCroppedAreaPixels(null);

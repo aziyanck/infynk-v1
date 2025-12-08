@@ -1,11 +1,12 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ThreeDot } from 'react-loading-indicators';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import Spinner from './Spinner';
 
 import {
-  faPhone, faEnvelope, faLink, faLocationDot, faDownload, faStar
+  faPhone, faEnvelope, faLink, faLocationDot, faDownload, faStar, faUser
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faWhatsapp, faLinkedin, faTwitter, faInstagram, faGithub, faFacebook, faYoutube, faTiktok, faTelegram, faSpotify, faPinterest, faThreads, faBehance
@@ -18,6 +19,8 @@ import { generateVCard } from '../services/generateVCard'
 const UserView = ({ user }) => {
   const containerRef = useRef();
   const hasAnimated = useRef(false);
+  const [imgLoading, setImgLoading] = useState(true);
+  const [imgError, setImgError] = useState(false);
 
   // Animations when user data loads
   useGSAP(() => {
@@ -188,15 +191,37 @@ const UserView = ({ user }) => {
         {/* Header */}
         <header className="text-center space-y-4 relative z-10">
           <div className="relative inline-block">
-            <img
-              src={profilePhoto}
-              alt={fullName}
-              className="anim-profile w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
-              style={{
-                border: '4px solid',
-                borderColor: primaryColor
-              }}
-            />
+            {imgLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-200 rounded-full z-20">
+                <Spinner size="md" color="text-gray-500" />
+              </div>
+            )}
+            {imgError ? (
+              <div
+                className="anim-profile w-32 h-32 rounded-full mx-auto shadow-lg flex items-center justify-center bg-gray-200 text-gray-400"
+                style={{
+                  border: '4px solid',
+                  borderColor: primaryColor
+                }}
+              >
+                <FontAwesomeIcon icon={faUser} className="w-16 h-16" />
+              </div>
+            ) : (
+              <img
+                src={profilePhoto}
+                alt={fullName}
+                className={`anim-profile w-32 h-32 rounded-full mx-auto object-cover shadow-lg ${imgLoading ? 'opacity-0' : 'opacity-100'}`}
+                style={{
+                  border: '4px solid',
+                  borderColor: primaryColor
+                }}
+                onLoad={() => setImgLoading(false)}
+                onError={() => {
+                  setImgLoading(false);
+                  setImgError(true);
+                }}
+              />
+            )}
           </div>
 
           <div>
