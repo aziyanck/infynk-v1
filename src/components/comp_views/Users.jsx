@@ -11,12 +11,38 @@ const Users = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
 
+  const [filters, setFilters] = useState({
+    showUnassigned: false,
+    showInactive: false,
+    showExpired: false,
+  });
+
   let filteredUsers = users.filter((user) => {
+    // 1. Search Filter
     const term = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
       user.name?.toLowerCase().includes(term) ||
-      user.route_id?.toString().toLowerCase().includes(term)
-    );
+      user.route_id?.toString().toLowerCase().includes(term);
+
+    if (!matchesSearch) return false;
+
+    // 2. toggle filters "Filter In" (Show Only)
+    // If no filters are active, show everyone
+    const isAnyFilterActive =
+      filters.showUnassigned || filters.showInactive || filters.showExpired;
+
+    if (!isAnyFilterActive) return true;
+
+    // Union (OR) logic: Show if matches ANY active filter
+    const isUnassigned = !user.route_id;
+    const isInactive = user.route_id && user.route_status !== "Active";
+    const isExpired = user.expiry_date && new Date(user.expiry_date) < new Date();
+
+    if (filters.showUnassigned && isUnassigned) return true;
+    if (filters.showInactive && isInactive) return true;
+    if (filters.showExpired && isExpired) return true;
+
+    return false;
   });
 
   if (sortConfig.key) {
@@ -210,6 +236,9 @@ const Users = () => {
           setSearchTerm={setSearchTerm}
           sortConfig={sortConfig}
           setSortConfig={setSortConfig}
+          fetchUsers={fetchUsers}
+          filters={filters}
+          setFilters={setFilters}
         />
       )}
     </div>
