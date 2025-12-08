@@ -116,7 +116,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Email</p>
-                                    <p className="text-lg font-medium">hello@pixic.com</p>
+                                    <p className="text-lg font-medium">hello@pixiic.com</p>
                                 </div>
                             </div>
 
@@ -156,7 +156,7 @@ const Footer = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 border-b border-white/10">
                 {/* Brand Column */}
                 <div className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-white/10 flex flex-col justify-between h-full">
-                    <div className="text-2xl font-bold tracking-tighter uppercase mb-8">Pixic</div>
+                    <div className="text-2xl font-bold tracking-tighter uppercase mb-8">Pixiic</div>
                     <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
                         The next generation of digital networking. Sustainable, efficient, and designed for the modern professional.
                     </p>
@@ -188,7 +188,7 @@ const Footer = () => {
             {/* Bottom Bar */}
             <div className="px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p className="text-sm text-gray-500">
-                    &copy; {new Date().getFullYear()} Pixic. All rights reserved.
+                    &copy; {new Date().getFullYear()} Pixiic. All rights reserved.
                 </p>
 
                 <div className="flex items-center gap-6">

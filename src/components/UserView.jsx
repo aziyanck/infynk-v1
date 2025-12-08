@@ -67,11 +67,18 @@ const UserView = ({ user }) => {
     </div>
   );
 
-  const themeKey = user.color || 'sky';
-  const bg = themes[themeKey].bgColor;
-  const txtclr = themes[themeKey].textColor;
-  const lightbg = themes[themeKey].lightColor;
-  const primaryColor = themes[themeKey].primaryColor;
+  let themeKey = user.color || 'sky';
+
+  // Handle legacy theme names if any exist in DB
+  if (themeKey === 'pixic_light') themeKey = 'pixiic_light';
+  if (themeKey === 'pixic_dark') themeKey = 'pixiic_dark';
+
+  const currentTheme = themes[themeKey] || themes.sky; // Fallback to sky if still undefined
+
+  const bg = currentTheme.bgColor;
+  const txtclr = currentTheme.textColor;
+  const lightbg = currentTheme.lightColor;
+  const primaryColor = currentTheme.primaryColor;
 
   // Fallback helpers
   const fullName = user.name || user.fullName || 'Anonymous';
@@ -214,8 +221,8 @@ const UserView = ({ user }) => {
 
       {/* Footer */}
       <footer className="text-center mt-8 pb-4 opacity-0 animate-[fadeIn_1s_ease-out_1.5s_forwards]">
-        <a href="https://infynk.com" target="_blank" rel="noopener noreferrer" className="text-slate-500 text-sm font-medium hover:text-slate-800 transition-colors flex items-center gap-1 justify-center">
-          Powered by <span className="font-bold text-slate-700">Infynk</span>
+        <a href="https://pixiic.com" target="_blank" rel="noopener noreferrer" className="text-slate-500 text-sm font-medium hover:text-slate-800 transition-colors flex items-center gap-1 justify-center">
+          Powered by <span className="font-bold text-slate-700">Pixiic</span>
         </a>
       </footer>
     </div>

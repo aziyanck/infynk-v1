@@ -19,7 +19,7 @@ const EditableField = ({
 }) => {
 
   const color = "#4b5563"; // Neutral gray for icons (text-gray-600)
-  const primaryColor = themes.pixic_light.primaryColor; // Consistent editor theme (blue)
+  const primaryColor = themes.pixiic_light.primaryColor; // Consistent editor theme (blue)
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-white rounded-md shadow-sm w-full">

@@ -364,10 +364,15 @@ const UserDashboard = () => {
     };
 
 
-    const currentTheme = themes[themeKey] || themes.sky;
+    // Handle legacy theme mapping
+    let activeThemeKey = themeKey;
+    if (activeThemeKey === 'pixic_light') activeThemeKey = 'pixiic_light';
+    if (activeThemeKey === 'pixic_dark') activeThemeKey = 'pixiic_dark';
+
+    const currentTheme = themes[activeThemeKey] || themes.sky;
 
     // Editor always uses pixic_light
-    const editorTheme = themes.pixic_light;
+    const editorTheme = themes.pixiic_light;
     const txtclr = editorTheme.textColor;
     const bg = editorTheme.bgColor;
     const lightbg = editorTheme.lightColor;
@@ -406,7 +411,7 @@ const UserDashboard = () => {
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 sm:p-6">
             {/* Header */}
             <header className="w-full max-w-4xl  rounded-2xl shadow-md p-4 mb-6 flex justify-between items-center" style={{ backgroundColor: bg }}>
-                <h1 className="text-2xl font-bold text-gray-800">Infynk.</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Pixiic.</h1>
                 <div className="flex items-center space-x-4">
 
                     <Eye

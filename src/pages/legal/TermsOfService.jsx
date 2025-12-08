@@ -7,7 +7,7 @@ export default function TermsOfService() {
             <div className="max-w-4xl mx-auto">
                 <header className="mb-12">
                     <Link to="/" className="text-2xl font-bold tracking-tighter uppercase text-white hover:opacity-80 transition-opacity mb-8 inline-block">
-                        Pixic
+                        Pixiic
                     </Link>
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tighter uppercase mb-4">Terms of Service</h1>
                     <p className="text-gray-400">Last updated: {new Date().toLocaleDateString()}</p>
@@ -104,7 +104,7 @@ export default function TermsOfService() {
                 </div>
 
                 <footer className="mt-20 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
-                    &copy; {new Date().getFullYear()} Pixic. All rights reserved.
+                    &copy; {new Date().getFullYear()} Pixiic. All rights reserved.
                 </footer>
             </div>
         </div>

@@ -46,7 +46,7 @@ const About = () => {
                         Bridging the <br /> physical and <br /> digital worlds.
                     </h3>
                     <p className="text-xl text-gray-400 font-light leading-relaxed max-w-lg">
-                        We believe that networking should be seamless, sustainable, and memorable. Pixic is more than just a digital business card; it's a statement.
+                        We believe that networking should be seamless, sustainable, and memorable. Pixiic is more than just a digital business card; it's a statement.
                     </p>
                 </div>
 

@@ -50,18 +50,18 @@ export const themes = {
     lightColor: "#f3ecd1",
   },
 
-  pixic_dark: {
+  pixiic_dark: {
     primaryColor: "#2563eb",
     textColor: "#3b82f6",
     bgColor: "#000000",
     lightColor: "#111111",
   },
 
-  pixic_light: {
+  pixiic_light: {
     primaryColor: "#2563eb",
     textColor: "#2563eb",
     bgColor: "#ffffff",
-    lightColor: "#eff6ff", 
+    lightColor: "#eff6ff",
   },
 
 };

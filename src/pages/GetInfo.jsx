@@ -86,7 +86,7 @@ const GetInfo = () => {
         key: RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'Pixic',
+        name: 'Pixiic',
         description: planDuration,
         image: 'https://example.com/your_logo.jpg',
         order_id: orderData.id,
@@ -183,7 +183,7 @@ const GetInfo = () => {
           <ArrowLeft className="w-5 h-5" /> Back
         </a>
         <div className="text-xl font-bold tracking-widest uppercase">
-          Pixic
+          Pixiic
         </div>
       </header>
 
