@@ -12,6 +12,7 @@ import { themes } from '../services/themes';   // ➊ import the map
 import ThemeColorPicker from '../components/ThemeColorPicker';
 import Spinner from '../components/Spinner';
 import UserView from '../components/UserView';
+import imageCompression from 'browser-image-compression';
 
 // Brand icons
 import {
@@ -654,34 +655,19 @@ const UserDashboard = () => {
                                         const MAX_SIZE = 900 * 1024; // 900KB
                                         if (blob.size > MAX_SIZE) {
                                             console.log(`Image size ${blob.size} exceeds 900KB. Compressing...`);
-
-                                            const compressImage = async (imageBlob, quality) => {
-                                                return new Promise((resolve) => {
-                                                    const img = new Image();
-                                                    img.src = URL.createObjectURL(imageBlob);
-                                                    img.onload = () => {
-                                                        const canvas = document.createElement('canvas');
-                                                        canvas.width = img.width;
-                                                        canvas.height = img.height;
-                                                        const ctx = canvas.getContext('2d');
-                                                        ctx.drawImage(img, 0, 0);
-                                                        canvas.toBlob((newBlob) => {
-                                                            resolve(newBlob);
-                                                        }, 'image/jpeg', quality);
-                                                    };
-                                                });
-                                            };
-
-                                            // Attempt compression with reducing quality
-                                            let quality = 0.9;
-                                            while (blob.size > MAX_SIZE && quality > 0.1) {
-                                                const compressedBlob = await compressImage(blob, quality);
-                                                // If compression didn't help (or made it bigger due to format), break
-                                                if (compressedBlob.size >= blob.size && quality < 0.9) break;
-
-                                                blob = compressedBlob;
-                                                console.log(`Compressed to ${blob.size} bytes with quality ${quality}`);
-                                                quality -= 0.1;
+                                            try {
+                                                const fileToCompress = new File([blob], "image.jpg", { type: "image/jpeg" });
+                                                const options = {
+                                                    maxSizeMB: 0.5, // 500KB
+                                                    useWebWorker: true,
+                                                };
+                                                const compressedFile = await imageCompression(fileToCompress, options);
+                                                blob = compressedFile; // Update blob with compressed file
+                                                console.log(`Compressed to ${blob.size} bytes`);
+                                            } catch (error) {
+                                                console.error("Compression failed:", error);
+                                                // Fallback: proceed with original blob or alert user?
+                                                // For now, we'll proceed with the original usage intent, maybe just logging error.
                                             }
                                         } else {
                                             console.log(`Image size ${blob.size} is within limit.`);
