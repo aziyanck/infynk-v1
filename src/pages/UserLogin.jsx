@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { loginAsUser } from '../services/supabaseService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import Spinner from '../components/Spinner';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
@@ -114,13 +115,13 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 px-4 bg-violet-600 text-white font-semibold rounded-md hover:bg-violet-700 transition duration-200 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full py-2 px-4 bg-violet-600 text-white font-semibold rounded-md hover:bg-violet-700 transition duration-200 ${loading ? 'opacity-50 cursor-not-allowed flex justify-center items-center' : ''}`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? <Spinner /> : "Login"}
           </button>
         </form>
       </div>
-    </div>
+    </div >
   );
 };
 

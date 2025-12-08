@@ -10,6 +10,7 @@ import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '../crop/cropUtils';
 import { themes } from '../services/themes';   // ➊ import the map
 import ThemeColorPicker from '../components/ThemeColorPicker';
+import Spinner from '../components/Spinner';
 
 // Brand icons
 import {
@@ -47,6 +48,8 @@ const UserDashboard = () => {
 
     const [notActive, setNotActive] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
     // Cropper
     const [cropModal, setCropModal] = useState(() =>
@@ -308,6 +311,7 @@ const UserDashboard = () => {
 
 
     const handleSave = async () => {
+        setSaving(true);
         try {
             // Combine profile and visibility into one object
             console.log("Profile before update:", profile);
@@ -351,6 +355,8 @@ const UserDashboard = () => {
         } catch (err) {
             console.error("Update failed:", err.message);
             alert("Failed to save profile. Please try again.");
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -568,8 +574,10 @@ const UserDashboard = () => {
                                 Cancel
                             </button>
                             <button
-                                className="px-4 py-2 rounded-lg text-sm bg-violet-600 text-white"
+                                className="px-4 py-2 rounded-lg text-sm bg-violet-600 text-white min-w-[120px] flex justify-center items-center"
+                                disabled={uploadingPhoto}
                                 onClick={async () => {
+                                    setUploadingPhoto(true);
                                     try {
                                         const croppedUrl = await getCroppedImg(
                                             cropImgSrc,
@@ -607,10 +615,12 @@ const UserDashboard = () => {
                                     } catch (err) {
                                         console.error(err);
                                         alert('Upload failed');
+                                    } finally {
+                                        setUploadingPhoto(false);
                                     }
                                 }}
                             >
-                                Crop & Upload
+                                {uploadingPhoto ? <Spinner size="sm" /> : "Crop & Upload"}
                             </button>
                         </div>
                     </div>
@@ -621,10 +631,11 @@ const UserDashboard = () => {
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex justify-center z-10">
                 <button
                     onClick={handleSave}
-                    className=" hover:bg-violet-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
+                    disabled={saving}
+                    className={`hover:bg-violet-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}
                     style={{ backgroundColor: themes[themeKey].primaryColor }}
                 >
-                    <Save size={20} className="mr-2" /> Save Changes
+                    {saving ? <Spinner /> : <><Save size={20} className="mr-2" /> Save Changes</>}
                 </button>
             </div>
         </div>
