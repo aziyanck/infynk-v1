@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Bell, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Save, Eye, User, LogOut, LayoutDashboard, X } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchUserProfile, updateUserProfile, uploadProfileImage } from '../services/userService';
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import { getCroppedImg } from '../crop/cropUtils';
 import { themes } from '../services/themes';   // ➊ import the map
 import ThemeColorPicker from '../components/ThemeColorPicker';
 import Spinner from '../components/Spinner';
+import UserView from '../components/UserView';
 
 // Brand icons
 import {
@@ -165,6 +166,7 @@ const UserDashboard = () => {
     const [localImage, setLocalImage] = useState(null);
     const [showUserPop, setShowUserPop] = useState(false);
     const [showThemePop, setShowThemePop] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
 
 
 
@@ -365,6 +367,36 @@ const UserDashboard = () => {
     const txtclr = currentTheme.textColor;
     const bg = currentTheme.bgColor;
     const lightbg = currentTheme.lightColor;
+    // Construct preview object
+    const previewUser = {
+        ...profile,
+        color: themeKey,
+        // Filter contact info based on visibility
+        phone: visibility.phone ? profile.phone : null,
+        email: visibility.email ? profile.email : null,
+        whatsapp: visibility.whatsapp ? profile.whatsapp : null,
+
+        // Structure socials for UserView
+        socials: {
+            linkedin: visibility.linkedin ? profile.linkedin : null,
+            twitter: visibility.twitter ? profile.twitter : null,
+            instagram: visibility.instagram ? profile.instagram : null,
+            facebook: visibility.facebook ? profile.facebook : null,
+            youtube: visibility.youtube ? profile.youtube : null,
+            github: visibility.github ? profile.github : null,
+            tiktok: visibility.tiktok ? profile.tiktok : null,
+            telegram: visibility.telegram ? profile.telegram : null,
+            spotify: visibility.spotify ? profile.spotify : null,
+            pinterest: visibility.pinterest ? profile.pinterest : null,
+            threads: visibility.threads ? profile.threads : null,
+            behance: visibility.behance ? profile.behance : null,
+            website: visibility.website ? profile.website : null,
+            reviews: visibility.reviews ? profile.reviews : null,
+            location: visibility.location ? profile.location : null,
+            c_link1: visibility.c_link1 ? profile.c_link1 : null,
+            c_link2: visibility.c_link2 ? profile.c_link2 : null,
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 sm:p-6">
@@ -381,7 +413,11 @@ const UserDashboard = () => {
                         )}
 
                     </div>
-                    <Bell className="text-gray-600 cursor-pointer" size={24} />
+                    <Eye
+                        className="text-gray-600 cursor-pointer hover:text-gray-800 transition-colors"
+                        size={24}
+                        onClick={() => setShowPreview(true)}
+                    />
                     <div className="relative">
                         <User
                             className="text-gray-600 cursor-pointer"
@@ -639,6 +675,36 @@ const UserDashboard = () => {
                     {saving ? <Spinner /> : <><Save size={20} className="mr-2" /> Save Changes</>}
                 </button>
             </div>
+
+            {/* Preview Modal */}
+            {showPreview && (
+                <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
+                    <button
+                        className="fixed top-6 right-6 z-[101] bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all text-gray-800"
+                        onClick={() => setShowPreview(false)}
+                    >
+                        <X size={28} />
+                    </button>
+                    <UserView user={previewUser} />
+
+                    {/* Save Button in Preview */}
+                    <button
+                        onClick={() => {
+                            handleSave();
+                            // Optional: Close preview after save? The user didn't specify. 
+                            // But usually you want feedback. The handleSave has alerts.
+                            // I'll keep the preview open so they can see it saved? 
+                            // Or better, checking handleSave logic: it alerts.
+                        }}
+                        disabled={saving}
+                        className={`fixed bottom-6 right-6 z-[101] text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        style={{ backgroundColor: currentTheme.primaryColor }}
+                        title="Save Changes"
+                    >
+                        {saving ? <Spinner size="sm" /> : <Save size={24} />}
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
