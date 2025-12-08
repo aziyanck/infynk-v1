@@ -5,12 +5,19 @@ import AssignRoute from "./AssignRoute";
 import { removeRouteFromUser } from "../../services/adminService"
 import UserInfo from "./UserInfo";
 
-const UserList = ({ users, setUsers }) => {
+import { ArrowUpDown } from "lucide-react";
 
+const UserList = ({
+  users,
+  setUsers,
+  searchTerm,
+  setSearchTerm,
+  sortConfig,
+  setSortConfig,
+}) => {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null); // 👈 Track selected user
   const [viewingUser, setViewingUser] = useState(null);
-
 
   const handleRemoveRoute = async (user) => {
     try {
@@ -30,10 +37,49 @@ const UserList = ({ users, setUsers }) => {
     }
   };
 
-
   return (
     <div className="p-6 bg-white shadow-md rounded-lg relative">
-      <h2 className="text-2xl font-bold mb-4">All Users</h2>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold">All Users</h2>
+
+        {/* Search and Sort Controls */}
+        <div className="flex items-center gap-4 mt-4 md:mt-0">
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <div className="flex gap-2">
+            <select
+              value={sortConfig.key}
+              onChange={(e) =>
+                setSortConfig({ ...sortConfig, key: e.target.value })
+              }
+              className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Sort By</option>
+              <option value="route_id">ID</option>
+              <option value="name">Name</option>
+            </select>
+
+            <button
+              onClick={() =>
+                setSortConfig((prev) => ({
+                  ...prev,
+                  direction: prev.direction === "asc" ? "desc" : "asc",
+                }))
+              }
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors flex items-center justify-center"
+              title="Toggle Sort Direction"
+            >
+              <ArrowUpDown size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
 
 
       <div className="overflow-x-auto">

@@ -8,6 +8,41 @@ const Users = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [statusMsg, setStatusMsg] = useState("");
   const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
+
+  let filteredUsers = users.filter((user) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      user.name?.toLowerCase().includes(term) ||
+      user.route_id?.toString().toLowerCase().includes(term)
+    );
+  });
+
+  if (sortConfig.key) {
+    filteredUsers.sort((a, b) => {
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+
+      // Handle null/undefined
+      if (aValue == null) aValue = "";
+      if (bValue == null) bValue = "";
+
+      // Case-insensitive sort for strings
+      if (typeof aValue === "string") aValue = aValue.toLowerCase();
+      if (typeof bValue === "string") bValue = bValue.toLowerCase();
+
+      if (aValue < bValue) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  } else if (sortConfig.direction === "desc") {
+    filteredUsers.reverse();
+  }
 
   const [loading, setLoading] = useState(true);
 
@@ -166,9 +201,16 @@ const Users = () => {
         )}
       </div>
       {loading ? (
-        <p>Loading the Table</p>
+        <p className="p-4 text-center">Loading the Table...</p>
       ) : (
-        <UserList users={users} setUsers={setUsers} />
+        <UserList
+          users={filteredUsers}
+          setUsers={setUsers}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          sortConfig={sortConfig}
+          setSortConfig={setSortConfig}
+        />
       )}
     </div>
   );
