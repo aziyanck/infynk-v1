@@ -1,9 +1,9 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from "react-router-dom";
 import { ThreeDot } from 'react-loading-indicators';
+import LandingPage from "./pages/LandingPage";
 
 // Lazy Load Pages
-const LandingPage = lazy(() => import("./pages/LandingPage"));
 const PublicProfile = lazy(() => import("./pages/PublicUserPage"));
 const UserLogin = lazy(() => import("./pages/UserLogin"));
 const UserDashboard = lazy(() => import("./pages/UserDashboard"));
