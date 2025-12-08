@@ -361,15 +361,16 @@ const UserDashboard = () => {
     };
 
 
-    const txtclr = themes[themeKey].textColor;
-    const bg = themes[themeKey].bgColor;
-    const lightbg = themes[themeKey].lightColor;
+    const currentTheme = themes[themeKey] || themes.sky;
+    const txtclr = currentTheme.textColor;
+    const bg = currentTheme.bgColor;
+    const lightbg = currentTheme.lightColor;
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 sm:p-6">
             {/* Header */}
             <header className="w-full max-w-4xl  rounded-2xl shadow-md p-4 mb-6 flex justify-between items-center" style={{ backgroundColor: bg }}>
-                <h1 className="text-2xl font-bold" style={{ color: themes[themeKey].textColor }} >Infynk.</h1>
+                <h1 className="text-2xl font-bold" style={{ color: currentTheme.textColor }} >Infynk.</h1>
                 <div className="flex items-center space-x-4">
                     <div className='relative'>
                         <LayoutDashboard className='text-gray-600 cursor-pointer' size={24} onClick={() => setShowThemePop((p) => !p)} />
@@ -500,7 +501,7 @@ const UserDashboard = () => {
 
                 {/* Social Fields */}
                 <div className="mb-8 p-4  rounded-xl shadow-inner space-y-4" style={{ backgroundColor: lightbg }}>
-                    <h3 className="text-xl font-semibold  mb-4" style={{ color: themes[themeKey].textColor }} >Manage Links</h3>
+                    <h3 className="text-xl font-semibold  mb-4" style={{ color: currentTheme.textColor }} >Manage Links</h3>
                     {socialFields.map(field => (
                         <EditableField
                             key={field.type}
@@ -633,7 +634,7 @@ const UserDashboard = () => {
                     onClick={handleSave}
                     disabled={saving}
                     className={`hover:bg-violet-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}
-                    style={{ backgroundColor: themes[themeKey].primaryColor }}
+                    style={{ backgroundColor: currentTheme.primaryColor }}
                 >
                     {saving ? <Spinner /> : <><Save size={20} className="mr-2" /> Save Changes</>}
                 </button>

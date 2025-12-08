@@ -1,11 +1,18 @@
 
 
 export const themes = {
-  black: {
+  dark: {
     primaryColor: "#1a1b1c",
     textColor: "#dedfe0",
     bgColor: "#1a1b1c",
     lightColor: "#414345",
+  },
+
+  black: {
+    primaryColor: "#282828", // Matte Black
+    textColor: "#282828",
+    bgColor: "#ffffff",
+    lightColor: "#f5f5f5", // Very light gray
   },
 
   violet: {
@@ -43,11 +50,18 @@ export const themes = {
     lightColor: "#f3ecd1",
   },
 
-  pixic: {
+  pixic_dark: {
     primaryColor: "#2563eb",
     textColor: "#3b82f6",
     bgColor: "#000000",
     lightColor: "#111111",
+  },
+
+  pixic_light: {
+    primaryColor: "#2563eb",
+    textColor: "#2563eb",
+    bgColor: "#ffffff",
+    lightColor: "#eff6ff", // blue-50 equivalent
   },
 
 };
