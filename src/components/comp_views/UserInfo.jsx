@@ -3,12 +3,38 @@ import { supabase } from "../../supabaseClient";
 import QRCode from "qrcode";
 import AssignRoute from "./AssignRoute";
 import QrDisplay from "./QrDisplay"; // <-- New component
-import { removeRouteFromUser, renewRouteExpiry } from "../../services/adminService";
+import { removeRouteFromUser, renewRouteExpiry, deleteUserProfile, deleteAuthUser } from "../../services/adminService";
 
 const UserInfo = ({ user, onClose, setUsers }) => {
     const [currentUser, setCurrentUser] = useState(user);
     const [selectedUser, setSelectedUser] = useState(null);
     const [qrCodeUrl, setQrCodeUrl] = useState(null); // <-- Store QR code
+
+    const handleNullifyUser = async () => {
+        if (!confirm("Are you sure you want to NULLIFY this user? This will remove their route, delete their profile, and REMOVE them from Supabase Auth.")) return;
+
+        try {
+            // 1. Remove Route
+            if (currentUser.route_id) {
+                await removeRouteFromUser(currentUser.id);
+            }
+            // 2. Delete Profile
+            await deleteUserProfile(currentUser.id);
+
+            // 3. Delete Auth User
+            await deleteAuthUser(currentUser.id);
+
+            alert("User nullified and deleted successfully!");
+
+            // Remove from list
+            setUsers(prevUsers => prevUsers.filter(u => u.id !== currentUser.id));
+
+            onClose();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to nullify user: " + error.message);
+        }
+    };
 
     useEffect(() => {
         console.log("UserInfo received user:", user);
@@ -179,40 +205,50 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                     )}
                 </div>
 
-                <div className="flex justify-between p-4 rounded-xl bg-gray-200">
+                <div className="flex flex-col gap-3 p-4 rounded-xl bg-gray-200">
+                    <div className="flex justify-between w-full">
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                        >
+                            Close
+                        </button>
+
+                        {currentUser.route_id ? (
+                            <button
+                                onClick={() => generateQr(currentUser.route_id)}
+                                className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
+                            >
+                                Get QR
+                            </button>
+                        ) : (
+                            <></>
+                        )}
+
+                        {currentUser.route_id ? (
+                            <button
+                                onClick={() => handleRemoveRoute(currentUser)}
+                                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                            >
+                                Remove Route
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => setSelectedUser(currentUser)}
+                                className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            >
+                                Assign Route
+                            </button>
+                        )}
+                    </div>
+
                     <button
-                        onClick={onClose}
-                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                        onClick={handleNullifyUser}
+                        className="w-full px-3 py-2 bg-red-700 text-white rounded hover:bg-red-800 mt-1 font-semibold"
+                        title="Delete Profile and Remove Route"
                     >
-                        Close
+                        Nullify User
                     </button>
-
-                    {currentUser.route_id ? (
-                        <button
-                            onClick={() => generateQr(currentUser.route_id)}
-                            className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
-                        >
-                            Get QR
-                        </button>
-                    ) : (
-                        <></>
-                    )}
-
-                    {currentUser.route_id ? (
-                        <button
-                            onClick={() => handleRemoveRoute(currentUser)}
-                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                        >
-                            Remove Route
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => setSelectedUser(currentUser)}
-                            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        >
-                            Assign Route
-                        </button>
-                    )}
                 </div>
             </div>
 

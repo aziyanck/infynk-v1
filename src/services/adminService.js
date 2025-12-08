@@ -85,3 +85,42 @@ export const renewRouteExpiry = async (routeId) => {
 
   return result;
 };
+
+export const deleteUserProfile = async (userId) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .delete()
+    .eq("user_id", userId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const deleteAuthUser = async (userId) => {
+  const session = await supabase.auth.getSession();
+  const jwt = session.data.session.access_token;
+
+  const res = await fetch(
+    `https://yowckahgoxqfikadirov.supabase.co/functions/v1/delete-user`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        userId: userId,
+        id: userId
+      }),
+    }
+  );
+
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.error || result.message || "Failed to delete user from Auth");
+
+  return result;
+};
