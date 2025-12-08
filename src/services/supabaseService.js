@@ -71,15 +71,16 @@ export const logoutUser = async () => {
   return { error };
 };
 
-// 1. Send the password reset email
+
+
 export const sendPasswordResetEmail = async (email) => {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/update-password`, // Redirects to your new update page
+    // This tells Supabase EXACTLY where to send the user
+    redirectTo: `${window.location.origin}/update-password`,
   });
   return { data, error };
 };
 
-// 2. Update the user's password (used after they click the email link)
 export const updateUserPassword = async (newPassword) => {
   const { data, error } = await supabase.auth.updateUser({
     password: newPassword,
