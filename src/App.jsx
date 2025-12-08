@@ -1,39 +1,48 @@
+import React, { Suspense, lazy } from 'react';
+import { Routes, Route } from "react-router-dom";
+import { ThreeDot } from 'react-loading-indicators';
 
-import { Routes, Route } from "react-router-dom"
-import LandingPage from "./pages/LandingPage"
-import PublicProfile from "./pages/PublicUserPage"
-import UserLogin from "./pages/UserLogin"
-import UserDashboard from "./pages/UserDashboard"
-import AdminLogin from "./pages/AdminLogin"
-import AdminDashboard from "./pages/AdminDashboard"
-import NotFound from "./pages/NotFound"
-import GetInfo from "./pages/GetInfo"
-import SuccessPage from "./pages/SuccessPage"
-import PrivacyPolicy from "./pages/legal/PrivacyPolicy"
-import TermsOfService from "./pages/legal/TermsOfService"
-import CookiePolicy from "./pages/legal/CookiePolicy"
-import ForgotPassword from "./pages/ForgotPassword";
-import UpdatePassword from "./pages/UpdatePassword";
+// Lazy Load Pages
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const PublicProfile = lazy(() => import("./pages/PublicUserPage"));
+const UserLogin = lazy(() => import("./pages/UserLogin"));
+const UserDashboard = lazy(() => import("./pages/UserDashboard"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const GetInfo = lazy(() => import("./pages/GetInfo"));
+const SuccessPage = lazy(() => import("./pages/SuccessPage"));
+const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/legal/TermsOfService"));
+const CookiePolicy = lazy(() => import("./pages/legal/CookiePolicy"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const UpdatePassword = lazy(() => import("./pages/UpdatePassword"));
 
+const PageLoader = () => (
+  <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+    <ThreeDot variant="pulsate" color="#3194cc" size="large" text="" textColor="" />
+  </div>
+);
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/user" element={<UserLogin />} />
-      <Route path="/user/dashboard" element={<UserDashboard />} />
-      <Route path="/admin" element={<AdminLogin />} />
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/:slug" element={<PublicProfile />} />
-      <Route path="/getinfo" element={<GetInfo />} />
-      <Route path="/payment-success" element={<SuccessPage />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/terms-of-service" element={<TermsOfService />} />
-      <Route path="/cookie-policy" element={<CookiePolicy />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/update-password" element={<UpdatePassword />} />
-      <Route path="*" element={<NotFound />} />
-
-    </Routes>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/user" element={<UserLogin />} />
+        <Route path="/user/dashboard" element={<UserDashboard />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/:slug" element={<PublicProfile />} />
+        <Route path="/getinfo" element={<GetInfo />} />
+        <Route path="/payment-success" element={<SuccessPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   )
 }
