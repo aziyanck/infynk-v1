@@ -143,6 +143,39 @@ const UserView = ({ user }) => {
   }, [vCardData]);
 
 
+  const handleSaveContact = async (e) => {
+    // Try to use Web Share API first
+    if (navigator.share && navigator.canShare) {
+      try {
+        const file = new File([vCardData], `${fullName}.vcf`, { type: 'text/vcard' });
+
+        if (navigator.canShare({ files: [file] })) {
+          e.preventDefault(); // Prevent default download
+          await navigator.share({
+            files: [file],
+            title: `${fullName} - Contact Card`,
+            text: `Save contact info for ${fullName}`
+          });
+          return;
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Error sharing contact:', err);
+          // If sharing fails (non-abort), allow default download behavior (by not preventing default or triggering it manually)
+          // Since we prevented default above, we need to manually trigger download if share fails
+          const link = document.createElement('a');
+          link.href = vCardUrl;
+          link.download = `${fullName}.vcf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
+    }
+    // If Web Share API is not supported or sharing files is not supported, 
+    // the default behavior of the <a> tag (download) will execute.
+  };
+
   return (
     <div ref={containerRef} className="font-sans min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-slate-100 to-slate-200">
       <div
@@ -209,6 +242,7 @@ const UserView = ({ user }) => {
             <a
               href={vCardUrl}
               download={`${fullName}.vcf`}
+              onClick={handleSaveContact}
               className="anim-save w-full text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
               style={{ backgroundColor: primaryColor }}
             >
