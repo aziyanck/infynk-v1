@@ -87,8 +87,12 @@ const UserDashboard = () => {
     }, [cropModal]);
 
     useEffect(() => {
-        if (cropImgSrc) localStorage.setItem('cropImgSrc', cropImgSrc);
-        else localStorage.removeItem('cropImgSrc');
+        try {
+            if (cropImgSrc) localStorage.setItem('cropImgSrc', cropImgSrc);
+            else localStorage.removeItem('cropImgSrc');
+        } catch (e) {
+            console.error("Failed to save crop image to local storage:", e);
+        }
     }, [cropImgSrc]);
 
     useEffect(() => {
