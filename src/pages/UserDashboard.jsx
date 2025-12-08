@@ -405,7 +405,10 @@ const UserDashboard = () => {
                 <h1 className="text-2xl font-bold" style={{ color: currentTheme.textColor }} >Infynk.</h1>
                 <div className="flex items-center space-x-4">
                     <div className='relative'>
-                        <LayoutDashboard className='text-gray-600 cursor-pointer' size={24} onClick={() => setShowThemePop((p) => !p)} />
+                        <LayoutDashboard className='text-gray-600 cursor-pointer' size={24} onClick={() => {
+                            setShowThemePop((p) => !p);
+                            setShowUserPop(false);
+                        }} />
                         {showThemePop && (
                             <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-50">
                                 <ThemeColorPicker themeKey={themeKey} setThemeKey={setThemeKey} />
@@ -422,7 +425,10 @@ const UserDashboard = () => {
                         <User
                             className="text-gray-600 cursor-pointer"
                             size={24}
-                            onClick={() => setShowUserPop((p) => !p)}
+                            onClick={() => {
+                                setShowUserPop((p) => !p);
+                                setShowThemePop(false);
+                            }}
                         />
                         {showUserPop && (
                             <div className="absolute right-0 mt-2 w-52 bg-white border rounded-xl shadow-lg p-4 z-50">
