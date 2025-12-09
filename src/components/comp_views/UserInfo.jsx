@@ -10,8 +10,12 @@ const UserInfo = ({ user, onClose, setUsers }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [qrCodeUrl, setQrCodeUrl] = useState(null); // <-- Store QR code
 
+    const [isDeleting, setIsDeleting] = useState(false);
+
     const handleNullifyUser = async () => {
-        if (!confirm("Are you sure you want to NULLIFY this user? This will remove their route, delete their profile, and REMOVE them from Supabase Auth.")) return;
+        if (!confirm("Are you sure you want to DELETE this user? This will remove their route, delete their profile, and REMOVE them from Supabase Auth.")) return;
+
+        setIsDeleting(true);
 
         try {
             // 1. Remove Route
@@ -24,7 +28,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
             // 3. Delete Auth User
             await deleteAuthUser(currentUser.id);
 
-            alert("User nullified and deleted successfully!");
+            alert("User deleted successfully!");
 
             // Remove from list
             setUsers(prevUsers => prevUsers.filter(u => u.id !== currentUser.id));
@@ -32,7 +36,8 @@ const UserInfo = ({ user, onClose, setUsers }) => {
             onClose();
         } catch (error) {
             console.error(error);
-            alert("Failed to nullify user: " + error.message);
+            alert("Failed to delete user: " + error.message);
+            setIsDeleting(false);
         }
     };
 
@@ -244,10 +249,21 @@ const UserInfo = ({ user, onClose, setUsers }) => {
 
                     <button
                         onClick={handleNullifyUser}
-                        className="w-full px-3 py-2 bg-red-700 text-white rounded hover:bg-red-800 mt-1 font-semibold"
+                        className={`w-full px-3 py-2 bg-red-700 text-white rounded hover:bg-red-800 mt-1 font-semibold flex justify-center items-center gap-2 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         title="Delete Profile and Remove Route"
+                        disabled={isDeleting}
                     >
-                        Nullify User
+                        {isDeleting ? (
+                            <>
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Deleting...
+                            </>
+                        ) : (
+                            "Delete User"
+                        )}
                     </button>
                 </div>
             </div>
