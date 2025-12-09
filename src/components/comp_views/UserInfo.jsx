@@ -11,6 +11,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
     const [qrCodeUrl, setQrCodeUrl] = useState(null); // <-- Store QR code
 
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isRemovingRoute, setIsRemovingRoute] = useState(false);
 
     const handleNullifyUser = async () => {
         if (!confirm("Are you sure you want to DELETE this user? This will remove their route, delete their profile, and REMOVE them from Supabase Auth.")) return;
@@ -99,6 +100,8 @@ const UserInfo = ({ user, onClose, setUsers }) => {
     };
 
     const handleRemoveRoute = async (user) => {
+        if (!confirm("Are you sure you want to remove the route?")) return;
+        setIsRemovingRoute(true);
         try {
             await removeRouteFromUser(user.id);
             alert("Route removed successfully!");
@@ -119,6 +122,8 @@ const UserInfo = ({ user, onClose, setUsers }) => {
         } catch (error) {
             console.error(error);
             alert("Failed to remove route: " + error.message);
+        } finally {
+            setIsRemovingRoute(false);
         }
     };
 
@@ -233,9 +238,20 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                         {currentUser.route_id ? (
                             <button
                                 onClick={() => handleRemoveRoute(currentUser)}
-                                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2"
+                                disabled={isRemovingRoute}
                             >
-                                Remove Route
+                                {isRemovingRoute ? (
+                                    <>
+                                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Removing
+                                    </>
+                                ) : (
+                                    "Remove Route"
+                                )}
                             </button>
                         ) : (
                             <button
@@ -275,6 +291,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                     onAssign={(updatedRoute) => {
                         const expiryDate = new Date();
                         expiryDate.setDate(expiryDate.getDate() + 365);
+                        const activationDate = new Date().toISOString();
                         setUsers(prevUsers =>
                             prevUsers.map(u =>
                                 u.id === selectedUser.id
@@ -283,6 +300,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                                         route_id: updatedRoute.route_id,
                                         route_status: updatedRoute.route_status,
                                         expiry_date: expiryDate.toISOString(),
+                                        activation_date: activationDate,
                                     }
                                     : u
                             )
@@ -292,6 +310,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
                             route_id: updatedRoute.route_id,
                             route_status: updatedRoute.route_status,
                             expiry_date: expiryDate.toISOString(),
+                            activation_date: activationDate,
                         }));
                         setSelectedUser(null);
                     }}

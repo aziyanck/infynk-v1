@@ -22,8 +22,11 @@ const UserList = ({
   const [selectedUser, setSelectedUser] = useState(null); // 👈 Track selected user
   const [viewingUser, setViewingUser] = useState(null);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [removingRouteId, setRemovingRouteId] = useState(null);
 
   const handleRemoveRoute = async (user) => {
+    if (!confirm("Are you sure you want to remove the route?")) return;
+    setRemovingRouteId(user.id);
     try {
       await removeRouteFromUser(user.id);
       alert("Route removed successfully!");
@@ -31,13 +34,15 @@ const UserList = ({
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
           u.id === user.id
-            ? { ...u, route_id: null, expiry_date: null, route_status: null }
+            ? { ...u, route_id: null, expiry_date: null, route_status: null, activation_date: null }
             : u
         )
       );
     } catch (error) {
       console.error(error);
       alert("Failed to remove route: " + error.message);
+    } finally {
+      setRemovingRouteId(null);
     }
   };
 
@@ -271,9 +276,20 @@ const UserList = ({
                     {user.route_id ? (
                       <button
                         onClick={() => handleRemoveRoute(user)} // You’ll define this
-                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2 min-w-[130px] justify-center"
+                        disabled={removingRouteId === user.id}
                       >
-                        Remove Route
+                        {removingRouteId === user.id ? (
+                          <>
+                            <svg className="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Removing
+                          </>
+                        ) : (
+                          "Remove Route"
+                        )}
                       </button>
                     ) : (
                       <button
@@ -302,6 +318,7 @@ const UserList = ({
           onAssign={(updatedRoute) => {
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 365);
+            const activationDate = new Date().toISOString();
             setUsers((prevUsers) =>
               prevUsers.map((u) =>
                 u.id === selectedUser.id
@@ -310,6 +327,7 @@ const UserList = ({
                     route_id: updatedRoute.route_id,
                     route_status: updatedRoute.route_status,
                     expiry_date: expiryDate.toISOString(),
+                    activation_date: activationDate,
                   }
                   : u
               )

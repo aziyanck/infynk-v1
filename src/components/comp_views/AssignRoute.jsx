@@ -11,24 +11,28 @@ const AssignRoute = ({ user, onClose, onAssign }) => {
 
 
   const handleAssign = async () => {
-  try {
-    // Make the Edge Function call or insert route logic
-    const response = await assignRouteToUser(user.id, routeId); // however you’re assigning
+    if (!routeId) return;
+    setLoading(true);
+    try {
+      // Make the Edge Function call or insert route logic
+      const response = await assignRouteToUser(user.id, routeId); // however you’re assigning
 
-    if (response.success) {
-      // 🟢 Trigger parent update
-      onAssign({
-        route_id: routeId,
-        route_status: "Active", // or dynamic value from response
-      });
-    } else {
-      alert("Assignment failed");
+      if (response.success) {
+        // 🟢 Trigger parent update
+        onAssign({
+          route_id: routeId,
+          route_status: "Active", // or dynamic value from response
+        });
+      } else {
+        alert("Assignment failed");
+      }
+    } catch (error) {
+      console.error("Error assigning route:", error);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error assigning route:", error);
-    alert("Something went wrong");
-  }
-};
+  };
 
 
   return (
@@ -45,6 +49,9 @@ const AssignRoute = ({ user, onClose, onAssign }) => {
             placeholder="Enter Route ID"
             value={routeId}
             onChange={(e) => setRouteId(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleAssign();
+            }}
             className="w-full mt-1 p-2 border rounded"
           />
         </label>
@@ -61,10 +68,20 @@ const AssignRoute = ({ user, onClose, onAssign }) => {
           </button>
           <button
             onClick={handleAssign}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center gap-2 min-w-[100px]"
             disabled={loading}
           >
-            {loading ? "Assigning..." : "Assign"}
+            {loading ? (
+              <>
+                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Assigning...
+              </>
+            ) : (
+              "Assign"
+            )}
           </button>
         </div>
       </div>
