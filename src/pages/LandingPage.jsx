@@ -72,10 +72,10 @@ export default function LandingPage() {
                 </nav>
 
                 <div className="flex items-center gap-6">
-                    <button onClick={() => navigate('/user')} className="text-sm font-bold uppercase tracking-widest text-white hover:text-blue-500 transition-colors">
+                    <button onClick={() => navigate('/user')} className="text-sm font-bold uppercase tracking-widest text-white hover:text-blue-500 cursor-pointer transition-colors">
                         Sign In
                     </button>
-                    <button onClick={handleNavigation} className="text-sm font-bold uppercase tracking-widest border border-white px-6 py-2 hover:bg-white hover:text-black transition-all duration-300">
+                    <button onClick={handleNavigation} className="text-sm font-bold uppercase tracking-widest border border-white px-6 py-2 hover:bg-white hover:text-black cursor-pointer transition-all duration-300">
                         Get Started
                     </button>
                 </div>

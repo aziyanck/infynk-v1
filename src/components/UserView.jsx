@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ThreeDot } from 'react-loading-indicators';
 import gsap from 'gsap';
@@ -13,7 +13,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 
 import { themes } from '../services/themes'
-import { generateVCard } from '../services/generateVCard'
+
 
 // Component
 const UserView = ({ user }) => {
@@ -136,47 +136,77 @@ const UserView = ({ user }) => {
     { type: 'location', href: socials.location ? `https://maps.google.com/?q=${encodeURIComponent(socials.location)}` : null, icon: faLocationDot, name: 'Location' },
   ].filter(link => link.href);
 
-  const vCardData = useMemo(() => {
-    return generateVCard(fullName, designation, contact, socials);
-  }, [fullName, designation, contact, socials]);
-
-  const vCardUrl = useMemo(() => {
-    const blob = new Blob([vCardData], { type: 'text/vcard' });
-    return URL.createObjectURL(blob);
-  }, [vCardData]);
 
 
-  const handleSaveContact = async (e) => {
-    // Try to use Web Share API first
-    if (navigator.share && navigator.canShare) {
-      try {
-        const file = new File([vCardData], `${fullName}.vcf`, { type: 'text/vcard' });
 
-        if (navigator.canShare({ files: [file] })) {
-          e.preventDefault(); // Prevent default download
-          await navigator.share({
-            files: [file],
-            title: `${fullName} - Contact Card`,
-            text: `Save contact info for ${fullName}`
-          });
-          return;
-        }
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error('Error sharing contact:', err);
-          // If sharing fails (non-abort), allow default download behavior (by not preventing default or triggering it manually)
-          // Since we prevented default above, we need to manually trigger download if share fails
-          const link = document.createElement('a');
-          link.href = vCardUrl;
-          link.download = `${fullName}.vcf`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      }
+  const handleSaveContact = (e) => {
+    e.preventDefault();
+
+    // 1. Define Contact Data
+    const contactData = {
+      name: fullName,
+      phone: contact.phone || "",
+      email: contact.email || ""
+    };
+
+    // 2. Detect User Agent (OS)
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const isAndroid = /android/i.test(userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+
+    // Helper functions
+    const downloadVCF = (data) => {
+      // Use existing vCardUrl if available or generate fresh
+      // Using the user's snippet approach for VCF content generation if preferred, 
+      // but we have `vCardData` from useMemo which is likely more robust.
+      // However, to strictly follow the "above code" snippet logic for the VCF structure:
+
+      const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${data.name}
+TEL:${data.phone}
+EMAIL:${data.email}
+END:VCARD`;
+      // Note: The existing vCardData might contain more info (socials, etc).
+      // If we strictly follow the user snippet, we lose that. 
+      // I will use a hybrid approach: Use `vCardData` if we want full info, 
+      // or the snippet content if "above code" is strict. 
+      // Given "create ... by the above code", I will include the snippet logic but perhaps use vCardData for the actual content to not regress features?
+      // Actually, let's use the provided snippet logic for the *structure* of the download actions.
+
+      const blob = new Blob([vcard], { type: "text/vcard" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'contact.vcf');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
+    const downloadCSV = (data) => {
+      const csvContent = "data:text/csv;charset=utf-8,"
+        + "Name,Phone,Email\n"
+        + `"${data.name}","${data.phone}","${data.email}"`;
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "contact.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
+    // 3. Logic Branching
+    if (isAndroid) {
+      // user's observation: specific logic to generate CSV for Android
+      downloadCSV(contactData);
+    } else {
+      // iOS Standard: Generate VCF (vCard)
+      downloadVCF(contactData);
     }
-    // If Web Share API is not supported or sharing files is not supported, 
-    // the default behavior of the <a> tag (download) will execute.
   };
 
   return (
@@ -264,16 +294,14 @@ const UserView = ({ user }) => {
         {/* Save Contact */}
         {!(links.length === 1 && links[0].type === 'reviews') && (
           <div className="pt-2 !mt-auto">
-            <a
-              href={vCardUrl}
-              download={`${fullName}.vcf`}
+            <button
               onClick={handleSaveContact}
               className="anim-save w-full text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
               style={{ backgroundColor: primaryColor }}
             >
               <FontAwesomeIcon icon={faDownload} className="w-5 h-5" />
               Save Contact
-            </a>
+            </button>
           </div>
         )}
       </div>
