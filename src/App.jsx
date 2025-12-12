@@ -27,22 +27,24 @@ const PageLoader = () => (
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/user" element={<UserLogin />} />
-        <Route path="/user/dashboard" element={<UserDashboard />} />
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/:slug" element={<PublicProfile />} />
-        <Route path="/getinfo" element={<GetInfo />} />
-        <Route path="/payment-success" element={<SuccessPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
-        <Route path="/cookie-policy" element={<CookiePolicy />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/update-password" element={<UpdatePassword />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <main className="min-h-screen"> 
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/user" element={<UserLogin />} />
+          <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/:slug" element={<PublicProfile />} />
+          <Route path="/getinfo" element={<GetInfo />} />
+          <Route path="/payment-success" element={<SuccessPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
     </Suspense>
   )
 }
