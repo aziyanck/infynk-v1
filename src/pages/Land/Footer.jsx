@@ -102,7 +102,7 @@ const Footer = () => {
                     >
                         <button
                             onClick={closeModal}
-                            className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
+                            className="absolute top-4 right-4 text-gray-300 hover:text-white transition-colors"
                         >
                             <FontAwesomeIcon icon={faXmark} className="text-xl" />
                         </button>
@@ -115,7 +115,7 @@ const Footer = () => {
                                     <FontAwesomeIcon icon={faEnvelope} />
                                 </div>
                                 <div>
-                                    <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Email</p>
+                                    <p className="text-xs uppercase tracking-widest text-gray-300 mb-1">Email</p>
                                     <p className="text-lg font-medium">hello@pixiic.com</p>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@ const Footer = () => {
                                     <FontAwesomeIcon icon={faPhone} />
                                 </div>
                                 <div>
-                                    <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Phone</p>
+                                    <p className="text-xs uppercase tracking-widest text-gray-300 mb-1">Phone</p>
                                     <p className="text-lg font-medium">+1 (555) 123-4567</p>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@ const Footer = () => {
                 {/* Link Columns */}
                 {footerLinks.map((column, index) => (
                     <div key={index} className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-white/10 last:border-r-0">
-                        <h4 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-8">{column.title}</h4>
+                        <h4 className="text-sm font-bold uppercase tracking-widest text-gray-300 mb-8">{column.title}</h4>
                         <ul className="space-y-4">
                             {column.links.map((link, linkIndex) => (
                                 <li key={linkIndex}>
@@ -187,7 +187,7 @@ const Footer = () => {
 
             {/* Bottom Bar */}
             <div className="px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-300">
                     &copy; {new Date().getFullYear()} Pixiic. All rights reserved.
                 </p>
 
