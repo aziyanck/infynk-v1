@@ -9,7 +9,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
           // Add other heavy libraries here if you use them (e.g., three.js)
         },
       },
