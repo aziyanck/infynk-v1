@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { ThreeDot } from "react-loading-indicators";
-import { Menu } from 'lucide-react';
+import { Menu } from "lucide-react";
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import Dashboard from "../components/comp_views/Dashboard";
 import Users from "../components/comp_views/Users";
 import Cards from "../components/comp_views/Cards";
+import Payments from "../components/comp_views/Payments";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState(() => {
@@ -46,7 +47,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (sessionUser) return;
     const checkAdminRole = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
 
       if (!session) {
         navigate("/admin"); // Not logged in
@@ -70,38 +74,75 @@ const AdminDashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <div className="p-6"><Dashboard /></div>;
+        return (
+          <div className="h-full overflow-y-auto p-6">
+            <Dashboard />
+          </div>
+        );
       case "users":
-        return <div className="p-6"><Users /></div>;
+        return (
+          <div className="h-full overflow-y-auto p-6">
+            <Users />
+          </div>
+        );
+      case "payments":
+        return (
+          <div className="h-full p-6 flex flex-col">
+            <Payments />
+          </div>
+        );
       case "cards":
-        return <div className="p-6"><Cards /></div>;
+        return (
+          <div className="h-full overflow-y-auto p-6">
+            <Cards />
+          </div>
+        );
       case "settings":
-        return <div className="p-6">⚙️ Settings Panel</div>;
+        return (
+          <div className="h-full overflow-y-auto p-6">⚙️ Settings Panel</div>
+        );
       default:
-        return <div className="p-6"><Dashboard /></div>;
+        return (
+          <div className="h-full overflow-y-auto p-6">
+            <Dashboard />
+          </div>
+        );
     }
   };
 
   if (loading)
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
-        <ThreeDot variant="pulsate" color="#3194cc" size="large" text="" textColor="" />
+        <ThreeDot
+          variant="pulsate"
+          color="#3194cc"
+          size="large"
+          text=""
+          textColor=""
+        />
       </div>
     );
 
   return (
     <div className="flex h-screen flex-col bg-gray-100">
-      <header className="bg-white w-screen px-6 py-4 shadow-sm flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-gray-700 hidden md:block">Dashboard</h1>
+      <header className="bg-white w-screen px-6 py-4 shadow-sm flex justify-between items-center z-10 relative">
+        <h1 className="text-xl font-semibold text-gray-700 hidden md:block">
+          Dashboard
+        </h1>
         <div className="md:hidden">
           <Menu
             className="w-6 h-6 text-gray-700 cursor-pointer"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           />
         </div>
-        <div className="text-gray-500">Welcome, {sessionUser?.user_metadata?.full_name || sessionUser?.user_metadata?.name || 'User'}</div>
+        <div className="text-gray-500">
+          Welcome,{" "}
+          {sessionUser?.user_metadata?.full_name ||
+            sessionUser?.user_metadata?.name ||
+            "User"}
+        </div>
       </header>
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden relative">
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -109,7 +150,9 @@ const AdminDashboard = () => {
           setIsSidebarOpen={setIsSidebarOpen}
           onLogout={handleLogout}
         />
-        <main className="flex-1 overflow-y-auto">{renderContent()}</main>
+        <main className="flex-1 h-full relative overflow-hidden bg-gray-100">
+          {renderContent()}
+        </main>
       </div>
     </div>
   );

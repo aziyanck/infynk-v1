@@ -6,13 +6,21 @@ import {
   faIdBadge,
   faSliders,
   faSignOutAlt,
+  faCreditCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen, onLogout }) => {
+const Sidebar = ({
+  activeTab,
+  setActiveTab,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  onLogout,
+}) => {
   const navItems = [
     { label: "Dashboard", icon: faHome, key: "dashboard" },
     { label: "Users", icon: faUser, key: "users" },
+    { label: "Payments", icon: faCreditCard, key: "payments" },
     { label: "Cards", icon: faIdBadge, key: "cards" },
     { label: "Settings", icon: faSliders, key: "settings" },
   ];
@@ -29,18 +37,20 @@ const Sidebar = ({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen, onL
     <>
       {/* Mobile overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-      
+
       {/* Sidebar */}
-      <div className={`
+      <div
+        className={`
         w-64 h-full bg-white shadow-md flex-col z-50
         md:flex md:relative
-        ${isSidebarOpen ? 'fixed left-0 top-0 flex' : 'hidden md:flex'}
-      `}>
+        ${isSidebarOpen ? "fixed left-0 top-0 flex" : "hidden md:flex"}
+      `}
+      >
         <div className="px-6 py-4 text-xl font-bold border-b">Admin Panel</div>
         <nav className="flex-1 px-4 py-6 space-y-4">
           {navItems.map((item) => (
