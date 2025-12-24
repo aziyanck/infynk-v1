@@ -9,7 +9,7 @@ import { supabase } from '../supabaseClient';
 // ---------------------------------------------------------
 // CONFIGURATION
 // ---------------------------------------------------------
-const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_RhsOXSuSehdzJ1";
+const RAZORPAY_KEY_ID = "rzp_test_RvWpRFSJe78xVj";
 
 const GetInfo = () => {
   const [fullName, setFullName] = useState('');
@@ -91,12 +91,40 @@ const GetInfo = () => {
         image: 'https://example.com/your_logo.jpg',
         order_id: orderData.id,
 
-        handler: function (response) {
-          alert('Payment Successful! Verifying...');
-          console.log('Payment ID:', response.razorpay_payment_id);
-          console.log('Order ID:', response.razorpay_order_id);
-          console.log('Signature:', response.razorpay_signature);
-        },
+        handler: async function (response) {
+  // 1. Payment was successful on Razorpay side
+  console.log('Payment ID:', response.razorpay_payment_id);
+  
+  try {
+    // 2. Save the user info to your Supabase table
+    const { error: dbError } = await supabase
+      .from('payments') // Replace with your actual table name
+      .insert([
+        {
+          full_name: fullName,
+          email: email,
+          phone: phoneNumber,
+          address: address,
+          account_type: accountType,
+          company_name: accountType === 'Company' ? companyName : null,
+          plan: planDuration,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          payment_status: 'paid'
+        }
+      ]);
+
+    if (dbError) throw dbError;
+
+    alert('Registration Successful! Welcome to Pixiic.');
+    // Optional: Redirect to success page
+    // window.location.href = '/dashboard';
+
+  } catch (err) {
+    console.error("Database Error:", err);
+    alert("Payment successful, but failed to save registration. Please contact support.");
+  }
+},
 
         prefill: {
           name: fullName,
