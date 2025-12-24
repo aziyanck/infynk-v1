@@ -1,10 +1,18 @@
-import React, { useState, useRef } from 'react';
-import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
-import { CreditCard, User, Mail, MapPin, Building2, Loader2, ArrowLeft } from 'lucide-react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { supabase } from '../supabaseClient';
+import React, { useState, useRef } from "react";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import {
+  CreditCard,
+  User,
+  Mail,
+  MapPin,
+  Building2,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { supabase } from "../supabaseClient";
 
 // ---------------------------------------------------------
 // CONFIGURATION
@@ -12,42 +20,47 @@ import { supabase } from '../supabaseClient';
 const RAZORPAY_KEY_ID = "rzp_test_RvWpRFSJe78xVj";
 
 const GetInfo = () => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState();
-  const [address, setAddress] = useState('');
-  const [accountType, setAccountType] = useState('Company');
-  const [companyName, setCompanyName] = useState('');
-  const [planDuration, setPlanDuration] = useState('1 Year Plan 999/-');
+  const [address, setAddress] = useState("");
+  const [accountType, setAccountType] = useState("Company");
+  const [companyName, setCompanyName] = useState("");
+  const [planDuration, setPlanDuration] = useState("1 Year Plan 999/-");
   const [loading, setLoading] = useState(false);
 
   const containerRef = useRef();
   const formRef = useRef();
 
-  useGSAP(() => {
-    const tl = gsap.timeline();
+  useGSAP(
+    () => {
+      const tl = gsap.timeline();
 
-    tl.from(formRef.current, {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out"
-    });
+      tl.from(formRef.current, {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+      });
 
-    tl.from(".form-item", {
-      y: 20,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: "power2.out"
-    }, "-=0.5");
-
-  }, { scope: containerRef });
-
+      tl.from(
+        ".form-item",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+        },
+        "-=0.5"
+      );
+    },
+    { scope: containerRef }
+  );
 
   const loadRazorpay = (src) => {
     return new Promise((resolve) => {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = src;
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
@@ -64,9 +77,12 @@ const GetInfo = () => {
     setLoading(true);
 
     try {
-      const { data: orderData, error } = await supabase.functions.invoke('create-order', {
-        body: { planName: planDuration }
-      });
+      const { data: orderData, error } = await supabase.functions.invoke(
+        "create-order",
+        {
+          body: { planName: planDuration },
+        }
+      );
 
       if (error) {
         console.error("Edge Function Error:", error);
@@ -77,54 +93,60 @@ const GetInfo = () => {
         throw new Error("Invalid response from server.");
       }
 
-      const res = await loadRazorpay('https://checkout.razorpay.com/v1/checkout.js');
+      const res = await loadRazorpay(
+        "https://checkout.razorpay.com/v1/checkout.js"
+      );
       if (!res) {
-        throw new Error('Razorpay SDK failed to load. Check your internet.');
+        throw new Error("Razorpay SDK failed to load. Check your internet.");
       }
 
       const options = {
         key: RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'Pixiic',
+        name: "Pixiic",
         description: planDuration,
-        image: 'https://example.com/your_logo.jpg',
+        image: "https://example.com/your_logo.jpg",
         order_id: orderData.id,
 
+        // Inside your existing handlePayment function...
+
         handler: async function (response) {
-  // 1. Payment was successful on Razorpay side
-  console.log('Payment ID:', response.razorpay_payment_id);
-  
-  try {
-    // 2. Save the user info to your Supabase table
-    const { error: dbError } = await supabase
-      .from('payments') // Replace with your actual table name
-      .insert([
-        {
-          full_name: fullName,
-          email: email,
-          phone: phoneNumber,
-          address: address,
-          account_type: accountType,
-          company_name: accountType === 'Company' ? companyName : null,
-          plan: planDuration,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_order_id: response.razorpay_order_id,
-          payment_status: 'paid'
-        }
-      ]);
+          console.log("Payment Processing...");
 
-    if (dbError) throw dbError;
+          try {
+            // CALL THE SECURE EDGE FUNCTION
+            const { error: verifyError } = await supabase.functions.invoke(
+              "verify-payment",
+              {
+                body: {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  userData: {
+                    full_name: fullName,
+                    email: email,
+                    phone: phoneNumber,
+                    address: address,
+                    account_type: accountType,
+                    company_name:
+                      accountType === "Company" ? companyName : null,
+                    plan: planDuration,
+                  },
+                },
+              }
+            );
 
-    alert('Registration Successful! Welcome to Pixiic.');
-    // Optional: Redirect to success page
-    // window.location.href = '/dashboard';
+            if (verifyError) throw verifyError;
 
-  } catch (err) {
-    console.error("Database Error:", err);
-    alert("Payment successful, but failed to save registration. Please contact support.");
-  }
-},
+            alert("Payment Verified & Registration Successful!");
+          } catch (err) {
+            console.error("Verification Failed:", err);
+            alert(
+              "Payment succeeded, but verification failed. Please contact support."
+            );
+          }
+        },
 
         prefill: {
           name: fullName,
@@ -136,22 +158,21 @@ const GetInfo = () => {
           user_name: fullName,
           user_plan: planDuration,
           user_address: address,
-          user_company: accountType === 'Company' ? companyName : 'Personal',
-          account_type: accountType
+          user_company: accountType === "Company" ? companyName : "Personal",
+          account_type: accountType,
         },
 
         theme: {
-          color: '#2563eb', // blue-600
+          color: "#2563eb", // blue-600
         },
       };
 
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
 
-      paymentObject.on('payment.failed', function (response) {
+      paymentObject.on("payment.failed", function (response) {
         alert("Payment Failed: " + response.error.description);
       });
-
     } catch (err) {
       console.error(err);
       alert(err.message || "Something went wrong initializing payment.");
@@ -168,7 +189,10 @@ const GetInfo = () => {
   };
 
   return (
-    <div ref={containerRef} className="bg-black text-white min-h-screen font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden relative">
+    <div
+      ref={containerRef}
+      className="bg-black text-white min-h-screen font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden relative"
+    >
       <style>{`
                 .phone-input-custom .PhoneInputInput {
                     background-color: transparent;
@@ -207,7 +231,10 @@ const GetInfo = () => {
 
       {/* Navbar */}
       <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 flex justify-between items-center mix-blend-difference">
-        <a href="/" className="text-2xl font-bold tracking-tighter uppercase text-white hover:opacity-80 transition-opacity flex items-center gap-2">
+        <a
+          href="/"
+          className="text-2xl font-bold tracking-tighter uppercase text-white hover:opacity-80 transition-opacity flex items-center gap-2"
+        >
           <ArrowLeft className="w-5 h-5" /> Back
         </a>
         <div className="text-xl font-bold tracking-widest uppercase">
@@ -228,7 +255,10 @@ const GetInfo = () => {
 
           <div className="space-y-6">
             <div className="form-item">
-              <label htmlFor="fullName" className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+              <label
+                htmlFor="fullName"
+                className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+              >
                 Full Name
               </label>
               <input
@@ -242,7 +272,10 @@ const GetInfo = () => {
             </div>
 
             <div className="form-item">
-              <label htmlFor="phoneNumber" className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+              >
                 Phone Number
               </label>
               <PhoneInput
@@ -256,7 +289,10 @@ const GetInfo = () => {
             </div>
 
             <div className="form-item">
-              <label htmlFor="email" className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -270,7 +306,10 @@ const GetInfo = () => {
             </div>
 
             <div className="form-item">
-              <label htmlFor="address" className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+              <label
+                htmlFor="address"
+                className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+              >
                 Shipping Address
               </label>
               <textarea
@@ -285,7 +324,10 @@ const GetInfo = () => {
 
             <div className="grid grid-cols-2 gap-4 form-item">
               <div>
-                <label htmlFor="accountType" className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+                <label
+                  htmlFor="accountType"
+                  className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+                >
                   Account Type
                 </label>
                 <select
@@ -294,12 +336,19 @@ const GetInfo = () => {
                   onChange={(e) => setAccountType(e.target.value)}
                   className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
                 >
-                  <option value="Company" className="bg-black">COMPANY</option>
-                  <option value="Personal" className="bg-black">PERSONAL</option>
+                  <option value="Company" className="bg-black">
+                    COMPANY
+                  </option>
+                  <option value="Personal" className="bg-black">
+                    PERSONAL
+                  </option>
                 </select>
               </div>
               <div>
-                <label htmlFor="planDuration" className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+                <label
+                  htmlFor="planDuration"
+                  className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+                >
                   Plan
                 </label>
                 <select
@@ -308,16 +357,25 @@ const GetInfo = () => {
                   onChange={(e) => setPlanDuration(e.target.value)}
                   className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
                 >
-                  <option value="1 Year Plan 999/-" className="bg-black">1 YEAR - 999/-</option>
-                  <option value="2 Year Plan 1299/-" className="bg-black">2 YEAR - 1299/-</option>
-                  <option value="3 Year Plan 1399/-" className="bg-black">3 YEAR - 1399/-</option>
+                  <option value="1 Year Plan 999/-" className="bg-black">
+                    1 YEAR - 999/-
+                  </option>
+                  <option value="2 Year Plan 1299/-" className="bg-black">
+                    2 YEAR - 1299/-
+                  </option>
+                  <option value="3 Year Plan 1399/-" className="bg-black">
+                    3 YEAR - 1399/-
+                  </option>
                 </select>
               </div>
             </div>
 
-            {accountType === 'Company' && (
+            {accountType === "Company" && (
               <div className="form-item">
-                <label htmlFor="companyName" className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+                <label
+                  htmlFor="companyName"
+                  className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+                >
                   Company Name
                 </label>
                 <input
@@ -334,7 +392,9 @@ const GetInfo = () => {
             <button
               onClick={handleFormSubmit}
               disabled={loading}
-              className={`w-full mt-8 py-4 px-6 bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-300 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full mt-8 py-4 px-6 bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-300 ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
