@@ -6,6 +6,10 @@ const Payments = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedPayments, setSelectedPayments] = useState(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchPayments = async () => {
     try {
@@ -45,13 +49,92 @@ const Payments = () => {
 
   const filteredPayments = payments.filter((payment) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const paymentDate = new Date(payment.created_at);
+
+    // Date Filter Logic
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    // Adjust end date to include the full day
+    if (end) {
+      end.setHours(23, 59, 59, 999);
+    }
+
+    const matchesSearch =
       payment.full_name?.toLowerCase().includes(term) ||
       payment.email?.toLowerCase().includes(term) ||
       payment.razorpay_payment_id?.toLowerCase().includes(term) ||
-      payment.razorpay_order_id?.toLowerCase().includes(term)
-    );
+      payment.razorpay_order_id?.toLowerCase().includes(term);
+
+    const matchesDate =
+      (!start || paymentDate >= start) && (!end || paymentDate <= end);
+
+    return matchesSearch && matchesDate;
   });
+
+  // Bulk Selection Logic
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allIds = new Set(filteredPayments.map((p) => p.id));
+      setSelectedPayments(allIds);
+    } else {
+      setSelectedPayments(new Set());
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    const newSelected = new Set(selectedPayments);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedPayments(newSelected);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete ${selectedPayments.size} payment(s)?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch(
+        "https://yowckahgoxqfikadirov.supabase.co/functions/v1/delete-payments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+          body: JSON.stringify({ payment_ids: Array.from(selectedPayments) }),
+        }
+      );
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("Payments deleted successfully");
+        setSelectedPayments(new Set());
+        fetchPayments(); // Refresh list
+      } else {
+        throw new Error(result.error || "Failed to delete payments");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Failed to delete: " + error.message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -67,9 +150,47 @@ const Payments = () => {
   return (
     <div className="flex flex-col h-full gap-4">
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
-        <h1 className="text-xl font-semibold">Payments</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-semibold">Payments</h1>
+          {selectedPayments.size > 0 && (
+            <button
+              onClick={handleDeleteSelected}
+              disabled={isDeleting}
+              className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+            >
+              {isDeleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Delete Selected"
+              )}
+              <span className="bg-red-200 px-1.5 rounded-full text-xs">
+                {selectedPayments.size}
+              </span>
+            </button>
+          )}
+        </div>
 
-        <div className="flex items-center gap-2 w-full md:w-auto">
+        {/* ... (Search and Date filters remain same) */}
+        <div className="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
+          {/* Date Filters */}
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              title="Start Date"
+            />
+            <span className="text-gray-400">-</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              title="End Date"
+            />
+          </div>
+
           <div className="relative w-full md:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -95,6 +216,17 @@ const Payments = () => {
           <table className="w-full text-sm text-left relative">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b sticky top-0 z-10">
               <tr>
+                <th className="px-6 py-3 bg-gray-50 w-4">
+                  <input
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={
+                      filteredPayments.length > 0 &&
+                      selectedPayments.size === filteredPayments.length
+                    }
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                </th>
                 <th className="px-6 py-3 bg-gray-50">Date</th>
                 <th className="px-6 py-3 bg-gray-50">User Details</th>
                 <th className="px-6 py-3 bg-gray-50">Plan Info</th>
@@ -106,7 +238,7 @@ const Payments = () => {
               {loading ? (
                 <tr>
                   <td
-                    colSpan="5"
+                    colSpan="6"
                     className="px-6 py-8 text-enter text-gray-500"
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -118,7 +250,7 @@ const Payments = () => {
               ) : filteredPayments.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="5"
+                    colSpan="6"
                     className="px-6 py-8 text-center text-gray-500"
                   >
                     No payments found.
@@ -128,8 +260,20 @@ const Payments = () => {
                 filteredPayments.map((payment) => (
                   <tr
                     key={payment.id}
-                    className="bg-white border-b hover:bg-gray-50 transition-colors"
+                    className={`border-b transition-colors ${
+                      selectedPayments.has(payment.id)
+                        ? "bg-blue-50 hover:bg-blue-100"
+                        : "bg-white hover:bg-gray-50"
+                    }`}
                   >
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedPayments.has(payment.id)}
+                        onChange={() => handleSelectOne(payment.id)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                       {formatDate(payment.created_at)}
                     </td>
@@ -178,6 +322,7 @@ const Payments = () => {
       </div>
 
       <div className="text-xs text-gray-500 text-right shrink-0">
+        <span className="mr-4">{selectedPayments.size} selected</span>
         Total Records: {filteredPayments.length}
       </div>
     </div>
