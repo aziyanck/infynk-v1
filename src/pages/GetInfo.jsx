@@ -13,6 +13,7 @@ import {
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { supabase } from "../supabaseClient";
+import PaymentSuccess from "../components/PaymentSuccess";
 
 // ---------------------------------------------------------
 // CONFIGURATION
@@ -28,6 +29,8 @@ const GetInfo = () => {
   const [companyName, setCompanyName] = useState("");
   const [planDuration, setPlanDuration] = useState("1 Year Plan 999/-");
   const [loading, setLoading] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState("idle"); // 'idle' | 'verifying' | 'success' | 'failed'
+  const [paymentData, setPaymentData] = useState(null); // Stores orderId, paymentId, etc.
 
   const containerRef = useRef();
   const formRef = useRef();
@@ -109,10 +112,15 @@ const GetInfo = () => {
         image: "https://example.com/your_logo.jpg",
         order_id: orderData.id,
 
-        // Inside your existing handlePayment function...
-
         handler: async function (response) {
           console.log("Payment Processing...");
+          setPaymentStatus("verifying"); // Show verifying screen
+
+          // Store payment data for the success screen
+          setPaymentData({
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+          });
 
           try {
             // CALL THE SECURE EDGE FUNCTION
@@ -139,9 +147,10 @@ const GetInfo = () => {
 
             if (verifyError) throw verifyError;
 
-            alert("Payment Verified & Registration Successful!");
+            setPaymentStatus("success"); // Show success screen
           } catch (err) {
             console.error("Verification Failed:", err);
+            setPaymentStatus("failed"); // Show failed screen
             alert(
               "Payment succeeded, but verification failed. Please contact support."
             );
@@ -172,6 +181,7 @@ const GetInfo = () => {
 
       paymentObject.on("payment.failed", function (response) {
         alert("Payment Failed: " + response.error.description);
+        setPaymentStatus("failed");
       });
     } catch (err) {
       console.error(err);
@@ -193,6 +203,18 @@ const GetInfo = () => {
       ref={containerRef}
       className="bg-black text-white min-h-screen font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden relative"
     >
+      {/* Payment Success Overlay */}
+      {paymentStatus !== "idle" && (
+        <PaymentSuccess
+          status={paymentStatus}
+          userData={{
+            name: fullName,
+            email: email,
+            paymentId: paymentData?.paymentId,
+          }}
+        />
+      )}
+
       <style>{`
                 .phone-input-custom .PhoneInputInput {
                     background-color: transparent;

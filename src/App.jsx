@@ -1,6 +1,6 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import { ThreeDot } from 'react-loading-indicators';
+import { ThreeDot } from "react-loading-indicators";
 import LandingPage from "./pages/LandingPage";
 
 // Lazy Load Pages
@@ -17,17 +17,24 @@ const TermsOfService = lazy(() => import("./pages/legal/TermsOfService"));
 const CookiePolicy = lazy(() => import("./pages/legal/CookiePolicy"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const UpdatePassword = lazy(() => import("./pages/UpdatePassword"));
+const TestPaymentPage = lazy(() => import("./pages/TestPaymentPage"));
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
-    <ThreeDot variant="pulsate" color="#3194cc" size="large" text="" textColor="" />
+    <ThreeDot
+      variant="pulsate"
+      color="#3194cc"
+      size="large"
+      text=""
+      textColor=""
+    />
   </div>
 );
 
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
-      <main className="min-h-screen"> 
+      <main className="min-h-screen">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/user" element={<UserLogin />} />
@@ -42,9 +49,10 @@ export default function App() {
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/update-password" element={<UpdatePassword />} />
+          <Route path="/test-page" element={<TestPaymentPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
     </Suspense>
-  )
+  );
 }
