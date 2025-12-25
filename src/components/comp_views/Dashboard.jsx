@@ -8,6 +8,7 @@ import {
   Download,
   MoreHorizontal,
   ChevronDown,
+  RefreshCw,
 } from "lucide-react";
 import {
   AreaChart,
@@ -21,66 +22,44 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const Dashboard = () => {
-  const [loading, setLoading] = useState(true);
-  const [paymentData, setPaymentData] = useState([]); // For Chart (aggregated)
-  const [userData, setUserData] = useState([]); // For Chart (aggregated)
+const Dashboard = ({
+  users = [],
+  payments = [],
+  loading = false,
+  onRefresh,
+}) => {
+  // Initial loading from parent is handled by 'loading' prop
+  // Charts state
+  const [paymentData, setPaymentData] = useState([]);
+  const [userData, setUserData] = useState([]);
 
-  // Raw Data for filtering stats
-  const [rawPayments, setRawPayments] = useState([]);
-  const [rawUsers, setRawUsers] = useState([]);
+  // Raw Data is now passed as props (users, payments).
+  // We can use them directly or set them to state if we need local manipulation,
+  // but filtering logic can just use the props.
 
   // Filter State
-  const [timeRange, setTimeRange] = useState(30); // Default 30 days
+  const [timeRange, setTimeRange] = useState(30);
 
-  // Metrics (Filtered)
+  // Metrics
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [activeUsersCount, setActiveUsersCount] = useState(0);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      // 1. Fetch Payments
-      const paymentsRes = await fetch(
-        "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-payments",
-        { headers: { Authorization: `Bearer ${session?.access_token}` } }
-      );
-      const paymentsJson = await paymentsRes.json();
-      const payments = paymentsJson.payments || [];
-      setRawPayments(payments);
-
-      // 2. Fetch Users
-      const usersRes = await fetch(
-        "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-users",
-        { headers: { Authorization: `Bearer ${session?.access_token}` } }
-      );
-      const usersJson = await usersRes.json();
-      const users = usersJson.users || [];
-      setRawUsers(users);
-
+  // Process data whenever props change
+  useEffect(() => {
+    if (!loading) {
       processChartData(payments, users);
-      calculateStats(payments, users, 30); // Initial calculation
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-    } finally {
-      setLoading(false);
+      calculateStats(payments, users, timeRange);
     }
-  };
+  }, [payments, users, loading, timeRange]);
 
-  // calculateStats filters raw data based on the selected time range
-  // and updates the stats cards.
-  const calculateStats = (payments, users, days) => {
+  const calculateStats = (paymentsList, usersList, days) => {
     const now = new Date();
     const pastDate = new Date();
     pastDate.setDate(now.getDate() - days);
 
     // --- FILTER & CALC REVENUE ---
     let revenueSum = 0;
-    payments.forEach((payment) => {
+    paymentsList.forEach((payment) => {
       if (!payment.created_at) return;
       const paymentDate = new Date(payment.created_at);
 
@@ -101,17 +80,16 @@ const Dashboard = () => {
     setTotalRevenue(revenueSum);
 
     // --- CALC ACTIVE USERS (TOTAL) ---
-    // User requested active users NOT be affected by the time filter.
-    // So we just count ALL users with 'Active' status, ignoring the date range.
-    const totalActiveUsers = users.filter((u) => u.route_status === "Active");
+    const totalActiveUsers = usersList.filter(
+      (u) => u.route_status === "Active"
+    );
     setActiveUsersCount(totalActiveUsers.length);
   };
 
-  // processChartData handles the aggregation for the graphs (Always All Data)
-  const processChartData = (payments, users) => {
+  const processChartData = (paymentsList, usersList) => {
     // --- REVENUE CHART ---
     const revenueByMonth = {};
-    payments.forEach((payment) => {
+    paymentsList.forEach((payment) => {
       if (!payment.created_at) return;
       let amount = 0;
       if (payment.plan) {
@@ -152,7 +130,7 @@ const Dashboard = () => {
 
     // --- USER CHART ---
     const usersByMonth = {};
-    users.forEach((user) => {
+    usersList.forEach((user) => {
       if (user.route_status !== "Active" || !user.created_at) return;
       const date = new Date(user.created_at);
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -162,11 +140,7 @@ const Dashboard = () => {
       const shortLabel = date.toLocaleDateString("en-US", { month: "short" });
 
       if (!usersByMonth[key]) {
-        usersByMonth[key] = {
-          name: shortLabel,
-          activeUsers: 0,
-          sortKey: key,
-        };
+        usersByMonth[key] = { name: shortLabel, activeUsers: 0, sortKey: key };
       }
       usersByMonth[key].activeUsers += 1;
     });
@@ -176,17 +150,6 @@ const Dashboard = () => {
       )
     );
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Re-calculate stats when timeRange changes (using raw data if available)
-  useEffect(() => {
-    if (rawPayments.length > 0 && rawUsers.length > 0) {
-      calculateStats(rawPayments, rawUsers, timeRange);
-    }
-  }, [timeRange, rawPayments, rawUsers]);
 
   const formatCurrency = (value) => `₹${value.toLocaleString("en-IN")}`;
   const [isExporting, setIsExporting] = useState(false);
@@ -293,7 +256,7 @@ const Dashboard = () => {
             Financial performance and user growth statistics.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-end md:self-auto">
           <div className="relative">
             <select
               value={timeRange}
@@ -311,9 +274,22 @@ const Dashboard = () => {
           </div>
 
           <button
+            onClick={onRefresh}
+            disabled={loading}
+            className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50"
+            title="Refresh Data"
+          >
+            <RefreshCw
+              className={`w-4 h-4 text-gray-600 ${
+                loading ? "animate-spin" : ""
+              }`}
+            />
+          </button>
+
+          <button
             onClick={handleExportReport}
             disabled={isExporting}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-[140px] justify-center"
+            className="hidden md:flex px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors shadow-sm items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-[140px] justify-center"
           >
             {isExporting ? (
               <>
@@ -342,10 +318,8 @@ const Dashboard = () => {
             </p>
             <div className="flex items-center gap-1 text-green-500 text-sm font-medium">
               <TrendingUp className="w-4 h-4" />
-              {/* Trend calculation is complex without previous period data. Keeping static or could compare to previous X days if data allows. */}
-              <span>--</span>
               <span className="text-gray-400 font-normal ml-1">
-                in selected period
+                {timeRange === 365 ? "Last 1 Year" : `Last ${timeRange} Days`}
               </span>
             </div>
           </div>
@@ -365,9 +339,8 @@ const Dashboard = () => {
             </p>
             <div className="flex items-center gap-1 text-green-500 text-sm font-medium">
               <TrendingUp className="w-4 h-4" />
-              <span>--</span>
               <span className="text-gray-400 font-normal ml-1">
-                joined in period
+                Total Active
               </span>
             </div>
           </div>

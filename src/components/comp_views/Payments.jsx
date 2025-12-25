@@ -2,50 +2,25 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import { Loader2, Search, RefreshCw } from "lucide-react";
 
-const Payments = () => {
-  const [payments, setPayments] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Payments = ({
+  payments: initialPayments = [],
+  loading: parentLoading,
+  onRefresh,
+}) => {
+  const [payments, setPayments] = useState(initialPayments);
+
+  useEffect(() => {
+    setPayments(initialPayments);
+  }, [initialPayments]);
+
+  // Use parent loading
+  const loading = parentLoading;
+
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedPayments, setSelectedPayments] = useState(new Set());
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const fetchPayments = async () => {
-    try {
-      setLoading(true);
-
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const res = await fetch(
-        "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-payments",
-        {
-          headers: {
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setPayments(data.payments || []);
-      } else {
-        throw new Error(data.error || "Failed to fetch payments");
-      }
-    } catch (error) {
-      console.error("Error fetching payments:", error);
-      alert("Failed to fetch payments: " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPayments();
-  }, []);
 
   const filteredPayments = payments.filter((payment) => {
     const term = searchTerm.toLowerCase();
@@ -101,8 +76,8 @@ const Payments = () => {
       return;
     }
 
+    setIsDeleting(true);
     try {
-      setIsDeleting(true);
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -115,22 +90,22 @@ const Payments = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session?.access_token}`,
           },
-          body: JSON.stringify({ payment_ids: Array.from(selectedPayments) }),
+          body: JSON.stringify({ ids: Array.from(selectedPayments) }),
         }
       );
 
       const result = await res.json();
 
-      if (res.ok) {
-        alert("Payments deleted successfully");
-        setSelectedPayments(new Set());
-        fetchPayments(); // Refresh list
-      } else {
+      if (!res.ok) {
         throw new Error(result.error || "Failed to delete payments");
       }
+
+      alert("Payments deleted successfully");
+      setSelectedPayments(new Set()); // Clear selection
+      if (onRefresh) onRefresh(); // Refresh list
     } catch (error) {
-      console.error("Delete error:", error);
-      alert("Failed to delete: " + error.message);
+      console.error("Error deleting payments:", error);
+      alert(error.message);
     } finally {
       setIsDeleting(false);
     }
@@ -202,7 +177,7 @@ const Payments = () => {
             />
           </div>
           <button
-            onClick={fetchPayments}
+            onClick={onRefresh}
             className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
             title="Refresh"
           >

@@ -3,11 +3,27 @@ import React, { useState, useEffect } from "react";
 import UserList from "./UserList";
 import { supabase } from "../../supabaseClient";
 
-const Users = () => {
+const Users = ({
+  users: initialUsers = [],
+  setUsers: setParentUsers,
+  loading: parentLoading,
+  onRefresh,
+}) => {
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [statusMsg, setStatusMsg] = useState("");
-  const [users, setUsers] = useState([]);
+  // Local users state for filtering/sorting, initialized from props
+  const [users, setUsers] = useState(initialUsers);
+
+  // Sync local users with parent users when parent updates
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
 
@@ -17,6 +33,7 @@ const Users = () => {
     showExpired: false,
   });
 
+  // ... (filtering logic remains same) ...
   let filteredUsers = users.filter((user) => {
     // 1. Search Filter
     const term = searchTerm.toLowerCase();
@@ -36,7 +53,8 @@ const Users = () => {
     // Union (OR) logic: Show if matches ANY active filter
     const isUnassigned = !user.route_id;
     const isInactive = user.route_id && user.route_status !== "Active";
-    const isExpired = user.expiry_date && new Date(user.expiry_date) < new Date();
+    const isExpired =
+      user.expiry_date && new Date(user.expiry_date) < new Date();
 
     if (filters.showUnassigned && isUnassigned) return true;
     if (filters.showInactive && isInactive) return true;
@@ -70,48 +88,8 @@ const Users = () => {
     filteredUsers.reverse();
   }
 
-  const [loading, setLoading] = useState(true);
-
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const res = await fetch(
-        "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-users",
-        {
-          headers: {
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-      console.log("Response from Edge Function:", data);
-      if (data.users && data.users.length > 0) {
-        console.log("First user sample:", data.users[0]);
-      }
-
-      if (res.ok) {
-        setUsers(Array.isArray(data.users) ? data.users : []);
-      } else {
-        console.error(data.error || "Unknown error");
-        alert(data.error || "Failed to fetch users");
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
+  // Use parent loading
+  const loading = parentLoading;
 
   const handleInputChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -134,10 +112,12 @@ const Users = () => {
     if (!res.ok) {
       setStatusMsg(`❌ ${result.error?.message || "Failed to create user"}`);
     } else {
-      setStatusMsg(`✅ ${role === "admin" ? "Admin" : "User"} created successfully!`);
+      setStatusMsg(
+        `✅ ${role === "admin" ? "Admin" : "User"} created successfully!`
+      );
       setFormData({ name: "", email: "", password: "" });
 
-      fetchUsers();
+      if (onRefresh) onRefresh();
 
       setTimeout(() => {
         setShowModal(false);
@@ -193,7 +173,9 @@ const Users = () => {
               />
 
               {statusMsg && (
-                <p className="text-sm mb-3 text-center text-gray-700">{statusMsg}</p>
+                <p className="text-sm mb-3 text-center text-gray-700">
+                  {statusMsg}
+                </p>
               )}
 
               <div className="flex flex-col gap-2">
@@ -236,7 +218,7 @@ const Users = () => {
           setSearchTerm={setSearchTerm}
           sortConfig={sortConfig}
           setSortConfig={setSortConfig}
-          fetchUsers={fetchUsers}
+          fetchUsers={onRefresh}
           filters={filters}
           setFilters={setFilters}
         />

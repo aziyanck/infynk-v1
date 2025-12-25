@@ -13,34 +13,69 @@ import Payments from "../components/comp_views/Payments";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState(() => {
-    // Load active tab from localStorage or default to "dashboard"
     return localStorage.getItem("adminActiveTab") || "dashboard";
   });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // mobile toggle
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sessionUser, setSessionUser] = useState(null);
 
-  // Save active tab to localStorage whenever it changes
+  // Centralized Data State
+  const [users, setUsers] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [dataLoading, setDataLoading] = useState(false);
+
   useEffect(() => {
     localStorage.setItem("adminActiveTab", activeTab);
   }, [activeTab]);
 
   const handleLogout = async () => {
     try {
-      // Clear localStorage
       localStorage.removeItem("adminActiveTab");
-
-      // Sign out from Supabase
       await supabase.auth.signOut();
-
-      // Navigate to admin login
       navigate("/admin");
     } catch (error) {
       console.error("Error during logout:", error);
-      // Still navigate even if there's an error
       navigate("/admin");
+    }
+  };
+
+  const refreshData = async () => {
+    try {
+      setDataLoading(true);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) return;
+
+      // Parallel Fetch
+      const [usersRes, paymentsRes] = await Promise.all([
+        fetch(
+          "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-users",
+          {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          }
+        ),
+        fetch(
+          "https://yowckahgoxqfikadirov.supabase.co/functions/v1/list-payments",
+          {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          }
+        ),
+      ]);
+
+      const usersJson = await usersRes.json();
+      const paymentsJson = await paymentsRes.json();
+
+      if (usersRes.ok) setUsers(usersJson.users || []);
+      else console.error("Failed to fetch users:", usersJson.error);
+
+      if (paymentsRes.ok) setPayments(paymentsJson.payments || []);
+      else console.error("Failed to fetch payments:", paymentsJson.error);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setDataLoading(false);
     }
   };
 
@@ -49,11 +84,10 @@ const AdminDashboard = () => {
     const checkAdminRole = async () => {
       const {
         data: { session },
-        error,
       } = await supabase.auth.getSession();
 
       if (!session) {
-        navigate("/admin"); // Not logged in
+        navigate("/admin");
         return;
       }
 
@@ -61,11 +95,13 @@ const AdminDashboard = () => {
       const role = session.user.app_metadata?.role;
 
       if (role !== "admin") {
-        navigate("/admin"); // Not an admin
+        navigate("/admin");
         return;
       }
 
-      setLoading(false); // Allowed
+      setLoading(false);
+      // Determine if we need to fetch data on initial load
+      refreshData();
     };
 
     checkAdminRole();
@@ -76,19 +112,34 @@ const AdminDashboard = () => {
       case "dashboard":
         return (
           <div className="h-full overflow-y-auto p-6">
-            <Dashboard />
+            <Dashboard
+              users={users}
+              payments={payments}
+              loading={dataLoading}
+              onRefresh={refreshData}
+            />
           </div>
         );
       case "users":
         return (
           <div className="h-full overflow-y-auto p-6">
-            <Users />
+            <Users
+              users={users}
+              setUsers={setUsers} // Allow local optimism or updates if needed
+              loading={dataLoading}
+              onRefresh={refreshData}
+            />
           </div>
         );
       case "payments":
         return (
           <div className="h-full p-6 flex flex-col">
-            <Payments />
+            <Payments
+              payments={payments}
+              setPayments={setPayments}
+              loading={dataLoading}
+              onRefresh={refreshData}
+            />
           </div>
         );
       case "cards":
@@ -104,7 +155,12 @@ const AdminDashboard = () => {
       default:
         return (
           <div className="h-full overflow-y-auto p-6">
-            <Dashboard />
+            <Dashboard
+              users={users}
+              payments={payments}
+              loading={dataLoading}
+              onRefresh={refreshData}
+            />
           </div>
         );
     }
