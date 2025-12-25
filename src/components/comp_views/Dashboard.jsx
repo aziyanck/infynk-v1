@@ -7,6 +7,7 @@ import {
   TrendingUp,
   Download,
   MoreHorizontal,
+  ChevronDown,
 } from "lucide-react";
 import {
   AreaChart,
@@ -22,10 +23,17 @@ import {
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
-  const [paymentData, setPaymentData] = useState([]);
-  const [userData, setUserData] = useState([]);
+  const [paymentData, setPaymentData] = useState([]); // For Chart (aggregated)
+  const [userData, setUserData] = useState([]); // For Chart (aggregated)
 
-  // Metrics
+  // Raw Data for filtering stats
+  const [rawPayments, setRawPayments] = useState([]);
+  const [rawUsers, setRawUsers] = useState([]);
+
+  // Filter State
+  const [timeRange, setTimeRange] = useState(30); // Default 30 days
+
+  // Metrics (Filtered)
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [activeUsersCount, setActiveUsersCount] = useState(0);
 
@@ -43,6 +51,7 @@ const Dashboard = () => {
       );
       const paymentsJson = await paymentsRes.json();
       const payments = paymentsJson.payments || [];
+      setRawPayments(payments);
 
       // 2. Fetch Users
       const usersRes = await fetch(
@@ -51,8 +60,10 @@ const Dashboard = () => {
       );
       const usersJson = await usersRes.json();
       const users = usersJson.users || [];
+      setRawUsers(users);
 
-      processDashboardData(payments, users);
+      processChartData(payments, users);
+      calculateStats(payments, users, 30); // Initial calculation
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -60,15 +71,48 @@ const Dashboard = () => {
     }
   };
 
-  const processDashboardData = (payments, users) => {
-    // --- REVENUE PROCESSING ---
-    let revenueSum = 0;
-    const revenueByMonth = {};
+  // calculateStats filters raw data based on the selected time range
+  // and updates the stats cards.
+  const calculateStats = (payments, users, days) => {
+    const now = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(now.getDate() - days);
 
+    // --- FILTER & CALC REVENUE ---
+    let revenueSum = 0;
     payments.forEach((payment) => {
       if (!payment.created_at) return;
+      const paymentDate = new Date(payment.created_at);
 
-      // Extract amount
+      if (paymentDate >= pastDate && paymentDate <= now) {
+        let amount = 0;
+        if (payment.plan) {
+          const match = payment.plan.match(/(\d+)\/-?/);
+          if (match && match[1]) amount = parseInt(match[1], 10);
+          else {
+            if (payment.plan.includes("999")) amount = 999;
+            else if (payment.plan.includes("1299")) amount = 1299;
+            else if (payment.plan.includes("1399")) amount = 1399;
+          }
+        }
+        revenueSum += amount;
+      }
+    });
+    setTotalRevenue(revenueSum);
+
+    // --- CALC ACTIVE USERS (TOTAL) ---
+    // User requested active users NOT be affected by the time filter.
+    // So we just count ALL users with 'Active' status, ignoring the date range.
+    const totalActiveUsers = users.filter((u) => u.route_status === "Active");
+    setActiveUsersCount(totalActiveUsers.length);
+  };
+
+  // processChartData handles the aggregation for the graphs (Always All Data)
+  const processChartData = (payments, users) => {
+    // --- REVENUE CHART ---
+    const revenueByMonth = {};
+    payments.forEach((payment) => {
+      if (!payment.created_at) return;
       let amount = 0;
       if (payment.plan) {
         const match = payment.plan.match(/(\d+)\/-?/);
@@ -79,8 +123,6 @@ const Dashboard = () => {
           else if (payment.plan.includes("1399")) amount = 1399;
         }
       }
-      revenueSum += amount;
-
       const date = new Date(payment.created_at);
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
         2,
@@ -89,8 +131,8 @@ const Dashboard = () => {
       const label = date.toLocaleDateString("en-US", {
         month: "short",
         year: "numeric",
-      }); // e.g., "Jan 2024"
-      const shortLabel = date.toLocaleDateString("en-US", { month: "short" }); // e.g., "Jan"
+      });
+      const shortLabel = date.toLocaleDateString("en-US", { month: "short" });
 
       if (!revenueByMonth[key]) {
         revenueByMonth[key] = {
@@ -102,28 +144,16 @@ const Dashboard = () => {
       }
       revenueByMonth[key].revenue += amount;
     });
-
-    // Convert to array and sort
-    const sortedRevenueData = Object.values(revenueByMonth).sort((a, b) =>
-      a.sortKey.localeCompare(b.sortKey)
+    setPaymentData(
+      Object.values(revenueByMonth).sort((a, b) =>
+        a.sortKey.localeCompare(b.sortKey)
+      )
     );
-    setPaymentData(sortedRevenueData);
-    setTotalRevenue(revenueSum);
 
-    // --- USER PROCESSING ---
-    // Count active users (current snapshot)
-    const activeUsers = users.filter((u) => u.route_status === "Active");
-    setActiveUsersCount(activeUsers.length);
-
-    // Group Active Users by Month they were CREATED (Growth metric)
+    // --- USER CHART ---
     const usersByMonth = {};
-
     users.forEach((user) => {
-      // Only count active users for the graph? Or all users?
-      // "Active Users" graph usually implies growth of active users over time.
-      // Let's stick to users who are CURRENTLY active, grouped by when they joined.
       if (user.route_status !== "Active" || !user.created_at) return;
-
       const date = new Date(user.created_at);
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
         2,
@@ -140,18 +170,110 @@ const Dashboard = () => {
       }
       usersByMonth[key].activeUsers += 1;
     });
-
-    const sortedUserData = Object.values(usersByMonth).sort((a, b) =>
-      a.sortKey.localeCompare(b.sortKey)
+    setUserData(
+      Object.values(usersByMonth).sort((a, b) =>
+        a.sortKey.localeCompare(b.sortKey)
+      )
     );
-    setUserData(sortedUserData);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Re-calculate stats when timeRange changes (using raw data if available)
+  useEffect(() => {
+    if (rawPayments.length > 0 && rawUsers.length > 0) {
+      calculateStats(rawPayments, rawUsers, timeRange);
+    }
+  }, [timeRange, rawPayments, rawUsers]);
+
   const formatCurrency = (value) => `₹${value.toLocaleString("en-IN")}`;
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportReport = () => {
+    setIsExporting(true);
+    setTimeout(() => {
+      try {
+        const reportData = {};
+        // ... (Existing export logic remains same, but using chartData which is 'paymentData' and 'userData')
+        // Re-using aggregations from chart data to export 'Monthly' report as before.
+
+        paymentData.forEach((item) => {
+          if (!reportData[item.sortKey])
+            reportData[item.sortKey] = {
+              month: item.fullLabel,
+              revenue: 0,
+              activeUsers: 0,
+            };
+          reportData[item.sortKey].revenue = item.revenue;
+        });
+        userData.forEach((item) => {
+          if (!reportData[item.sortKey]) {
+            const [year, month] = item.sortKey.split("-");
+            const date = new Date(year, month - 1);
+            const label = date.toLocaleDateString("en-US", {
+              month: "short",
+              year: "numeric",
+            });
+            reportData[item.sortKey] = {
+              month: label,
+              revenue: 0,
+              activeUsers: 0,
+            };
+          }
+          reportData[item.sortKey].activeUsers = item.activeUsers;
+        });
+
+        const csvRows = [["Month", "Revenue (INR)", "New Active Users"]];
+        Object.keys(reportData)
+          .sort()
+          .forEach((key) => {
+            const row = reportData[key];
+            csvRows.push([`"${row.month}"`, row.revenue, row.activeUsers]);
+          });
+        csvRows.push([]);
+        // Note: Exporting 'Total' of the REPORT (which is all time) or Selected Time Range?
+        // Usually "Export Report" exports what's seen or all data.
+        // Let's keep it consistent with the charts (All Data) for now as typical "Monthwise Report".
+        // But the Total row below used 'totalRevenue' which is now FILTERED.
+        // Let's summing up the REPORT rows for consistency in the CSV.
+        const reportTotalRevenue = Object.values(reportData).reduce(
+          (a, b) => a + b.revenue,
+          0
+        );
+        const reportTotalUsers = Object.values(reportData).reduce(
+          (a, b) => a + b.activeUsers,
+          0
+        );
+
+        csvRows.push([
+          "Total (All Time)",
+          reportTotalRevenue,
+          reportTotalUsers,
+        ]);
+
+        const csvContent =
+          "data:text/csv;charset=utf-8," +
+          csvRows.map((e) => e.join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute(
+          "download",
+          `dashboard_report_${new Date().toISOString().split("T")[0]}.csv`
+        );
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Export failed:", error);
+        alert("Failed to export report.");
+      } finally {
+        setIsExporting(false);
+      }
+    }, 500);
+  };
 
   if (loading) {
     return (
@@ -172,11 +294,37 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
-            Last 30 Days
-          </button>
-          <button className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors shadow-sm flex items-center gap-2">
-            <Download className="w-4 h-4" /> Export Report
+          <div className="relative">
+            <select
+              value={timeRange}
+              onChange={(e) => setTimeRange(Number(e.target.value))}
+              className="appearance-none bg-white border border-gray-200 text-gray-700 py-2 pl-4 pr-8 rounded-lg text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm cursor-pointer"
+            >
+              <option value={7}>Last 7 Days</option>
+              <option value={15}>Last 15 Days</option>
+              <option value={30}>Last 30 Days</option>
+              <option value={60}>Last 60 Days</option>
+              <option value={90}>Last 90 Days</option>
+              <option value={365}>Last 1 Year</option>
+            </select>
+            <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
+          <button
+            onClick={handleExportReport}
+            disabled={isExporting}
+            className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-[140px] justify-center"
+          >
+            {isExporting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Exporting...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" /> Export Report
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -194,9 +342,10 @@ const Dashboard = () => {
             </p>
             <div className="flex items-center gap-1 text-green-500 text-sm font-medium">
               <TrendingUp className="w-4 h-4" />
-              <span>12.5%</span>
+              {/* Trend calculation is complex without previous period data. Keeping static or could compare to previous X days if data allows. */}
+              <span>--</span>
               <span className="text-gray-400 font-normal ml-1">
-                vs last month
+                in selected period
               </span>
             </div>
           </div>
@@ -216,9 +365,9 @@ const Dashboard = () => {
             </p>
             <div className="flex items-center gap-1 text-green-500 text-sm font-medium">
               <TrendingUp className="w-4 h-4" />
-              <span>8.2%</span>
+              <span>--</span>
               <span className="text-gray-400 font-normal ml-1">
-                vs last month
+                joined in period
               </span>
             </div>
           </div>
