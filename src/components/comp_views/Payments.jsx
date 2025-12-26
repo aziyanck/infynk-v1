@@ -205,6 +205,7 @@ const Payments = ({
                 <th className="px-6 py-3 bg-gray-50">Date</th>
                 <th className="px-6 py-3 bg-gray-50">User Details</th>
                 <th className="px-6 py-3 bg-gray-50">Plan Info</th>
+                <th className="px-6 py-3 bg-gray-50">Card Type</th>
                 <th className="px-6 py-3 bg-gray-50">Payment ID</th>
                 <th className="px-6 py-3 bg-gray-50">Status</th>
               </tr>
@@ -213,7 +214,7 @@ const Payments = ({
               {loading ? (
                 <tr>
                   <td
-                    colSpan="6"
+                    colSpan="7"
                     className="px-6 py-8 text-enter text-gray-500"
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -225,7 +226,7 @@ const Payments = ({
               ) : filteredPayments.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="6"
+                    colSpan="7"
                     className="px-6 py-8 text-center text-gray-500"
                   >
                     No payments found.
@@ -270,6 +271,11 @@ const Payments = ({
                           {payment.company_name}
                         </div>
                       )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-gray-900 font-medium">
+                        {payment.card_type || "N/A"}
+                      </div>
                     </td>
                     <td className="px-6 py-4 font-mono text-xs text-gray-600">
                       <div>{payment.razorpay_payment_id}</div>

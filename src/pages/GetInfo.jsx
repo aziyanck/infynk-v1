@@ -28,7 +28,9 @@ const GetInfo = () => {
   const [address, setAddress] = useState("");
   const [accountType, setAccountType] = useState("Company");
   const [companyName, setCompanyName] = useState("");
+
   const [planDuration, setPlanDuration] = useState("1 Year Plan 999/-");
+  const [cardType, setCardType] = useState("PVC Card");
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("idle"); // 'idle' | 'verifying' | 'success' | 'failed'
   const [paymentData, setPaymentData] = useState(null); // Stores orderId, paymentId, etc.
@@ -141,6 +143,7 @@ const GetInfo = () => {
                     company_name:
                       accountType === "Company" ? companyName : null,
                     plan: planDuration,
+                    card_type: cardType,
                   },
                 },
               }
@@ -345,6 +348,34 @@ const GetInfo = () => {
               />
             </div>
 
+            <div className="form-item">
+              <label
+                htmlFor="cardType"
+                className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+              >
+                Card Type
+              </label>
+              <div className="relative">
+                <select
+                  id="cardType"
+                  value={cardType}
+                  onChange={(e) => setCardType(e.target.value)}
+                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
+                >
+                  <option value="PVC Card" className="bg-black">
+                    PVC CARD
+                  </option>
+                  {/* <option value="Wooden Card" className="bg-black">
+                    WOODEN CARD
+                  </option>
+                  <option value="Metal Card" className="bg-black">
+                    METAL CARD
+                  </option> */}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4 form-item">
               <div>
                 <label
@@ -398,6 +429,8 @@ const GetInfo = () => {
                 </div>
               </div>
             </div>
+
+            
 
             {accountType === "Company" && (
               <div className="form-item">
