@@ -127,6 +127,38 @@ const PaymentSuccess = ({ status, userData }) => {
             </button>
           </div>
         )}
+        {status === "payment_success_user_failed" && (
+          <div className="flex flex-col items-center gap-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full"></div>
+              <MessageCircle className="w-16 h-16 text-orange-500 relative z-10" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold uppercase tracking-tighter text-white mb-2">
+                Action Required
+              </h2>
+              <p className="text-gray-400 font-light mb-4">
+                Payment received, but we encountered a technical error setting
+                up your account.
+              </p>
+
+              <div className="mt-4 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <p className="text-sm text-orange-200 font-light mb-0">
+                  Please contact support immediately to finalize your account.
+                  Your payment is safe.
+                </p>
+              </div>
+
+              <button
+                onClick={handleWhatsAppRedirect}
+                className="mt-6 w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white font-bold uppercase tracking-widest hover:bg-[#128C7E] transition-all duration-300 rounded-lg"
+              >
+                <MessageCircle className="w-5 h-5" />
+                Contact Support
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

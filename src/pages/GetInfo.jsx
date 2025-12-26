@@ -127,9 +127,8 @@ const GetInfo = () => {
 
           try {
             // CALL THE SECURE EDGE FUNCTION
-            const { error: verifyError } = await supabase.functions.invoke(
-              "verify-payment",
-              {
+            const { data: verifyData, error: verifyError } =
+              await supabase.functions.invoke("verify-payment", {
                 body: {
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
@@ -146,12 +145,22 @@ const GetInfo = () => {
                     card_type: cardType,
                   },
                 },
-              }
-            );
+              });
 
             if (verifyError) throw verifyError;
 
-            setPaymentStatus("success"); // Show success screen
+            // Handle Edge Function Responses
+            if (verifyData.success) {
+              setPaymentStatus("success");
+            } else if (verifyData.paymentVerified && !verifyData.success) {
+              console.warn(
+                "Payment success, User creation failed:",
+                verifyData.message
+              );
+              setPaymentStatus("payment_success_user_failed");
+            } else {
+              throw new Error(verifyData.error || "Verification failed");
+            }
           } catch (err) {
             console.error("Verification Failed:", err);
             setPaymentStatus("failed"); // Show failed screen
@@ -429,8 +438,6 @@ const GetInfo = () => {
                 </div>
               </div>
             </div>
-
-            
 
             {accountType === "Company" && (
               <div className="form-item">
