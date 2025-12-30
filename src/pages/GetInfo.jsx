@@ -424,14 +424,14 @@ const GetInfo = () => {
                     onChange={(e) => setPlanDuration(e.target.value)}
                     className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
                   >
-                    <option value="1 Year Plan 999/-" className="bg-black">
-                      1 YEAR - 999/-
+                    <option value="1 Year Plan 1199/-" className="bg-black">
+                      1 YEAR - 1199/-
                     </option>
-                    <option value="2 Year Plan 1299/-" className="bg-black">
-                      2 YEAR - 1299/-
+                    <option value="2 Year Plan 1399/-" className="bg-black">
+                      2 YEAR - 1399/-
                     </option>
-                    <option value="3 Year Plan 1399/-" className="bg-black">
-                      3 YEAR - 1399/-
+                    <option value="3 Year Plan 1599/-" className="bg-black">
+                      3 YEAR - 1599/-
                     </option>
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
