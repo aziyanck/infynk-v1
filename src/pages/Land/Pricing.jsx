@@ -46,20 +46,20 @@ const Pricing = () => {
     const pvcPlans = [
         {
             duration: '1-Year Plan',
-            originalPrice: '₹1199',
-            price: '₹999',
+            originalPrice: '₹1399',
+            price: '₹1199',
             features: ['1-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '2-Year Plan',
-            originalPrice: '₹1399',
-            price: '₹1199',
+            originalPrice: '₹1599',
+            price: '₹1399',
             features: ['2-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '3-Year Plan',
-            originalPrice: '₹1599',
-            price: '₹1399',
+            originalPrice: '₹1899',
+            price: '₹1599',
             features: ['3-year subscription', 'Fully customizable card design', 'Access to all features']
         }
     ];
