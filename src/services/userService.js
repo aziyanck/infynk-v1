@@ -100,3 +100,15 @@ export const uploadProfileImage = async (
 
   return publicUrlData.publicUrl;
 };
+
+export const incrementViewCount = async (routeId) => {
+  console.log("Triggering view count increment for:", routeId);
+  const { data, error } = await supabase.functions.invoke(
+    "increment-view-count",
+    {
+      body: { route_id: routeId },
+    }
+  );
+
+  if (error) console.error("Error incrementing view count:", error);
+};
