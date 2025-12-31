@@ -47,7 +47,8 @@ export const fetchUserProfile = async () => {
   }
 
   const data = await res.json();
-  return data.profile;
+  // Merge view_count into the profile object
+  return { ...data.profile, view_count: data.view_count };
 };
 
 export const updateUserProfile = async (updatedProfile) => {
