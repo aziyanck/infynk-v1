@@ -145,6 +145,7 @@ const UserDashboard = () => {
     whatsapp: "",
     pr_img: "",
     designation: "",
+    companyName: "", // New field
 
     // social links
     website: "",
@@ -223,6 +224,10 @@ const UserDashboard = () => {
           setThemeKey(profileData.color);
         }
 
+        // Split designation and company
+        const rawDesignation = profileData.designation || "";
+        const [desigPart, compPart] = rawDesignation.split(";");
+
         setProfile({
           id: profileData.id,
           name: profileData.name || "",
@@ -231,7 +236,8 @@ const UserDashboard = () => {
           email: profileData.email || "",
           whatsapp: profileData.whatsapp || "",
           pr_img: profileData.pr_img || "",
-          designation: profileData.designation || "",
+          designation: desigPart || "",
+          companyName: compPart || "",
 
           website: profileData.website || "",
           linkedin: profileData.linkedin || "",
@@ -347,10 +353,16 @@ const UserDashboard = () => {
       // Combine profile and visibility into one object
       console.log("Profile before update:", profile);
 
-      const { view_count, ...restProfile } = profile;
+      const { view_count, companyName, ...restProfile } = profile;
+
+      // Concatenate designation and company
+      const combinedDesignation = companyName
+        ? `${profile.designation};${companyName}`
+        : profile.designation;
 
       const updatedData = {
         ...restProfile,
+        designation: combinedDesignation, // Override with combined string
         show_phone: visibility.phone,
         show_email: visibility.email,
         show_whatsapp: visibility.whatsapp,
@@ -406,6 +418,9 @@ const UserDashboard = () => {
   // Construct preview object
   const previewUser = {
     ...profile,
+    designation: profile.companyName
+      ? `${profile.designation};${profile.companyName}`
+      : profile.designation,
     color: themeKey,
     // Filter contact info based on visibility
     phone: visibility.phone ? profile.phone : null,
@@ -577,7 +592,7 @@ const UserDashboard = () => {
               name="name"
               value={profile.name}
               onChange={handleProfileChange}
-              className="border p-2 rounded bg-white/90"
+              className="border p-2 col-span-full rounded bg-white/90"
               placeholder="Name"
             />
             <input
@@ -585,7 +600,14 @@ const UserDashboard = () => {
               value={profile.designation}
               onChange={handleProfileChange}
               className="border p-2 rounded bg-white/90"
-              placeholder="designation"
+              placeholder="Designation"
+            />
+            <input
+              name="companyName"
+              value={profile.companyName}
+              onChange={handleProfileChange}
+              className="border p-2 rounded bg-white/90"
+              placeholder="Company Name"
             />
             <textarea
               name="bio"
