@@ -64,4 +64,11 @@ export const themes = {
     lightColor: "#eff6ff",
   },
 
+  woody: {
+    primaryColor: "#A05135",
+    textColor: "#A05135",
+    bgColor: "#f5edd7ff",
+    lightColor: "#e9c7a9ff",
+  },
+
 };
