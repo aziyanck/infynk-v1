@@ -21,6 +21,25 @@ import PaymentSuccess from "../components/PaymentSuccess";
 // ---------------------------------------------------------
 const RAZORPAY_KEY_ID = "rzp_test_RvWpRFSJe78xVj";
 
+const PRICING_CONFIG = {
+  "PVC Card": {
+    plans: {
+      "1_year": 1199,
+      "2_year": 1399,
+      "3_year": 1599,
+    },
+    single_item: 200,
+  },
+  "Wooden Card": {
+    plans: {
+      "1_year": 1299,
+      "2_year": 1499,
+      "3_year": 1699,
+    },
+    single_item: 350,
+  },
+};
+
 const GetInfo = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,11 +48,14 @@ const GetInfo = () => {
   const [accountType, setAccountType] = useState("Company");
   const [companyName, setCompanyName] = useState("");
 
-  const [planDuration, setPlanDuration] = useState("1 Year Plan 999/-");
+  const [planDuration, setPlanDuration] = useState("1_year");
   const [cardType, setCardType] = useState("PVC Card");
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("idle"); // 'idle' | 'verifying' | 'success' | 'failed'
   const [paymentData, setPaymentData] = useState(null); // Stores orderId, paymentId, etc.
+  
+  const [qty, setQty] = useState(1);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   const containerRef = useRef();
   const formRef = useRef();
@@ -64,6 +86,16 @@ const GetInfo = () => {
     { scope: containerRef }
   );
 
+  React.useEffect(() => {
+    const selectedConfig = PRICING_CONFIG[cardType] || PRICING_CONFIG["PVC Card"];
+    const planPrice = selectedConfig.plans[planDuration] || 0;
+    // First card included in plan, extra cards charged
+    const extraQty = Math.max(0, qty - 1);
+    const extraCardPrice = selectedConfig.single_item * extraQty;
+    
+    setTotalAmount(planPrice + extraCardPrice);
+  }, [planDuration, qty, cardType]);
+
   const loadRazorpay = (src) => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -86,7 +118,7 @@ const GetInfo = () => {
       const { data: orderData, error } = await supabase.functions.invoke(
         "create-order",
         {
-          body: { planName: planDuration },
+          body: { planName: planDuration, qty: qty, cardType: cardType },
         }
       );
 
@@ -143,6 +175,7 @@ const GetInfo = () => {
                       accountType === "Company" ? companyName : null,
                     plan: planDuration,
                     card_type: cardType,
+                    qty: qty,
                   },
                 },
               });
@@ -357,31 +390,50 @@ const GetInfo = () => {
               />
             </div>
 
-            <div className="form-item">
-              <label
-                htmlFor="cardType"
-                className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
-              >
-                Card Type
-              </label>
-              <div className="relative">
-                <select
-                  id="cardType"
-                  value={cardType}
-                  onChange={(e) => setCardType(e.target.value)}
-                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
+            <div className="grid grid-cols-3 gap-4 form-item">
+              <div className="col-span-2">
+                <label
+                  htmlFor="cardType"
+                  className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
                 >
-                  <option value="PVC Card" className="bg-black">
-                    PVC CARD
-                  </option>
-                  {/* <option value="Wooden Card" className="bg-black">
-                    WOODEN CARD
-                  </option>
-                  <option value="Metal Card" className="bg-black">
-                    METAL CARD
-                  </option> */}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
+                  Card Type
+                </label>
+                <div className="relative">
+                  <select
+                    id="cardType"
+                    value={cardType}
+                    onChange={(e) => setCardType(e.target.value)}
+                    className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
+                  >
+                    <option value="PVC Card" className="bg-black">
+                      PVC CARD
+                    </option>
+                    <option value="Wooden Card" className="bg-black">
+                      WOODEN CARD
+                    </option>
+                    {/* <option value="Metal Card" className="bg-black">
+                      METAL CARD
+                    </option> */}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
+                </div>
+              </div>
+              
+              <div>
+                <label
+                  htmlFor="qty"
+                  className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+                >
+                  QTY
+                </label>
+                <input
+                  type="number"
+                  id="qty"
+                  min="1"
+                  value={qty}
+                  onChange={(e) => setQty(Number(e.target.value))}
+                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-blue-600 transition-colors"
+                />
               </div>
             </div>
 
@@ -424,15 +476,16 @@ const GetInfo = () => {
                     onChange={(e) => setPlanDuration(e.target.value)}
                     className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
                   >
-                    <option value="1 Year Plan 1199/-" className="bg-black">
-                      1 YEAR - 1199/-
-                    </option>
-                    <option value="2 Year Plan 1399/-" className="bg-black">
-                      2 YEAR - 1399/-
-                    </option>
-                    <option value="3 Year Plan 1599/-" className="bg-black">
-                      3 YEAR - 1599/-
-                    </option>
+                    {Object.entries(
+                      (PRICING_CONFIG[cardType] || PRICING_CONFIG["PVC Card"]).plans
+                    ).map(([key, price]) => {
+                      const label = key.replace("_", " ").toUpperCase();
+                      return (
+                        <option key={key} value={key} className="bg-black">
+                          {label} - ₹{price}
+                        </option>
+                      );
+                    })}
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
                 </div>
@@ -457,6 +510,28 @@ const GetInfo = () => {
                 />
               </div>
             )}
+
+            {/* Total Amount Display */}
+            <div className="form-item bg-white/5 border border-white/10 p-4 rounded text-center">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
+                Total Amount
+              </p>
+              <p className="text-3xl font-bold text-white">
+                ₹{totalAmount}
+              </p>
+              <div className="text-[10px] text-gray-500 mt-1">
+                (Plan: ₹
+                {
+                  (PRICING_CONFIG[cardType] || PRICING_CONFIG["PVC Card"]).plans[
+                    planDuration
+                  ]
+                }{" "}
+                + Extra Cards: ₹
+                {(PRICING_CONFIG[cardType] || PRICING_CONFIG["PVC Card"])
+                  .single_item * Math.max(0, qty - 1)}
+                )
+              </div>
+            </div>
 
             <button
               onClick={handleFormSubmit}
