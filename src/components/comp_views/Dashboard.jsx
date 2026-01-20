@@ -64,16 +64,7 @@ const Dashboard = ({
       const paymentDate = new Date(payment.created_at);
 
       if (paymentDate >= pastDate && paymentDate <= now) {
-        let amount = 0;
-        if (payment.plan) {
-          const match = payment.plan.match(/(\d+)\/-?/);
-          if (match && match[1]) amount = parseInt(match[1], 10);
-          else {
-            if (payment.plan.includes("999")) amount = 999;
-            else if (payment.plan.includes("1299")) amount = 1299;
-            else if (payment.plan.includes("1399")) amount = 1399;
-          }
-        }
+        const amount = payment.amount || 0;
         revenueSum += amount;
       }
     });
@@ -91,16 +82,7 @@ const Dashboard = ({
     const revenueByMonth = {};
     paymentsList.forEach((payment) => {
       if (!payment.created_at) return;
-      let amount = 0;
-      if (payment.plan) {
-        const match = payment.plan.match(/(\d+)\/-?/);
-        if (match && match[1]) amount = parseInt(match[1], 10);
-        else {
-          if (payment.plan.includes("999")) amount = 999;
-          else if (payment.plan.includes("1299")) amount = 1299;
-          else if (payment.plan.includes("1399")) amount = 1399;
-        }
-      }
+      const amount = payment.amount || 0;
       const date = new Date(payment.created_at);
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
         2,

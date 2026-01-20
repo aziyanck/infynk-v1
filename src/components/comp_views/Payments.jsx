@@ -206,6 +206,8 @@ const Payments = ({
                 <th className="px-6 py-3 bg-gray-50">User Details</th>
                 <th className="px-6 py-3 bg-gray-50">Plan Info</th>
                 <th className="px-6 py-3 bg-gray-50">Card Type</th>
+                <th className="px-6 py-3 bg-gray-50">Qty</th>
+                <th className="px-6 py-3 bg-gray-50">Amount</th>
                 <th className="px-6 py-3 bg-gray-50">Payment ID</th>
                 <th className="px-6 py-3 bg-gray-50">Status</th>
               </tr>
@@ -276,6 +278,12 @@ const Payments = ({
                       <div className="text-gray-900 font-medium">
                         {payment.card_type || "N/A"}
                       </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-900">
+                      {payment.qty || 1}
+                    </td>
+                    <td className="px-6 py-4 font-medium text-gray-900">
+                      ₹{payment.amount?.toLocaleString("en-IN") || "0"}
                     </td>
                     <td className="px-6 py-4 font-mono text-xs text-gray-600">
                       <div>{payment.razorpay_payment_id}</div>

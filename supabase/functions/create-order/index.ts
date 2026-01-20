@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Razorpay from "npm:razorpay@2.9.2";
-import { PRICING_CONFIG } from "./pricingConfig.ts";
+import { PRICING_CONFIG } from "../_shared/pricingConfig.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

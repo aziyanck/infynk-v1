@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+import { PRICING_CONFIG } from "../_shared/pricingConfig.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import * as crypto from "https://deno.land/std@0.177.0/node/crypto.ts";
 // ▼▼▼ 1. Import BOTH templates ▼▼▼
@@ -45,6 +46,17 @@ serve(async (req) => {
     if (generated_signature !== razorpay_signature)
       throw new Error("Invalid Signature");
 
+    // Calculate Amount
+    const selectedConfig =
+      PRICING_CONFIG[userData.card_type as keyof typeof PRICING_CONFIG] ||
+      PRICING_CONFIG["PVC Card"];
+    const planPrice =
+      selectedConfig.plans[
+        userData.plan as keyof typeof selectedConfig.plans
+      ] || 0;
+    const extraQty = Math.max(0, userData.qty - 1);
+    const amount = planPrice + selectedConfig.single_item * extraQty; // INR
+
     // [SAVE TO DB LOGIC]
     const { data: paymentRecord, error: dbError } = await supabaseAdmin
       .from("payments")
@@ -62,6 +74,7 @@ serve(async (req) => {
           razorpay_order_id: razorpay_order_id,
           payment_status: "paid",
           qty: userData.qty,
+          amount: amount,
         },
       ])
       .select()
@@ -92,12 +105,16 @@ serve(async (req) => {
     let subject;
     let responseData;
 
-    const planDisplayNames: Record<string, string> = {
-      "1_year": "1 Year Plan",
-      "2_year": "2 Year Plan",
-      "3_year": "3 Year Plan",
-    };
-    const readablePlan = planDisplayNames[userData.plan] || userData.plan;
+    // Dynamically determining readable plan name
+    // We assume the user has a valid cardType, but verify-payment receives what create-order passed or what the frontend sent.
+    // Ideally we should use the cardType from userData to look up.
+    // If cardType is missing, default to PVC.
+
+    let readablePlan = userData.plan;
+    readablePlan =
+      readablePlan
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c: string) => c.toUpperCase()) + " Plan";
 
     if (authError) {
       // [CASE: Payment Success, User Creation Failed]
