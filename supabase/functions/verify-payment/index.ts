@@ -120,7 +120,12 @@ serve(async (req) => {
       // [CASE: Payment Success, User Creation Failed]
       console.error("User Creation Failed:", authError);
 
-      emailHtml = getTechnicalErrorEmailHtml(userData.full_name, readablePlan);
+      emailHtml = getTechnicalErrorEmailHtml(
+        userData.full_name,
+        readablePlan,
+        amount,
+        userData.email,
+      );
       subject = "Action Required: Payment Received, Account Setup Issue";
 
       // Return PARTIAL SUCCESS to frontend
@@ -137,6 +142,9 @@ serve(async (req) => {
         userData.email,
         tempPassword,
         readablePlan,
+        userData.qty,
+        userData.card_type,
+        amount,
       );
       subject = "Welcome to Pixiic! Payment Successful";
 

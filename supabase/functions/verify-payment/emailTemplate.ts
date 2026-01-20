@@ -34,9 +34,17 @@ const getStyles = () => `
 `;
 
 // --- WELCOME EMAIL ---
-export const getWelcomeEmailHtml = (name: string, email: string, tempPass: string, plan: string) => {
+export const getWelcomeEmailHtml = (
+  name: string,
+  email: string,
+  tempPass: string,
+  plan: string,
+  qty: number,
+  cardType: string,
+  amount: number,
+) => {
   const phoneNumber = "9188802136";
-  const message = `Hi I'm ${name}, I purchased the ${plan}. My email is ${email}. Let's design the card.`;
+  const message = `Hi I'm ${name}, I purchased the ${plan} of ${qty} ${cardType} for ₹${amount}. My email is ${email}. Let's design the card.`;
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   return `
@@ -54,7 +62,7 @@ export const getWelcomeEmailHtml = (name: string, email: string, tempPass: strin
             <div class="email-header"><h1>Pixiic</h1></div>
             <div class="email-body">
                 <h2>Welcome, ${name}!</h2>
-                <p>Thank you for subscribing to the <strong>${plan}</strong>. We are thrilled to have you onboard.</p>
+                <p>Thank you for subscribing to the <strong>${plan}</strong> of <strong>${qty} ${cardType}</strong> for <strong>₹${amount}</strong>. We are thrilled to have you onboard.</p>
                 <div class="credentials-box">
                     <div class="credentials-item">
                         <span class="label">Login Email</span>
@@ -88,10 +96,17 @@ export const getWelcomeEmailHtml = (name: string, email: string, tempPass: strin
 };
 
 // --- TECHNICAL ERROR EMAIL ---
-export const getTechnicalErrorEmailHtml = (name: string, plan: string) => {
+export const getTechnicalErrorEmailHtml = (
+  name: string,
+  plan: string,
+  amount: number,
+  email: string,
+) => {
   const phoneNumber = "9188802136";
-  const message = `URGENT: Hi I'm ${name}, I purchased ${plan} but I got a technical error during account creation. Payment ID available.`;
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  const message = `URGENT: Hi I'm ${name}, I purchased ${plan} for ₹${amount}. My email is ${email}. I got a technical error during account creation. Payment ID available.`;
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+    message,
+  )}`;
 
   return `
 <!DOCTYPE html>
@@ -109,7 +124,7 @@ export const getTechnicalErrorEmailHtml = (name: string, plan: string) => {
             <div class="email-body">
                 <h2>Payment Successful, But...</h2>
                 <p>Hi ${name},</p>
-                <p>We received your payment for the <strong>${plan}</strong>, but we encountered a technical error while setting up your account automatically.</p>
+                <p>We received your payment of <strong>₹${amount}</strong> for the <strong>${plan}</strong>, but we encountered a technical error while setting up your account automatically.</p>
                 
                 <div class="notice-box error">
                     <strong>Technical Error Occurred</strong>
