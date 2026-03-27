@@ -17,6 +17,8 @@ import '../App.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+import logo from "../assets/logo.svg";
+
 export default function LandingPage() {
     const containerRef = useRef();
     const heroTextRef = useRef();
@@ -59,8 +61,8 @@ export default function LandingPage() {
 
             {/* Navbar */}
             <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 flex justify-between items-center mix-blend-difference">
-                <a href="#" className="text-2xl font-bold tracking-tighter uppercase text-white hover:opacity-80 transition-opacity">
-                    Pixiic
+                <a href="#" className="hover:opacity-80 transition-opacity">
+                    <img src={logo} alt="Pixiic" className="h-8 w-auto" />
                 </a>
 
                 <nav className="hidden md:flex items-center gap-12 text-sm font-medium uppercase tracking-widest">

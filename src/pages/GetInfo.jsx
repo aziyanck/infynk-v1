@@ -19,6 +19,11 @@ import PaymentSuccess from "../components/PaymentSuccess";
 // ---------------------------------------------------------
 // CONFIGURATION
 // ---------------------------------------------------------
+import logo from "../assets/logo.svg";
+
+// ---------------------------------------------------------
+// CONFIGURATION
+// ---------------------------------------------------------
 const RAZORPAY_KEY_ID = "rzp_test_RvWpRFSJe78xVj";
 
 const PRICING_CONFIG = {
@@ -275,6 +280,7 @@ const GetInfo = () => {
                 .phone-input-custom .PhoneInputInput:focus {
                     outline: none;
                     border-color: #3b82f6;
+                    background-color: transparent;
                 }
                 .phone-input-custom .PhoneInputInput::placeholder {
                     color: #9ca3af;
@@ -286,6 +292,13 @@ const GetInfo = () => {
                     border-radius: 0;
                     margin-right: -1px;
                     padding: 0 0.5rem;
+                }
+                .phone-input-custom .PhoneInputCountryIcon {
+                    display: flex;
+                }
+                .phone-input-custom .PhoneInputCountrySelect {
+                    background-color: black;
+                    color: white;
                 }
             `}</style>
 
@@ -305,8 +318,8 @@ const GetInfo = () => {
         >
           <ArrowLeft className="w-5 h-5" /> Back
         </a>
-        <div className="text-xl font-bold tracking-widest uppercase">
-          Pixiic
+        <div>
+          <img src={logo} alt="Pixiic" className="h-8 w-auto" />
         </div>
       </header>
 

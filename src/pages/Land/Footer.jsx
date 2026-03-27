@@ -5,6 +5,8 @@ import { faArrowRight, faXmark, faEnvelope, faPhone } from '@fortawesome/free-so
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
+import logo from "../../assets/logo.svg";
+
 const Footer = () => {
     const [showContact, setShowContact] = useState(false);
     const modalRef = useRef(null);
@@ -156,7 +158,9 @@ const Footer = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 border-b border-white/10">
                 {/* Brand Column */}
                 <div className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-white/10 flex flex-col justify-between h-full">
-                    <div className="text-2xl font-bold tracking-tighter uppercase mb-8">Pixiic</div>
+                    <div className="mb-8">
+                        <img src={logo} alt="Pixiic" className="h-8 w-auto" />
+                    </div>
                     <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
                         The next generation of digital networking. Sustainable, efficient, and designed for the modern professional.
                     </p>
