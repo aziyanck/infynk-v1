@@ -90,7 +90,7 @@ const Payments = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${session?.access_token}`,
           },
-          body: JSON.stringify({ ids: Array.from(selectedPayments) }),
+          body: JSON.stringify({ payment_ids: Array.from(selectedPayments) }),
         }
       );
 
