@@ -49,7 +49,6 @@ export default function App() {
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/update-password" element={<UpdatePassword />} />
-          <Route path="/test-page" element={<TestPaymentPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

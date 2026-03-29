@@ -118,7 +118,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs uppercase tracking-widest text-gray-300 mb-1">Email</p>
-                                    <p className="text-lg font-medium">hello@pixiic.com</p>
+                                    <p className="text-lg font-medium">contact@pixiic.com</p>
                                 </div>
                             </div>
 
@@ -128,7 +128,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs uppercase tracking-widest text-gray-300 mb-1">Phone</p>
-                                    <p className="text-lg font-medium">+1 (555) 123-4567</p>
+                                    <p className="text-lg font-medium">+91 9188802136</p>
                                 </div>
                             </div>
                         </div>

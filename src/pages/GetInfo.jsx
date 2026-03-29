@@ -24,7 +24,7 @@ import logo from "../assets/logo.svg";
 // ---------------------------------------------------------
 // CONFIGURATION
 // ---------------------------------------------------------
-const RAZORPAY_KEY_ID = "rzp_test_RvWpRFSJe78xVj";
+const RAZORPAY_KEY_ID = "rzp_live_SWWEjjUiISx5no";
 
 const PRICING_CONFIG = {
   "PVC Card": {
