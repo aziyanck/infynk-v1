@@ -6,3 +6,4 @@ Disallow: /admin
 Disallow: /user
 Disallow: /payment-success
 
+Sitemap: https://pixiic.com/sitemap.xml
