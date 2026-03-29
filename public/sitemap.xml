@@ -2,41 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Core Public Pages -->
   <url>
-    <loc>https://infynk.com/</loc>
+    <loc>https://pixiic.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://infynk.com/getinfo</loc>
+    <loc>https://pixiic.com/getinfo</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Legal & Policy Pages -->
   <url>
-    <loc>https://infynk.com/privacy-policy</loc>
+    <loc>https://pixiic.com/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://infynk.com/terms-of-service</loc>
+    <loc>https://pixiic.com/terms-of-service</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://infynk.com/cookie-policy</loc>
+    <loc>https://pixiic.com/cookie-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <!-- Authentication / Recovery -->
   <url>
-    <loc>https://infynk.com/user</loc>
+    <loc>https://pixiic.com/user</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://infynk.com/forgot-password</loc>
+    <loc>https://pixiic.com/forgot-password</loc>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
