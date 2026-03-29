@@ -160,7 +160,7 @@ serve(async (req) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: "Pixiic <onboarding@resend.dev>", // UPDATE THIS
+          from: "Pixiic <pixiic@supports.pixiic.com>", // UPDATE THIS
           to: [userData.email],
           subject: subject,
           html: emailHtml,

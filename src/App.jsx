@@ -43,7 +43,6 @@ export default function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/:slug" element={<PublicProfile />} />
           <Route path="/getinfo" element={<GetInfo />} />
-          <Route path="/payment-success" element={<SuccessPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
