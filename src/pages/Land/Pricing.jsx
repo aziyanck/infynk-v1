@@ -64,6 +64,27 @@ const Pricing = () => {
         }
     ];
 
+    const woodenPlans = [
+        {
+            duration: '1-Year Plan',
+            originalPrice: '₹1499',
+            price: '₹1299',
+            features: ['1-year subscription', 'Premium sustainable wood', 'Access to all features']
+        },
+        {
+            duration: '2-Year Plan',
+            originalPrice: '₹1699',
+            price: '₹1499',
+            features: ['2-year subscription', 'Premium sustainable wood', 'Access to all features']
+        },
+        {
+            duration: '3-Year Plan',
+            originalPrice: '₹1999',
+            price: '₹1699',
+            features: ['3-year subscription', 'Premium sustainable wood', 'Access to all features']
+        }
+    ];
+
     return (
         <section id="pricing" ref={containerRef} className="min-h-[90vh] flex flex-col justify-center py-20 md:py-32 px-6 md:px-12 bg-black text-white border-b border-white/10">
             <div ref={titleRef} className="mb-12 md:mb-16">
@@ -109,19 +130,35 @@ const Pricing = () => {
                     </button>
                 </div>
 
-                {/* Wooden Card - Coming Soon */}
-                <div className="border border-white/20 bg-white/5 p-8 flex flex-col justify-between relative group hover:border-blue-500 transition-colors duration-300">
-                    <div>
-                        <h4 className="text-2xl font-bold uppercase tracking-widest mb-4">Wooden Card</h4>
-                        <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                            Eco-friendly elegance. Crafted from premium sustainable wood for a natural touch.
-                        </p>
+                {/* Wooden Card - Active */}
+                <div className="border border-white/20 bg-white/5 p-8 flex flex-col relative group hover:border-blue-500 transition-colors duration-300">
+                    <h4 className="text-2xl font-bold uppercase tracking-widest mb-6">Wooden Card</h4>
+
+                    <div className="space-y-8 flex-grow">
+                        {woodenPlans.map((plan, index) => (
+                            <div key={index} className="border-b border-white/10 pb-6 last:border-0 last:pb-0">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="font-bold text-lg">{plan.duration}</span>
+                                    <div className="text-right">
+                                        <span className="text-gray-500 line-through text-xs block">{plan.originalPrice}</span>
+                                        <span className="text-xl font-bold text-blue-400">{plan.price}</span>
+                                    </div>
+                                </div>
+                                <ul className="space-y-2">
+                                    {plan.features.map((feature, idx) => (
+                                        <li key={idx} className="flex items-start gap-2 text-sm text-gray-400">
+                                            <FontAwesomeIcon icon={faCheck} className="text-blue-500 mt-1 text-xs" />
+                                            <span>{feature}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
                     </div>
-                    <div className="mt-auto">
-                        <span className="inline-block border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-500">
-                            Coming Soon
-                        </span>
-                    </div>
+
+                    <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-blue-500">
+                        Select Plan <FontAwesomeIcon icon={faArrowRight} />
+                    </button>
                 </div>
 
                 {/* Metal Card - Coming Soon */}
