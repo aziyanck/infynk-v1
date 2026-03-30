@@ -132,6 +132,9 @@ const Pricing = () => {
 
                 {/* Wooden Card - Active */}
                 <div className="border border-white/20 bg-white/5 p-8 flex flex-col relative group hover:border-blue-500 transition-colors duration-300">
+                   <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
+                        Eco Friendly
+                    </div>
                     <h4 className="text-2xl font-bold uppercase tracking-widest mb-6">Wooden Card</h4>
 
                     <div className="space-y-8 flex-grow">
