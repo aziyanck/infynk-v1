@@ -10,8 +10,8 @@
 
 .phone-input-custom .PhoneInputInput:focus {
   outline: none;
-  border-color: #6366f1; /* focus:border-indigo-500 */
-  box-shadow: 0 0 0 1px #6366f1; /* focus:ring-indigo-500 */
+  border-color: var(--brand-color);
+  box-shadow: 0 0 0 1px var(--brand-color);
 }
 
 .phone-input-custom .PhoneInputCountry {

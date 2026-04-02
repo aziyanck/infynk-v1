@@ -72,7 +72,7 @@ const Services = () => {
     <section id="services" ref={containerRef} className="min-h-[90vh] w-full bg-black text-white flex flex-col justify-center px-6 md:px-12 py-20 border-b border-white/10">
 
       <div className="mb-16" ref={titleRef}>
-        <h2 className="text-sm font-bold uppercase tracking-widest text-blue-500 mb-4">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-brand-hover mb-4">
           Our Services
         </h2>
         <h3 className="text-4xl md:text-6xl font-bold max-w-2xl leading-tight">
@@ -88,7 +88,7 @@ const Services = () => {
           >
             <div className="flex items-start gap-4 md:gap-8 md:w-1/2">
               <span className="text-xs md:text-sm font-mono text-gray-500 pt-1">{service.id}</span>
-              <h4 className="text-2xl md:text-4xl font-bold group-hover:text-blue-500 transition-colors duration-300">
+              <h4 className="text-2xl md:text-4xl font-bold group-hover:text-brand-hover transition-colors duration-300">
                 {service.title}
               </h4>
             </div>
@@ -98,7 +98,7 @@ const Services = () => {
                 {service.description}
               </p>
               <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-4 group-hover:translate-x-0">
-                <FontAwesomeIcon icon={faArrowRight} className="-rotate-45 text-blue-500" />
+                <FontAwesomeIcon icon={faArrowRight} className="-rotate-45 text-brand-hover" />
               </div>
             </div>
           </div>

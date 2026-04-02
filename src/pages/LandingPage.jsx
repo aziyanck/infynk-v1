@@ -49,7 +49,7 @@ export default function LandingPage() {
     }, { scope: containerRef });
 
     return (
-        <div ref={containerRef} className="bg-black text-white min-h-screen font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden">
+        <div ref={containerRef} className="bg-black text-white min-h-screen font-sans selection:bg-brand selection:text-white overflow-x-hidden">
 
             {/* Grid Background */}
             <div className="fixed inset-0 z-0 pointer-events-none flex justify-between px-6 md:px-12 opacity-20">
@@ -67,14 +67,14 @@ export default function LandingPage() {
 
                 <nav className="hidden md:flex items-center gap-12 text-sm font-medium uppercase tracking-widest">
                     {['Services', 'Features', 'Pricing', 'About'].map((item) => (
-                        <a key={item} href={`#${item.toLowerCase()}`} className="hover:text-blue-500 transition-colors">
+                        <a key={item} href={`#${item.toLowerCase()}`} className="hover:text-brand-hover transition-colors">
                             {item}
                         </a>
                     ))}
                 </nav>
 
                 <div className="flex items-center gap-6">
-                    <button onClick={() => navigate('/user')} className="text-sm font-bold uppercase tracking-widest text-white hover:text-blue-500 cursor-pointer transition-colors">
+                    <button onClick={() => navigate('/user')} className="text-sm font-bold uppercase tracking-widest text-white hover:text-brand-hover cursor-pointer transition-colors">
                         Sign In
                     </button>
                     <button onClick={handleNavigation} className="hidden md:block text-sm font-bold uppercase tracking-widest border border-white px-6 py-2 hover:bg-white hover:text-black cursor-pointer transition-all duration-300">
@@ -95,7 +95,7 @@ export default function LandingPage() {
                             </h1>
                         </div>
                         <div className="overflow-hidden">
-                            <h1 className="text-[15vw] md:text-[12vw] leading-[0.9] font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-white">
+                            <h1 className="text-[15vw] md:text-[12vw] leading-[0.9] font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-brand to-white">
                                 Identity
                             </h1>
                         </div>
@@ -106,8 +106,8 @@ export default function LandingPage() {
                             </p>
 
                             <div className="mt-8 flex items-center gap-4">
-                                <button onClick={handleNavigation} className="group flex items-center gap-4 text-lg font-medium hover:text-blue-500 transition-colors">
-                                    <span className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-blue-500 transition-colors">
+                                <button onClick={handleNavigation} className="group flex items-center gap-4 text-lg font-medium hover:text-brand-hover transition-colors">
+                                    <span className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-brand-hover transition-colors">
                                         <FontAwesomeIcon icon={faArrowRight} className="group-hover:-rotate-45 transition-transform duration-300" />
                                     </span>
                                     Order Now

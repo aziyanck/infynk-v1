@@ -130,7 +130,7 @@ export default function Chatbot() {
       <button
         onClick={toggleChat}
         disabled={!isBotReady}
-        className={`fixed bottom-5 right-5 w-16 h-16 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50 hover:scale-110 transition-transform cursor-pointer hover:bg-blue-700 ${
+        className={`fixed bottom-5 right-5 w-16 h-16 bg-brand text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50 hover:scale-110 transition-transform cursor-pointer hover:bg-brand-hover ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         } ${!isBotReady ? "opacity-70 cursor-wait" : ""}`}
         style={{
@@ -154,14 +154,14 @@ export default function Chatbot() {
         }`}
       >
         {/* Header */}
-        <div className="bg-blue-600 p-4 text-white font-bold flex justify-between items-center shadow-md">
+        <div className="bg-brand p-4 text-white font-bold flex justify-between items-center shadow-md">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
             <span>Support AI</span>
           </div>
           <button
             onClick={toggleChat}
-            className="text-white hover:text-gray-200 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-700"
+            className="text-white hover:text-gray-200 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-brand-hover"
             aria-label="Close Chat"
           >
             <FontAwesomeIcon icon={faTimes} size="lg" />
@@ -175,7 +175,7 @@ export default function Chatbot() {
               key={index}
               className={`px-4 py-2 max-w-[85%] break-words text-sm ${
                 msg.sender === "user"
-                  ? "bg-blue-600 text-white self-end rounded-2xl rounded-tr-sm"
+                  ? "bg-brand text-white self-end rounded-2xl rounded-tr-sm"
                   : msg.isError
                   ? "bg-red-900/50 text-red-200 border border-red-800 self-start rounded-2xl rounded-tl-sm"
                   : "bg-zinc-800 text-gray-200 self-start rounded-2xl rounded-tl-sm"
@@ -222,13 +222,13 @@ export default function Chatbot() {
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
-            className="flex-1 bg-zinc-800 text-white rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-600 transition-all placeholder-zinc-500"
+            className="flex-1 bg-zinc-800 text-white rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand transition-all placeholder-zinc-500"
             disabled={isLoading}
           />
           <button
             onClick={sendMessage}
             disabled={!inputText.trim() || isLoading}
-            className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
+            className="bg-brand text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-brand-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
             aria-label="Send Message"
           >
             <FontAwesomeIcon

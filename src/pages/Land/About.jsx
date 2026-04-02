@@ -41,7 +41,7 @@ const About = () => {
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-20">
                 <div className="flex flex-col justify-center" ref={textRef}>
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-blue-500 mb-8">About Us</h2>
+                    <h2 className="text-sm font-bold uppercase tracking-widest text-brand-hover mb-8">About Us</h2>
                     <h3 className="text-4xl md:text-6xl font-bold leading-tight mb-8">
                         Bridging the <br /> physical and <br /> digital worlds.
                     </h3>
@@ -51,21 +51,21 @@ const About = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 md:gap-8" ref={statsRef}>
-                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300">
-                        <span className="text-3xl md:text-6xl font-bold text-blue-600 mb-2">0.2s</span>
+                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-brand-hover transition-colors duration-300">
+                        <span className="text-3xl md:text-6xl font-bold text-brand mb-2">0.2s</span>
                         <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Scan Speed</span>
 
                     </div>
-                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300 md:mt-12">
-                        <span className="text-3xl md:text-6xl font-bold text-white mb-2">No. 01</span>
+                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-brand-hover transition-colors duration-300 md:mt-12">
+                        <span className="text-3xl md:text-6xl font-bold text-brand mb-2">256 bit</span>
                         <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Most Customizable</span>
                     </div>
-                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300 md:-mt-12">
-                        <span className="text-3xl md:text-6xl font-bold text-white mb-2">24/7</span>
+                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-brand-hover transition-colors duration-300 md:-mt-12">
+                        <span className="text-3xl md:text-6xl font-bold text-brand mb-2">24/7</span>
                         <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">AI Chat Assistant</span>
                     </div>
-                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-blue-500 transition-colors duration-300">
-                        <span className="text-3xl md:text-6xl font-bold text-blue-600 mb-2">100%</span>
+                    <div className="border border-white/10 p-4 md:p-8 flex flex-col justify-end h-40 md:h-64 hover:border-brand-hover transition-colors duration-300">
+                        <span className="text-3xl md:text-6xl font-bold text-brand mb-2">100%</span>
                         <span className="text-xs md:text-sm font-medium uppercase tracking-widest text-gray-400">Secure</span>
                     </div>
                 </div>

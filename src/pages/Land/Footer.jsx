@@ -109,11 +109,11 @@ const Footer = () => {
                             <FontAwesomeIcon icon={faXmark} className="text-xl" />
                         </button>
 
-                        <h3 className="text-2xl font-bold uppercase tracking-widest mb-8 text-blue-500">Contact Us</h3>
+                        <h3 className="text-2xl font-bold uppercase tracking-widest mb-8 text-brand-hover">Contact Us</h3>
 
                         <div className="space-y-6">
-                            <div className="group flex items-start gap-4 p-4 border border-white/10 hover:border-blue-500 transition-colors cursor-pointer">
-                                <div className="mt-1 text-blue-500">
+                            <div className="group flex items-start gap-4 p-4 border border-white/10 hover:border-brand-hover transition-colors cursor-pointer">
+                                <div className="mt-1 text-brand-hover">
                                     <FontAwesomeIcon icon={faEnvelope} />
                                 </div>
                                 <div>
@@ -122,8 +122,8 @@ const Footer = () => {
                                 </div>
                             </div>
 
-                            <div className="group flex items-start gap-4 p-4 border border-white/10 hover:border-blue-500 transition-colors cursor-pointer">
-                                <div className="mt-1 text-blue-500">
+                            <div className="group flex items-start gap-4 p-4 border border-white/10 hover:border-brand-hover transition-colors cursor-pointer">
+                                <div className="mt-1 text-brand-hover">
                                     <FontAwesomeIcon icon={faPhone} />
                                 </div>
                                 <div>
@@ -140,13 +140,13 @@ const Footer = () => {
             <div className="px-6 md:px-12 py-20 border-b border-white/10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
                     <div>
-                        <h2 className="text-sm font-bold uppercase tracking-widest text-blue-500 mb-4">Get in touch</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-brand-hover mb-4">Get in touch</h2>
                         <h3 className="text-5xl md:text-8xl font-bold tracking-tighter leading-none">
                             Let's Work <br /> Together.
                         </h3>
                     </div>
-                    <button className="group flex items-center gap-4 text-xl font-medium hover:text-blue-500 transition-colors">
-                        <span className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center group-hover:border-blue-500 transition-colors">
+                    <button className="group flex items-center gap-4 text-xl font-medium hover:text-brand-hover transition-colors">
+                        <span className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center group-hover:border-brand-hover transition-colors">
                             <FontAwesomeIcon icon={faArrowRight} className="group-hover:-rotate-45 transition-transform duration-300 text-2xl" />
                         </span>
                         Start to Tap
@@ -176,7 +176,7 @@ const Footer = () => {
                                     <a
                                         href={link.url}
                                         onClick={(e) => handleLinkClick(e, link.name)}
-                                        className="text-lg font-medium hover:text-blue-500 transition-colors block"
+                                        className="text-lg font-medium hover:text-brand-hover transition-colors block"
                                         target={column.title === 'Legal' ? "_blank" : undefined}
                                         rel={column.title === 'Legal' ? "noopener noreferrer" : undefined}
                                     >

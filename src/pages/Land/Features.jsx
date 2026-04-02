@@ -68,9 +68,9 @@ const Features = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 h-full">
                 <div className="flex flex-col justify-between" ref={titleRef}>
                     <div>
-                        <h2 className="text-sm font-bold uppercase tracking-widest text-blue-500 mb-4">Features</h2>
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-brand-hover mb-4">Features</h2>
                         <h3 className="text-4xl md:text-7xl font-bold leading-none uppercase">
-                            Built for <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-white">Speed</span>
+                            Built for <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-white">Speed</span>
                         </h3>
                     </div>
                     <p className="text-xl text-gray-400 font-light max-w-md mt-8 md:mt-0">
@@ -81,7 +81,7 @@ const Features = () => {
                 <div className="grid grid-cols-2 gap-px bg-white/10 border border-white/10" ref={gridRef}>
                     {features.map((feature, index) => (
                         <div key={index} className="bg-black p-8 flex flex-col justify-between aspect-square hover:bg-white/5 transition-colors duration-300 group">
-                            <span className="text-sm font-mono text-gray-600 group-hover:text-blue-500 transition-colors">{feature.id}</span>
+                            <span className="text-sm font-mono text-gray-600 group-hover:text-brand-hover transition-colors">{feature.id}</span>
                             <div>
                                 <h4 className="text-2xl font-bold mb-2">{feature.title}</h4>
                                 <p className="text-sm text-gray-500">{feature.description}</p>

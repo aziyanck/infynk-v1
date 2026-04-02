@@ -88,16 +88,16 @@ const Pricing = () => {
     return (
         <section id="pricing" ref={containerRef} className="min-h-[90vh] flex flex-col justify-center py-20 md:py-32 px-6 md:px-12 bg-black text-white border-b border-white/10">
             <div ref={titleRef} className="mb-12 md:mb-16">
-                <h2 className="text-sm font-bold uppercase tracking-widest text-blue-500 mb-4">Pricing</h2>
+                <h2 className="text-sm font-bold uppercase tracking-widest text-brand-hover mb-4">Pricing</h2>
                 <h3 className="text-4xl md:text-7xl font-bold leading-none uppercase">
-                    Choose Your <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-white">Access</span>
+                    Choose Your <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-white">Access</span>
                 </h3>
             </div>
 
             <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* PVC Card - Active */}
-                <div className="border border-white/20 bg-white/5 p-8 flex flex-col relative group hover:border-blue-500 transition-colors duration-300">
-                    <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
+                <div className="border border-white/20 bg-white/5 p-8 flex flex-col relative group hover:border-brand-hover transition-colors duration-300">
+                    <div className="absolute top-0 right-0 bg-brand text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
                         Best Value
                     </div>
 
@@ -110,13 +110,13 @@ const Pricing = () => {
                                     <span className="font-bold text-lg">{plan.duration}</span>
                                     <div className="text-right">
                                         <span className="text-gray-500 line-through text-xs block">{plan.originalPrice}</span>
-                                        <span className="text-xl font-bold text-blue-400">{plan.price}</span>
+                                        <span className="text-xl font-bold text-brand">{plan.price}</span>
                                     </div>
                                 </div>
                                 <ul className="space-y-2">
                                     {plan.features.map((feature, idx) => (
                                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-400">
-                                            <FontAwesomeIcon icon={faCheck} className="text-blue-500 mt-1 text-xs" />
+                                            <FontAwesomeIcon icon={faCheck} className="text-brand-hover mt-1 text-xs" />
                                             <span>{feature}</span>
                                         </li>
                                     ))}
@@ -125,14 +125,14 @@ const Pricing = () => {
                         ))}
                     </div>
 
-                    <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-blue-500">
+                    <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-brand-hover">
                         Select Plan <FontAwesomeIcon icon={faArrowRight} />
                     </button>
                 </div>
 
                 {/* Wooden Card - Active */}
-                <div className="border border-white/20 bg-white/5 p-8 flex flex-col relative group hover:border-blue-500 transition-colors duration-300">
-                   <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
+                <div className="border border-white/20 bg-white/5 p-8 flex flex-col relative group hover:border-brand-hover transition-colors duration-300">
+                   <div className="absolute top-0 right-0 bg-brand text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
                         Eco Friendly
                     </div>
                     <h4 className="text-2xl font-bold uppercase tracking-widest mb-6">Wooden Card</h4>
@@ -144,13 +144,13 @@ const Pricing = () => {
                                     <span className="font-bold text-lg">{plan.duration}</span>
                                     <div className="text-right">
                                         <span className="text-gray-500 line-through text-xs block">{plan.originalPrice}</span>
-                                        <span className="text-xl font-bold text-blue-400">{plan.price}</span>
+                                        <span className="text-xl font-bold text-brand">{plan.price}</span>
                                     </div>
                                 </div>
                                 <ul className="space-y-2">
                                     {plan.features.map((feature, idx) => (
                                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-400">
-                                            <FontAwesomeIcon icon={faCheck} className="text-blue-500 mt-1 text-xs" />
+                                            <FontAwesomeIcon icon={faCheck} className="text-brand-hover mt-1 text-xs" />
                                             <span>{feature}</span>
                                         </li>
                                     ))}
@@ -159,13 +159,13 @@ const Pricing = () => {
                         ))}
                     </div>
 
-                    <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-blue-500">
+                    <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-brand-hover">
                         Select Plan <FontAwesomeIcon icon={faArrowRight} />
                     </button>
                 </div>
 
                 {/* Metal Card - Coming Soon */}
-                <div className="border border-white/20 bg-white/5 p-8 flex flex-col justify-between relative group hover:border-blue-500 transition-colors duration-300">
+                <div className="border border-white/20 bg-white/5 p-8 flex flex-col justify-between relative group hover:border-brand-hover transition-colors duration-300">
                     <div>
                         <h4 className="text-2xl font-bold uppercase tracking-widest mb-4">Metal Card</h4>
                         <p className="text-gray-400 text-sm leading-relaxed mb-8">

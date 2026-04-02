@@ -223,7 +223,7 @@ const GetInfo = () => {
         },
 
         theme: {
-          color: "#2563eb", // blue-600
+          color: getComputedStyle(document.documentElement).getPropertyValue('--brand-color').trim() || "#2563eb", // fallback to blue-600
         },
       };
 
@@ -252,7 +252,7 @@ const GetInfo = () => {
   return (
     <div
       ref={containerRef}
-      className="bg-black text-white min-h-screen font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden relative"
+      className="bg-black text-white min-h-screen font-sans selection:bg-brand selection:text-white overflow-x-hidden relative"
     >
       {/* Payment Success Overlay */}
       {paymentStatus !== "idle" && (
@@ -279,7 +279,7 @@ const GetInfo = () => {
                 }
                 .phone-input-custom .PhoneInputInput:focus {
                     outline: none;
-                    border-color: #3b82f6;
+                    border-color: var(--brand-hover-color);
                     background-color: transparent;
                 }
                 .phone-input-custom .PhoneInputInput::placeholder {
@@ -347,7 +347,7 @@ const GetInfo = () => {
                 id="fullName"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-blue-600 transition-colors"
+                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
                 placeholder="JOHN DOE"
               />
             </div>
@@ -381,7 +381,7 @@ const GetInfo = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-blue-600 transition-colors"
+                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
                 placeholder="YOU@EXAMPLE.COM"
               />
             </div>
@@ -398,7 +398,7 @@ const GetInfo = () => {
                 rows={2}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-blue-600 transition-colors resize-none"
+                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors resize-none"
                 placeholder="FULL ADDRESS"
               />
             </div>
@@ -416,7 +416,7 @@ const GetInfo = () => {
                     id="cardType"
                     value={cardType}
                     onChange={(e) => setCardType(e.target.value)}
-                    className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
+                    className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-brand transition-colors appearance-none cursor-pointer"
                   >
                     <option value="PVC Card" className="bg-black">
                       PVC CARD
@@ -445,7 +445,7 @@ const GetInfo = () => {
                   min="1"
                   value={qty}
                   onChange={(e) => setQty(Number(e.target.value))}
-                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-blue-600 transition-colors"
+                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
                 />
               </div>
             </div>
@@ -463,7 +463,7 @@ const GetInfo = () => {
                     id="accountType"
                     value={accountType}
                     onChange={(e) => setAccountType(e.target.value)}
-                    className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
+                    className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-brand transition-colors appearance-none cursor-pointer"
                   >
                     <option value="Company" className="bg-black">
                       COMPANY
@@ -487,7 +487,7 @@ const GetInfo = () => {
                     id="planDuration"
                     value={planDuration}
                     onChange={(e) => setPlanDuration(e.target.value)}
-                    className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-blue-600 transition-colors appearance-none cursor-pointer"
+                    className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white focus:outline-none focus:border-brand transition-colors appearance-none cursor-pointer"
                   >
                     {Object.entries(
                       (PRICING_CONFIG[cardType] || PRICING_CONFIG["PVC Card"]).plans
@@ -518,7 +518,7 @@ const GetInfo = () => {
                   id="companyName"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-blue-600 transition-colors"
+                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
                   placeholder="YOUR COMPANY INC."
                 />
               </div>
@@ -549,7 +549,7 @@ const GetInfo = () => {
             <button
               onClick={handleFormSubmit}
               disabled={loading}
-              className={`w-full mt-8 py-4 px-6 bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-300 ${
+              className={`w-full mt-8 py-4 px-6 bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-brand hover:text-white transition-all duration-300 ${
                 loading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >

@@ -88,24 +88,24 @@ const NfcAnimation = () => {
                     <text x="200" y="220" textAnchor="middle" fill="white" fontSize="32" fontWeight="bold" fontFamily="sans-serif" letterSpacing="2">
                         Pixiic
                     </text>
-                    <text x="200" y="250" textAnchor="middle" fill="#3b82f6" fontSize="14" fontFamily="sans-serif">
+                    <text x="200" y="250" textAnchor="middle" fill="var(--brand-hover-color)" fontSize="14" fontFamily="sans-serif">
                         Digital Identity
                     </text>
 
                     {/* Profile Mockup Elements */}
-                    <circle cx="200" cy="150" r="30" fill="#333" stroke="#3b82f6" strokeWidth="2" />
+                    <circle cx="200" cy="150" r="30" fill="#333" stroke="var(--brand-hover-color)" strokeWidth="2" />
                     <rect x="140" y="280" width="120" height="10" rx="5" fill="#222" />
                     <rect x="140" y="300" width="120" height="10" rx="5" fill="#222" />
 
                     {/* Action Buttons */}
-                    <rect x="130" y="340" width="140" height="30" rx="15" fill="#3b82f6" />
+                    <rect x="130" y="340" width="140" height="30" rx="15" fill="var(--brand-hover-color)" />
                     <text x="200" y="360" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontFamily="sans-serif">
                         Connect
                     </text>
                 </g>
 
                 {/* Ripple Effect */}
-                <circle ref={rippleRef} cx="200" cy="250" r="50" fill="none" stroke="#3b82f6" strokeWidth="2" />
+                <circle ref={rippleRef} cx="200" cy="250" r="50" fill="none" stroke="var(--brand-hover-color)" strokeWidth="2" />
 
                 {/* NFC Card */}
                 <g ref={cardRef}>
@@ -128,8 +128,8 @@ const NfcAnimation = () => {
                 {/* Definitions */}
                 <defs>
                     <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#2563eb" />
-                        <stop offset="100%" stopColor="#1e40af" />
+                        <stop offset="0%" stopColor="var(--brand-color)" />
+                        <stop offset="100%" stopColor="var(--brand-hover-color)" />
                     </linearGradient>
                     <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
                         <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
