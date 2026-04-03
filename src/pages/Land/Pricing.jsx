@@ -46,44 +46,25 @@ const Pricing = () => {
     const pvcPlans = [
         {
             duration: '1-Year Plan',
-            originalPrice: '₹1399',
-            price: '₹1199',
+            originalPrice: '₹1299',
+            price: '₹999',
             features: ['1-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '2-Year Plan',
-            originalPrice: '₹1599',
-            price: '₹1399',
+            originalPrice: '₹1499',
+            price: '₹1199',
             features: ['2-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '3-Year Plan',
-            originalPrice: '₹1899',
-            price: '₹1599',
+            originalPrice: '₹1799',
+            price: '₹1499',
             features: ['3-year subscription', 'Fully customizable card design', 'Access to all features']
         }
     ];
 
-    const woodenPlans = [
-        {
-            duration: '1-Year Plan',
-            originalPrice: '₹1499',
-            price: '₹1299',
-            features: ['1-year subscription', 'Premium sustainable wood', 'Access to all features']
-        },
-        {
-            duration: '2-Year Plan',
-            originalPrice: '₹1699',
-            price: '₹1499',
-            features: ['2-year subscription', 'Premium sustainable wood', 'Access to all features']
-        },
-        {
-            duration: '3-Year Plan',
-            originalPrice: '₹1999',
-            price: '₹1699',
-            features: ['3-year subscription', 'Premium sustainable wood', 'Access to all features']
-        }
-    ];
+    // Wooden plans coming soon
 
     return (
         <section id="pricing" ref={containerRef} className="min-h-[90vh] flex flex-col justify-center py-20 md:py-32 px-6 md:px-12 bg-black text-white border-b border-white/10">
@@ -110,7 +91,7 @@ const Pricing = () => {
                                     <span className="font-bold text-lg">{plan.duration}</span>
                                     <div className="text-right">
                                         <span className="text-gray-500 line-through text-xs block">{plan.originalPrice}</span>
-                                        <span className="text-xl font-bold text-brand">{plan.price}</span>
+                                        <span className="text-xl font-bold text-brand-hover">{plan.price}</span>
                                     </div>
                                 </div>
                                 <ul className="space-y-2">
@@ -130,38 +111,22 @@ const Pricing = () => {
                     </button>
                 </div>
 
-                {/* Wooden Card - Active */}
-                <div className="border border-white/20 bg-white/5 p-8 flex flex-col relative group hover:border-brand-hover transition-colors duration-300">
+                {/* Wooden Card - Coming Soon */}
+                <div className="border border-white/20 bg-white/5 p-8 flex flex-col justify-between relative group hover:border-brand-hover transition-colors duration-300">
                    <div className="absolute top-0 right-0 bg-brand text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
                         Eco Friendly
                     </div>
-                    <h4 className="text-2xl font-bold uppercase tracking-widest mb-6">Wooden Card</h4>
-
-                    <div className="space-y-8 flex-grow">
-                        {woodenPlans.map((plan, index) => (
-                            <div key={index} className="border-b border-white/10 pb-6 last:border-0 last:pb-0">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="font-bold text-lg">{plan.duration}</span>
-                                    <div className="text-right">
-                                        <span className="text-gray-500 line-through text-xs block">{plan.originalPrice}</span>
-                                        <span className="text-xl font-bold text-brand">{plan.price}</span>
-                                    </div>
-                                </div>
-                                <ul className="space-y-2">
-                                    {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-2 text-sm text-gray-400">
-                                            <FontAwesomeIcon icon={faCheck} className="text-brand-hover mt-1 text-xs" />
-                                            <span>{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
+                    <div>
+                        <h4 className="text-2xl font-bold uppercase tracking-widest mb-4">Wooden Card</h4>
+                        <p className="text-gray-400 text-sm leading-relaxed mb-8">
+                            Crafted from premium sustainable wood. A unique, eco-friendly way to share your details.
+                        </p>
                     </div>
-
-                    <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-brand-hover">
-                        Select Plan <FontAwesomeIcon icon={faArrowRight} />
-                    </button>
+                    <div className="mt-auto">
+                        <span className="inline-block border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-500">
+                            Coming Soon
+                        </span>
+                    </div>
                 </div>
 
                 {/* Metal Card - Coming Soon */}

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedin, faTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faArrowRight, faXmark, faEnvelope, faPhone } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +13,7 @@ const Footer = () => {
     const modalRef = useRef(null);
     const backdropRef = useRef(null);
     const containerRef = useRef(null);
+    const navigate = useNavigate();
 
     const socialLinks = [
         { name: 'Instagram', icon: faInstagram, url: '#' },
@@ -145,7 +147,7 @@ const Footer = () => {
                             Let's Work <br /> Together.
                         </h3>
                     </div>
-                    <button className="group flex items-center gap-4 text-xl font-medium hover:text-brand-hover transition-colors">
+                    <button onClick={() => navigate('/getinfo')} className="group flex items-center gap-4 text-xl font-medium hover:text-brand-hover transition-colors">
                         <span className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center group-hover:border-brand-hover transition-colors">
                             <FontAwesomeIcon icon={faArrowRight} className="group-hover:-rotate-45 transition-transform duration-300 text-2xl" />
                         </span>
