@@ -348,7 +348,7 @@ const GetInfo = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
-                placeholder="JOHN DOE"
+                placeholder="YOUR NAME"
               />
             </div>
 
@@ -421,9 +421,9 @@ const GetInfo = () => {
                     <option value="PVC Card" className="bg-black">
                       PVC CARD
                     </option>
-                    <option value="Wooden Card" className="bg-black">
+                    {/* <option value="Wooden Card" className="bg-black">
                       WOODEN CARD
-                    </option>
+                    </option> */}
                     {/* <option value="Metal Card" className="bg-black">
                       METAL CARD
                     </option> */}

@@ -106,12 +106,12 @@ export default function LandingPage() {
                             </p>
 
                             <div className="mt-8 flex items-center gap-4">
-                                <button onClick={handleNavigation} className="group flex items-center gap-4 text-lg font-medium hover:text-brand-hover transition-colors">
+                                <a href="#pricing" className="group flex items-center gap-4 text-lg font-medium hover:text-brand-hover transition-colors">
                                     <span className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-brand-hover transition-colors">
                                         <FontAwesomeIcon icon={faArrowRight} className="group-hover:-rotate-45 transition-transform duration-300" />
                                     </span>
                                     Order Now
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
