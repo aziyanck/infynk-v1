@@ -29,11 +29,11 @@ const RAZORPAY_KEY_ID = "rzp_live_SWWEjjUiISx5no";
 const PRICING_CONFIG = {
   "PVC Card": {
     plans: {
-      "1_year": 1199,
-      "2_year": 1399,
-      "3_year": 1599,
+      "1_year": 999,
+      "2_year": 1199,
+      "3_year": 1499,
     },
-    single_item: 200,
+    single_item: 150,
   },
   "Wooden Card": {
     plans: {
