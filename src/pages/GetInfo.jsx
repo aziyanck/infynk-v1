@@ -31,7 +31,7 @@ const PRICING_CONFIG = {
     plans: {
       "1_year": 999,
       "2_year": 1199,
-      "3_year": 1499,
+      "3_year": 1399,
     },
     single_item: 150,
   },
