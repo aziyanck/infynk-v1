@@ -77,8 +77,8 @@ const Pricing = () => {
         },
         {
             duration: '3-Year Plan',
-            originalPrice: '₹1799',
-            price: '₹1499',
+            originalPrice: '₹1699',
+            price: '₹1399',
             features: ['3-year subscription', 'Fully customizable card design', 'Access to all features']
         }
     ];
