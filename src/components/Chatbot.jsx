@@ -17,6 +17,8 @@ export default function Chatbot() {
   const [isBotReady, setIsBotReady] = useState(false);
   const [hasError, setHasError] = useState(false);
   const messagesEndRef = useRef(null);
+  const sessionIdRef = useRef("user123");
+  const webhookUrl = "https://n8n-szm5.onrender.com/webhook/pixy-chat";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,12 +33,15 @@ export default function Chatbot() {
     const wakeUpBot = async () => {
       try {
         // Sending a dummy request to wake up the server
-        await fetch("https://aziyan-my-n8n-bot.hf.space/webhook/pixy", {
+        await fetch(webhookUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ chatInput: "wake up" }),
+          body: JSON.stringify({
+            message: "wake up",
+            sessionId: sessionIdRef.current,
+          }),
         });
         setIsBotReady(true);
       } catch (error) {
@@ -81,24 +86,34 @@ export default function Chatbot() {
     }
 
     try {
-      const response = await fetch(
-        "https://aziyan-my-n8n-bot.hf.space/webhook/pixy",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ chatInput: userMessage.text }),
-        }
-      );
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage.text,
+          sessionId: sessionIdRef.current,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      let data = responseText;
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        data = responseText;
+      }
+      const reply =
+        typeof data === "string"
+          ? data
+          : data.reply || data.output || data.text || data.message;
       const botMessage = {
-        text: data.reply || "Sorry, I didn't get that.",
+        text: reply || "Sorry, I didn't get that.",
         sender: "bot",
       };
       setMessages((prev) => [...prev, botMessage]);
