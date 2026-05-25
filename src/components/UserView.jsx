@@ -127,6 +127,8 @@ const UserView = ({ user }) => {
     whatsapp: user.whatsapp || user.contact?.whatsapp,
   };
 
+  const activeContactCount = [contact.phone, contact.email, contact.whatsapp].filter(Boolean).length;
+
   const socials = user.socials || {
     whatsapp: user.whatsapp,
     instagram: user.instagram,
@@ -148,118 +150,154 @@ const UserView = ({ user }) => {
     c_link2: user.c_link2,
   };
 
+  const formatUrl = (value, prefix) => {
+    if (!value) return null;
+    const strValue = String(value).trim();
+    
+    // If it already starts with http:// or https://, just return it
+    if (strValue.startsWith("http://") || strValue.startsWith("https://")) return strValue;
+
+    // Try to extract the domain from the prefix to see if the user already included it
+    let domain = "";
+    try {
+      const url = new URL(prefix);
+      domain = url.hostname.replace("www.", "");
+    } catch (e) {
+      // Ignore if prefix is not a valid URL by itself (e.g., just "https://")
+    }
+
+    // If the input looks like a full URL (starts with www.) or contains the target domain,
+    // we assume it's a link they pasted without http/https
+    if (
+      strValue.startsWith("www.") || 
+      (domain && strValue.toLowerCase().includes(domain.toLowerCase())) ||
+      strValue.includes(".com/") ||
+      strValue.includes(".net/") ||
+      strValue.includes(".org/") ||
+      strValue.includes(".me/") ||
+      strValue.includes(".io/") ||
+      strValue.includes(".co/") ||
+      strValue.includes(".in/")
+    ) {
+      return `https://${strValue}`;
+    }
+
+    return `${prefix}${strValue}`;
+  };
+
   const links = [
     {
       type: "linkedin",
-      href: socials.linkedin
-        ? `https://linkedin.com/in/${socials.linkedin}`
-        : null,
+      href: formatUrl(socials.linkedin, "https://linkedin.com/in/"),
       icon: faLinkedin,
       name: "LinkedIn",
     },
     {
       type: "twitter",
-      href: socials.twitter ? `https://twitter.com/${socials.twitter}` : null,
+      href: formatUrl(socials.twitter, "https://twitter.com/"),
       icon: faTwitter,
       name: "Twitter",
     },
     {
       type: "instagram",
-      href: socials.instagram
-        ? `https://instagram.com/${socials.instagram}`
-        : null,
+      href: formatUrl(socials.instagram, "https://instagram.com/"),
       icon: faInstagram,
       name: "Instagram",
     },
     {
       type: "facebook",
-      href: socials.facebook
-        ? `https://facebook.com/${socials.facebook}`
-        : null,
+      href: formatUrl(socials.facebook, "https://facebook.com/"),
       icon: faFacebook,
       name: "Facebook",
     },
     {
       type: "youtube",
-      href: socials.youtube ? `https://youtube.com/${socials.youtube}` : null,
+      href: formatUrl(socials.youtube, "https://youtube.com/"),
       icon: faYoutube,
       name: "YouTube",
     },
     {
       type: "github",
-      href: socials.github ? `https://github.com/${socials.github}` : null,
+      href: formatUrl(socials.github, "https://github.com/"),
       icon: faGithub,
       name: "GitHub",
     },
     {
       type: "tiktok",
-      href: socials.tiktok ? `https://tiktok.com/@${socials.tiktok}` : null,
+      href: formatUrl(socials.tiktok, "https://tiktok.com/@"),
       icon: faTiktok,
       name: "TikTok",
     },
     {
       type: "telegram",
-      href: socials.telegram ? `https://t.me/${socials.telegram}` : null,
+      href: formatUrl(socials.telegram, "https://t.me/"),
       icon: faTelegram,
       name: "Telegram",
     },
     {
       type: "spotify",
-      href: socials.spotify
-        ? `https://open.spotify.com/user/${socials.spotify}`
-        : null,
+      href: formatUrl(socials.spotify, "https://open.spotify.com/user/"),
       icon: faSpotify,
       name: "Spotify",
     },
     {
       type: "pinterest",
-      href: socials.pinterest
-        ? `https://pinterest.com/${socials.pinterest}`
-        : null,
+      href: formatUrl(socials.pinterest, "https://pinterest.com/"),
       icon: faPinterest,
       name: "Pinterest",
     },
     {
       type: "threads",
-      href: socials.threads ? `https://threads.net/@${socials.threads}` : null,
+      href: formatUrl(socials.threads, "https://threads.net/@"),
       icon: faThreads,
       name: "Threads",
     },
     {
       type: "behance",
-      href: socials.behance ? `https://behance.net/${socials.behance}` : null,
+      href: formatUrl(socials.behance, "https://behance.net/"),
       icon: faBehance,
       name: "Behance",
     },
     {
       type: "website",
-      href: socials.website ? `https://${socials.website}` : null,
+      href: formatUrl(socials.website, "https://"),
       icon: faLink,
       name: "Website",
     },
     {
       type: "reviews",
-      href: socials.reviews || null,
+      href: formatUrl(socials.reviews, "https://"),
       icon: faStar,
       name: "Review Now",
     },
     {
       type: "c_link1",
-      href: socials.c_link1 || null,
+      href: formatUrl(socials.c_link1, "https://"),
       icon: faLink,
       name: "Custom Link 1",
     },
     {
       type: "c_link2",
-      href: socials.c_link2 || null,
+      href: formatUrl(socials.c_link2, "https://"),
       icon: faLink,
       name: "Custom Link 2",
     },
     {
       type: "location",
-      href: socials.location
-        ? `https://maps.google.com/?q=${encodeURIComponent(socials.location)}`
-        : null,
+      href: (() => {
+        if (!socials.location) return null;
+        const loc = String(socials.location).trim();
+        if (loc.startsWith("http://") || loc.startsWith("https://")) return loc;
+        if (
+          loc.startsWith("www.") || 
+          loc.includes("maps.app.goo.gl") || 
+          loc.includes("google.com/maps") ||
+          loc.includes("goo.gl/maps")
+        ) {
+          return `https://${loc}`;
+        }
+        return `https://maps.google.com/?q=${encodeURIComponent(loc)}`;
+      })(),
       icon: faLocationDot,
       name: "Location",
     },
@@ -419,7 +457,7 @@ END:VCARD`;
         </header>
 
         {/* Contact buttons */}
-        <div className="grid grid-cols-3 gap-3 text-center">
+        <div className={`grid ${activeContactCount === 1 ? "grid-cols-1" : activeContactCount === 2 ? "grid-cols-2" : "grid-cols-3"} gap-3 text-center`}>
           {contact.phone && (
             <ContactButton
               className="anim-contact-btn"
@@ -443,7 +481,7 @@ END:VCARD`;
           {contact.whatsapp && (
             <ContactButton
               className="anim-contact-btn"
-              href={`https://wa.me/${contact.whatsapp}`}
+              href={formatUrl(contact.whatsapp, "https://wa.me/")}
               icon={faWhatsapp}
               text="WhatsApp"
               lightbg={lightbg}
