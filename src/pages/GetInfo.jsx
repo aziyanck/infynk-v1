@@ -49,7 +49,7 @@ const PRICING_CONFIG = {
       "2_year": 2349,
       "3_year": 2499,
     },
-    single_item: 500,
+    single_item: 850,
   },
 };
 
