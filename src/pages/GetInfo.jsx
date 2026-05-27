@@ -37,11 +37,19 @@ const PRICING_CONFIG = {
   },
   "Wooden Card": {
     plans: {
-      "1_year": 1299,
-      "2_year": 1499,
-      "3_year": 1699,
+      "1_year": 1499,
+      "2_year": 1699,
+      "3_year": 1899,
     },
     single_item: 350,
+  },
+  "Metal Card": {
+    plans: {
+      "1_year": 2199,
+      "2_year": 2349,
+      "3_year": 2499,
+    },
+    single_item: 500,
   },
 };
 
@@ -421,12 +429,12 @@ const GetInfo = () => {
                     <option value="PVC Card" className="bg-black">
                       PVC CARD
                     </option>
-                    {/* <option value="Wooden Card" className="bg-black">
+                    <option value="Wooden Card" className="bg-black">
                       WOODEN CARD
-                    </option> */}
-                    {/* <option value="Metal Card" className="bg-black">
+                    </option>
+                    <option value="Metal Card" className="bg-black">
                       METAL CARD
-                    </option> */}
+                    </option>
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
                 </div>
