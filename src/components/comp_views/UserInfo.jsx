@@ -90,7 +90,7 @@ const UserInfo = ({ user, onClose, setUsers }) => {
 
 
     const generateQr = async (routeId) => {
-        const urlToEncode = `https://pixic-xi.vercel.app/${routeId}`;
+        const urlToEncode = `https://pixiic.com/${routeId}`;
         try {
             const qrDataUrl = await QRCode.toDataURL(urlToEncode); // Base64 QR code
             setQrCodeUrl(qrDataUrl); // Open QrDisplay component
