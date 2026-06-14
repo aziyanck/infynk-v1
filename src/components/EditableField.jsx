@@ -14,7 +14,8 @@ const EditableField = ({
   visibility,
   onChange,
   onToggle,
-
+  nameField,
+  nameValue,
   themekey = "sky"
 }) => {
 
@@ -30,6 +31,22 @@ const EditableField = ({
         <label htmlFor={name} className="shrink-0 text-gray-700">
           <FontAwesomeIcon icon={icon} size="lg" color={color} />
         </label>
+
+        {nameField && (
+          <input
+            type="text"
+            id={nameField}
+            name={nameField}
+            placeholder={`${placeholder} Name`}
+            value={nameValue || ''}
+            onChange={onChange}
+            className="w-full px-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-offset-1 text-sm sm:w-1/3"
+            style={{
+              borderColor: '#ccc',
+              outline: 'none',
+              '--tw-ring-color': primaryColor,
+            }} />
+        )}
 
         {/* Input */}
         <input

@@ -164,7 +164,15 @@ const UserDashboard = () => {
     location: "",
     reviews: "",
     c_link1: "",
+    c_link1_name: "",
     c_link2: "",
+    c_link2_name: "",
+    c_link3: "",
+    c_link3_name: "",
+    c_link4: "",
+    c_link4_name: "",
+    c_link5: "",
+    c_link5_name: "",
     view_count: 0,
   });
 
@@ -190,6 +198,9 @@ const UserDashboard = () => {
     reviews: true,
     c_link1: true,
     c_link2: true,
+    c_link3: true,
+    c_link4: true,
+    c_link5: true,
     location: true,
   });
 
@@ -255,7 +266,15 @@ const UserDashboard = () => {
           location: profileData.location || "",
           reviews: profileData.reviews || "",
           c_link1: profileData.c_link1 || "",
+          c_link1_name: profileData.c_link1_name || "",
           c_link2: profileData.c_link2 || "",
+          c_link2_name: profileData.c_link2_name || "",
+          c_link3: profileData.c_link3 || "",
+          c_link3_name: profileData.c_link3_name || "",
+          c_link4: profileData.c_link4 || "",
+          c_link4_name: profileData.c_link4_name || "",
+          c_link5: profileData.c_link5 || "",
+          c_link5_name: profileData.c_link5_name || "",
           view_count: profileData.view_count || 0,
         });
         setVisibility({
@@ -275,6 +294,11 @@ const UserDashboard = () => {
           threads: profileData.show_threads,
           behance: profileData.show_behance,
           reviews: profileData.show_reviews,
+          c_link1: profileData.show_c_link1 !== undefined ? profileData.show_c_link1 : true,
+          c_link2: profileData.show_c_link2 !== undefined ? profileData.show_c_link2 : true,
+          c_link3: profileData.show_c_link3 !== undefined ? profileData.show_c_link3 : true,
+          c_link4: profileData.show_c_link4 !== undefined ? profileData.show_c_link4 : true,
+          c_link5: profileData.show_c_link5 !== undefined ? profileData.show_c_link5 : true,
         });
 
         setLocalImage(profileData.pr_img);
@@ -319,8 +343,11 @@ const UserDashboard = () => {
     { type: "behance", icon: faBehance, name: "Behance" },
     { type: "reviews", icon: faStar, name: "Reviews" },
     { type: "location", icon: faLocationDot, name: "Location" },
-    { type: "c_link1", icon: faLink, name: "Custom Link 1" },
-    { type: "c_link2", icon: faLink, name: "Custom Link 2" },
+    { type: "c_link1", icon: faLink, name: "Custom Link 1", nameField: "c_link1_name" },
+    { type: "c_link2", icon: faLink, name: "Custom Link 2", nameField: "c_link2_name" },
+    { type: "c_link3", icon: faLink, name: "Custom Link 3", nameField: "c_link3_name" },
+    { type: "c_link4", icon: faLink, name: "Custom Link 4", nameField: "c_link4_name" },
+    { type: "c_link5", icon: faLink, name: "Custom Link 5", nameField: "c_link5_name" },
   ];
 
   const handleProfileChange = (e) => {
@@ -383,6 +410,9 @@ const UserDashboard = () => {
         show_location: visibility.location,
         show_c_link1: visibility.c_link1,
         show_c_link2: visibility.c_link2,
+        show_c_link3: visibility.c_link3,
+        show_c_link4: visibility.c_link4,
+        show_c_link5: visibility.c_link5,
         id: profile.id,
         color: themeKey,
       };
@@ -445,7 +475,15 @@ const UserDashboard = () => {
       reviews: visibility.reviews ? profile.reviews : null,
       location: visibility.location ? profile.location : null,
       c_link1: visibility.c_link1 ? profile.c_link1 : null,
+      c_link1_name: visibility.c_link1 ? profile.c_link1_name : null,
       c_link2: visibility.c_link2 ? profile.c_link2 : null,
+      c_link2_name: visibility.c_link2 ? profile.c_link2_name : null,
+      c_link3: visibility.c_link3 ? profile.c_link3 : null,
+      c_link3_name: visibility.c_link3 ? profile.c_link3_name : null,
+      c_link4: visibility.c_link4 ? profile.c_link4 : null,
+      c_link4_name: visibility.c_link4 ? profile.c_link4_name : null,
+      c_link5: visibility.c_link5 ? profile.c_link5 : null,
+      c_link5_name: visibility.c_link5 ? profile.c_link5_name : null,
     },
   };
 
@@ -684,6 +722,8 @@ const UserDashboard = () => {
               onChange={handleProfileChange}
               onToggle={handleVisibilityToggle}
               themekey={themeKey}
+              nameField={field.nameField}
+              nameValue={field.nameField ? profile[field.nameField] : undefined}
             />
           ))}
         </div>

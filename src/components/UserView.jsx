@@ -147,7 +147,15 @@ const UserView = ({ user }) => {
     tiktok: user.tiktok,
     reviews: user.reviews,
     c_link1: user.c_link1,
+    c_link1_name: user.c_link1_name,
     c_link2: user.c_link2,
+    c_link2_name: user.c_link2_name,
+    c_link3: user.c_link3,
+    c_link3_name: user.c_link3_name,
+    c_link4: user.c_link4,
+    c_link4_name: user.c_link4_name,
+    c_link5: user.c_link5,
+    c_link5_name: user.c_link5_name,
   };
 
   const formatUrl = (value, prefix) => {
@@ -274,13 +282,31 @@ const UserView = ({ user }) => {
       type: "c_link1",
       href: formatUrl(socials.c_link1, "https://"),
       icon: faLink,
-      name: "Custom Link 1",
+      name: socials.c_link1_name || "Custom Link 1",
     },
     {
       type: "c_link2",
       href: formatUrl(socials.c_link2, "https://"),
       icon: faLink,
-      name: "Custom Link 2",
+      name: socials.c_link2_name || "Custom Link 2",
+    },
+    {
+      type: "c_link3",
+      href: formatUrl(socials.c_link3, "https://"),
+      icon: faLink,
+      name: socials.c_link3_name || "Custom Link 3",
+    },
+    {
+      type: "c_link4",
+      href: formatUrl(socials.c_link4, "https://"),
+      icon: faLink,
+      name: socials.c_link4_name || "Custom Link 4",
+    },
+    {
+      type: "c_link5",
+      href: formatUrl(socials.c_link5, "https://"),
+      icon: faLink,
+      name: socials.c_link5_name || "Custom Link 5",
     },
     {
       type: "location",
