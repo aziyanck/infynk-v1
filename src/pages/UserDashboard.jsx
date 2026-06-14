@@ -17,6 +17,7 @@ import ThemeColorPicker from "../components/ThemeColorPicker";
 import Spinner from "../components/Spinner";
 import UserView from "../components/UserView";
 import imageCompression from "browser-image-compression";
+import heicConvert from "heic-convert";
 
 // Brand icons
 import {
@@ -360,8 +361,27 @@ const UserDashboard = () => {
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+    let file = e.target.files[0];
     if (!file) return;
+
+    // Check if HEIC/HEIF and convert
+    if (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif")) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const inputBuffer = Buffer.from(arrayBuffer);
+        const outputBuffer = await heicConvert({
+          buffer: inputBuffer,
+          format: 'JPEG',
+          quality: 0.8
+        });
+        
+        file = new File([outputBuffer], file.name.replace(/\.heic$|\.heif$/i, ".jpg"), { type: "image/jpeg" });
+      } catch (err) {
+        console.error("Failed to convert HEIC to JPEG:", err);
+        alert(`Failed to process HEIC image: ${err.message || err}`);
+        return;
+      }
+    }
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -797,17 +817,17 @@ const UserDashboard = () => {
                     let blob = await (await fetch(croppedUrl)).blob();
 
                     // Compression Logic
-                    const MAX_SIZE = 900 * 1024; // 900KB
+                    const MAX_SIZE = 200 * 1024; // 200KB
                     if (blob.size > MAX_SIZE) {
                       console.log(
-                        `Image size ${blob.size} exceeds 900KB. Compressing...`
+                        `Image size ${blob.size} exceeds 200KB. Compressing...`
                       );
                       try {
                         const fileToCompress = new File([blob], "image.jpg", {
                           type: "image/jpeg",
                         });
                         const options = {
-                          maxSizeMB: 0.5, // 500KB
+                          maxSizeMB: 0.1, // 100KB
                           useWebWorker: true,
                         };
                         const compressedFile = await imageCompression(
