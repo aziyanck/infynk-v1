@@ -58,6 +58,8 @@ const GetInfo = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState();
   const [address, setAddress] = useState("");
+  const [postOffice, setPostOffice] = useState("");
+  const [pinCode, setPinCode] = useState("");
   const [accountType, setAccountType] = useState("Company");
   const [companyName, setCompanyName] = useState("");
 
@@ -182,7 +184,7 @@ const GetInfo = () => {
                     full_name: fullName,
                     email: email,
                     phone: phoneNumber,
-                    address: address,
+                    address: `${address}, Post office:${postOffice}, pin: ${pinCode}`.trim(),
                     account_type: accountType,
                     company_name:
                       accountType === "Company" ? companyName : null,
@@ -225,7 +227,7 @@ const GetInfo = () => {
         notes: {
           user_name: fullName,
           user_plan: planDuration,
-          user_address: address,
+          user_address: `${address}, Post office:${postOffice}, pin: ${pinCode}`.trim(),
           user_company: accountType === "Company" ? companyName : "Personal",
           account_type: accountType,
         },
@@ -401,14 +403,49 @@ const GetInfo = () => {
               >
                 Shipping Address
               </label>
-              <textarea
+              <input
+                type="text"
                 id="address"
-                rows={2}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors resize-none"
-                placeholder="FULL ADDRESS"
+                className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
+                placeholder="STREET, AREA, CITY, STATE"
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 form-item">
+              <div>
+                <label
+                  htmlFor="postOffice"
+                  className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+                >
+                  Post Office
+                </label>
+                <input
+                  type="text"
+                  id="postOffice"
+                  value={postOffice}
+                  onChange={(e) => setPostOffice(e.target.value)}
+                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
+                  placeholder="POST OFFICE"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="pinCode"
+                  className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2"
+                >
+                  Pin Number
+                </label>
+                <input
+                  type="text"
+                  id="pinCode"
+                  value={pinCode}
+                  onChange={(e) => setPinCode(e.target.value)}
+                  className="block w-full px-4 py-3 bg-transparent border border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-brand transition-colors"
+                  placeholder="PIN"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 form-item">
