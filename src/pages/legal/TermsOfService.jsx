@@ -61,7 +61,7 @@ export default function TermsOfService() {
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">3. Subscription & Pricing</h2>
                         <ul className="list-disc pl-6 mt-2 space-y-1">
-                            <li>After the first order, users can renew their profile access for ₹300 per year.</li>
+                            <li>After the first order, users can renew their profile access for ₹349 per year.</li>
                             <li>Prices may change over time without prior notice.</li>
                         </ul>
                     </section>

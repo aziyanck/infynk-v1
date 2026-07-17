@@ -65,20 +65,20 @@ const Pricing = () => {
     const pvcPlans = [
         {
             duration: '1-Year Plan',
-            originalPrice: '₹1299',
-            price: '₹999',
+            price: '₹1399',
+            originalPrice: '₹1599',
             features: ['1-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '2-Year Plan',
-            originalPrice: '₹1499',
-            price: '₹1199',
+            price: '₹1699',
+            originalPrice: '₹1899',
             features: ['2-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '3-Year Plan',
-            originalPrice: '₹1699',
-            price: '₹1399',
+            price: '₹1949',
+            originalPrice: '₹2149',
             features: ['3-year subscription', 'Fully customizable card design', 'Access to all features']
         }
     ];
@@ -86,20 +86,20 @@ const Pricing = () => {
     const woodenPlans = [
         {
             duration: '1-Year Plan',
-            originalPrice: '₹1649',
-            price: '₹1499',
+            price: '₹1799',
+            originalPrice: '₹1999',
             features: ['1-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '2-Year Plan',
-            originalPrice: '₹1849',
-            price: '₹1699',
+            price: '₹2099',
+            originalPrice: '₹2299',
             features: ['2-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '3-Year Plan',
-            originalPrice: '₹2049',
-            price: '₹1899',
+            price: '₹2349',
+            originalPrice: '₹2549',
             features: ['3-year subscription', 'Fully customizable card design', 'Access to all features']
         }
     ];
@@ -107,20 +107,20 @@ const Pricing = () => {
     const metalPlans = [
         {
             duration: '1-Year Plan',
-            originalPrice: '₹2399',
-            price: '₹2199',
+            price: '₹2599',
+            originalPrice: '₹2799',
             features: ['1-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '2-Year Plan',
-            originalPrice: '₹2549',
-            price: '₹2349',
+            price: '₹2899',
+            originalPrice: '₹3099',
             features: ['2-year subscription', 'Fully customizable card design', 'Access to all features']
         },
         {
             duration: '3-Year Plan',
-            originalPrice: '₹2699',
-            price: '₹2499',
+            price: '₹3149',
+            originalPrice: '₹3349',
             features: ['3-year subscription', 'Fully customizable card design', 'Access to all features']
         }
     ];
@@ -171,6 +171,10 @@ const Pricing = () => {
                     <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-brand-hover">
                         Select Plan <FontAwesomeIcon icon={faArrowRight} />
                     </button>
+
+                    <p className="md:hidden mt-4 text-center text-xs text-gray-400">
+                        After your plan ends, the yearly subscription renews at <span className="font-bold text-brand-hover">₹349/year</span>.
+                    </p>
                 </div>
 
                 {/* Wooden Card */}
@@ -209,6 +213,10 @@ const Pricing = () => {
                     <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-brand-hover">
                         Select Plan <FontAwesomeIcon icon={faArrowRight} />
                     </button>
+
+                    <p className="md:hidden mt-4 text-center text-xs text-gray-400">
+                        After your plan ends, the yearly subscription renews at <span className="font-bold text-brand-hover">₹349/year</span>.
+                    </p>
                 </div>
 
                 {/* Metal Card */}
@@ -247,8 +255,16 @@ const Pricing = () => {
                     <button onClick={handleNavigation} className="w-full mt-8 py-4 border border-white/20 font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-brand-hover">
                         Select Plan <FontAwesomeIcon icon={faArrowRight} />
                     </button>
+
+                    <p className="md:hidden mt-4 text-center text-xs text-gray-400">
+                        After your plan ends, the yearly subscription renews at <span className="font-bold text-brand-hover">₹349/year</span>.
+                    </p>
                 </div>
             </div>
+
+            <p className="hidden md:block mt-12 text-center text-sm text-gray-400 border border-white/20 bg-white/5 py-4 px-6">
+                After your plan ends, the yearly subscription renews at <span className="font-bold text-brand-hover">₹349/year</span>.
+            </p>
         </section>
     );
 };
