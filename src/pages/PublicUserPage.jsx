@@ -6,6 +6,8 @@ import {
   incrementViewCount,
 } from "../services/userService";
 import UserView from "../components/UserView";
+import UserView2 from "../components/UserView2";
+import UserView3 from "../components/UserView3";
 import UserNotFound from "./UserNotFound";
 
 const PublicUserPage = () => {
@@ -50,7 +52,13 @@ const PublicUserPage = () => {
     );
   if (notFound) return <UserNotFound />;
 
-  return <UserView user={user} />;
+  if (user?.layout === "glassy") {
+    return <UserView2 user={user} />;
+  } else if (user?.layout === "bento") {
+    return <UserView3 user={user} />;
+  } else {
+    return <UserView user={user} />;
+  }
 };
 
 export default PublicUserPage;

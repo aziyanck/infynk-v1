@@ -32,6 +32,12 @@ import {
 
 import { themes } from "../services/themes";
 
+// Small helper: mix a theme color with another color using modern CSS color-mix.
+// Falls back gracefully in browsers that don't support it (mixed color simply
+// won't apply, base color still renders via the surrounding style).
+const mix = (color, percent, into = "white") =>
+  `color-mix(in srgb, ${color} ${percent}%, ${into})`;
+
 // Component
 const UserView = ({ user }) => {
   const containerRef = useRef();
@@ -161,7 +167,7 @@ const UserView = ({ user }) => {
   const formatUrl = (value, prefix) => {
     if (!value) return null;
     const strValue = String(value).trim();
-    
+
     // If it already starts with http:// or https://, just return it
     if (strValue.startsWith("http://") || strValue.startsWith("https://")) return strValue;
 
@@ -177,7 +183,7 @@ const UserView = ({ user }) => {
     // If the input looks like a full URL (starts with www.) or contains the target domain,
     // we assume it's a link they pasted without http/https
     if (
-      strValue.startsWith("www.") || 
+      strValue.startsWith("www.") ||
       (domain && strValue.toLowerCase().includes(domain.toLowerCase())) ||
       strValue.includes(".com/") ||
       strValue.includes(".net/") ||
@@ -315,8 +321,8 @@ const UserView = ({ user }) => {
         const loc = String(socials.location).trim();
         if (loc.startsWith("http://") || loc.startsWith("https://")) return loc;
         if (
-          loc.startsWith("www.") || 
-          loc.includes("maps.app.goo.gl") || 
+          loc.startsWith("www.") ||
+          loc.includes("maps.app.goo.gl") ||
           loc.includes("google.com/maps") ||
           loc.includes("goo.gl/maps")
         ) {
@@ -400,46 +406,82 @@ END:VCARD`;
     }
   };
 
+  // Decorative "card number" derived from the user's id, purely cosmetic —
+  // gives the card an authentic ID/membership-card feel without adding new data.
+  const cardSerial = String(user._id || user.id || fullName)
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toUpperCase()
+    .padEnd(8, "0")
+    .slice(0, 8)
+    .replace(/(.{4})/g, "$1 ")
+    .trim();
+
   return (
     <div
       ref={containerRef}
-      className="font-sans min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-slate-100 to-slate-200"
+      className="font-sans min-h-screen flex flex-col items-center justify-center p-4"
+      style={{
+        background: `
+          radial-gradient(circle at 15% 10%, ${mix(primaryColor, 18)} 0%, transparent 45%),
+          radial-gradient(circle at 85% 90%, ${mix(primaryColor, 12)} 0%, transparent 50%),
+          #f4f5f7
+        `,
+      }}
     >
       <div
-        className="anim-card w-full max-w-md rounded-[2.5rem] shadow-2xl p-6 md:p-8 flex flex-col space-y-6 relative overflow-hidden"
-        style={{ backgroundColor: bg }}
+        className="anim-card w-full max-w-sm rounded-[28px] p-5 flex flex-col space-y-5 relative overflow-hidden"
+        style={{
+          backgroundColor: bg,
+          boxShadow: `0 25px 60px -20px ${mix(primaryColor, 35, "black")}, 0 2px 8px -2px rgba(0,0,0,0.08)`,
+          border: `1px solid ${mix(txtclr, 8)}`,
+        }}
       >
-        {/* Background glow for premium feel */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 blur-[80px] rounded-full pointer-events-none -mr-32 -marginTop-32"></div>
+        {/* Hologram strip + chip — signature "digital ID card" motif */}
+        <div className="flex items-center justify-between relative z-10">
+          {/* <div
+            className="w-9 h-7 rounded-[6px] grid grid-cols-3 grid-rows-2 gap-[2px] p-[3px]"
+            style={{
+              background: `linear-gradient(135deg, ${mix(primaryColor, 90)}, ${mix(primaryColor, 55)})`,
+            }}
+          >
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-[1px] bg-black/15" />
+            ))}
+          </div> */}
+          {/* <span
+            className="font-mono text-[10px] tracking-[0.2em] uppercase opacity-50"
+            style={{ color: txtclr }}
+          >
+            Digital&nbsp;Card
+          </span> */}
+        </div>
 
         {/* Header */}
         <header className="text-center space-y-4 relative z-10">
           <div className="relative inline-block">
             {imgLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-200 rounded-full z-20">
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-200 rounded-[26px] z-20">
                 <Spinner size="md" color="text-gray-500" />
               </div>
             )}
             {imgError ? (
               <div
-                className="anim-profile w-32 h-32 rounded-full mx-auto shadow-lg flex items-center justify-center bg-gray-200 text-gray-400"
+                className="anim-profile w-28 h-28 rounded-[26px] mx-auto shadow-lg flex items-center justify-center bg-gray-200 text-gray-400"
                 style={{
-                  border: "4px solid",
-                  borderColor: primaryColor,
+                  boxShadow: `0 0 0 3px ${bg}, 0 0 0 5px ${primaryColor}`,
                 }}
               >
-                <FontAwesomeIcon icon={faUser} className="w-16 h-16" />
+                <FontAwesomeIcon icon={faUser} className="w-14 h-14" />
               </div>
             ) : (
               <img
                 src={profilePhoto}
                 alt={fullName}
-                className={`anim-profile w-32 h-32 rounded-full mx-auto object-cover shadow-lg ${
+                className={`anim-profile w-28 h-28 rounded-[26px] mx-auto object-cover shadow-lg ${
                   imgLoading ? "opacity-0" : "opacity-100"
                 }`}
                 style={{
-                  border: "4px solid",
-                  borderColor: primaryColor,
+                  boxShadow: `0 0 0 3px ${bg}, 0 0 0 5px ${primaryColor}`,
                 }}
                 onLoad={() => setImgLoading(false)}
                 onError={() => {
@@ -448,32 +490,48 @@ END:VCARD`;
                 }}
               />
             )}
+            {/* Verified/status dot */}
+            <span
+              className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-[3px]"
+              style={{ backgroundColor: primaryColor, borderColor: bg }}
+            />
           </div>
 
           <div>
             <h1
-              className="anim-text text-3xl font-bold tracking-tight"
+              className="anim-text text-[26px] font-extrabold tracking-tight leading-tight"
               style={{ color: txtclr }}
             >
               {fullName}
             </h1>
-            <div
-              className="anim-text flex items-center justify-center gap-2 mt-1 opacity-90 text-md font-medium"
-              style={{ color: txtclr }}
-            >
+            <div className="anim-text flex items-center justify-center gap-2 mt-2 flex-wrap">
               {designation.includes(";") ? (
                 <>
-                  <span>{designation.split(";")[0]}</span>
-                  <span className="w-px h-4 bg-current opacity-50"></span>
-                  <span>{designation.split(";")[1]}</span>
+                  <span
+                    className="text-[11px] font-semibold uppercase tracking-wide px-3 py-1 rounded-full"
+                    style={{ backgroundColor: lightbg, color: txtclr }}
+                  >
+                    {designation.split(";")[0]}
+                  </span>
+                  <span
+                    className="text-[11px] font-semibold uppercase tracking-wide px-3 py-1 rounded-full"
+                    style={{ backgroundColor: lightbg, color: txtclr }}
+                  >
+                    {designation.split(";")[1]}
+                  </span>
                 </>
               ) : (
-                designation
+                <span
+                  className="text-[11px] font-semibold uppercase tracking-wide px-3 py-1 rounded-full"
+                  style={{ backgroundColor: lightbg, color: txtclr }}
+                >
+                  {designation}
+                </span>
               )}
             </div>
             {bio && (
               <p
-                className="anim-text text-center leading-relaxed opacity-85 mt-1.5"
+                className="anim-text text-center leading-relaxed opacity-80 mt-3 text-[14px] px-1"
                 style={{ color: txtclr }}
               >
                 {bio}
@@ -483,14 +541,14 @@ END:VCARD`;
         </header>
 
         {/* Contact buttons */}
-        <div className={`grid ${activeContactCount === 1 ? "grid-cols-1" : activeContactCount === 2 ? "grid-cols-2" : "grid-cols-3"} gap-3 text-center`}>
+        <div className={`grid ${activeContactCount === 1 ? "grid-cols-1" : activeContactCount === 2 ? "grid-cols-2" : "grid-cols-3"} gap-3`}>
           {contact.phone && (
             <ContactButton
               className="anim-contact-btn"
               href={`tel:${contact.phone}`}
               icon={faPhone}
               text="Call"
-              lightbg={lightbg}
+              primaryColor={primaryColor}
               txtclr={txtclr}
             />
           )}
@@ -500,7 +558,7 @@ END:VCARD`;
               href={`mailto:${contact.email}`}
               icon={faEnvelope}
               text="Email"
-              lightbg={lightbg}
+              primaryColor={primaryColor}
               txtclr={txtclr}
             />
           )}
@@ -510,63 +568,93 @@ END:VCARD`;
               href={formatUrl(contact.whatsapp, "https://wa.me/")}
               icon={faWhatsapp}
               text="WhatsApp"
-              lightbg={lightbg}
+              primaryColor={primaryColor}
               txtclr={txtclr}
             />
           )}
         </div>
 
-        {/* Socials/Extra links */}
+        {/* Socials/Extra links — modern stacked list */}
         {links.length > 0 && (
-          <div className="grid grid-cols-6 gap-4 pt-2">
-            {links.map((link, i) => {
-              const rowItems = Math.min(3, links.length - Math.floor(i / 3) * 3);
-              const spanClass = rowItems === 1 ? "col-span-6" : rowItems === 2 ? "col-span-3" : "col-span-2";
-              return (
-                <a
-                  key={link.type}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={link.name}
-                  className={`anim-link flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-md ${spanClass}`}
-                  style={{ backgroundColor: lightbg, color: txtclr }}
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{ backgroundColor: lightbg }}
+          >
+            {links.map((link, i) => (
+              <a
+                key={link.type}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.name}
+                className="anim-link flex items-center gap-3 px-4 py-3.5 transition-all duration-200 hover:brightness-95 active:scale-[0.99]"
+                style={{
+                  color: txtclr,
+                  borderTop: i === 0 ? "none" : `1px solid ${mix(txtclr, 10)}`,
+                }}
+              >
+                <span
+                  className="flex items-center justify-center w-9 h-9 rounded-full shrink-0"
+                  style={{ backgroundColor: mix(bg, 70) }}
                 >
-                  <FontAwesomeIcon
-                    icon={link.icon}
-                    className="h-6 w-6 opacity-90"
-                  />
-                  <span className="text-xs font-semibold opacity-80 text-center">
-                    {link.name}
-                  </span>
-                </a>
-              );
-            })}
+                  <FontAwesomeIcon icon={link.icon} className="h-4 w-4 opacity-90" />
+                </span>
+                <span className="text-sm font-semibold opacity-90 flex-1 text-left truncate">
+                  {link.name}
+                </span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="opacity-40 shrink-0"
+                >
+                  <path d="M9 6l6 6-6 6" />
+                </svg>
+              </a>
+            ))}
           </div>
         )}
 
         {/* Save Contact */}
         {!(links.length === 1 && links[0].type === "reviews") && (
-          <div className="pt-2 !mt-auto">
+          <div className="pt-1 !mt-auto">
             <button
               onClick={handleSaveContact}
-              className="anim-save w-full text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
-              style={{ backgroundColor: primaryColor }}
+              className="anim-save w-full text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+              style={{
+                backgroundColor: primaryColor,
+                boxShadow: `0 10px 25px -8px ${mix(primaryColor, 60, "black")}`,
+              }}
             >
               <FontAwesomeIcon icon={faDownload} className="w-5 h-5" />
               Save Contact
             </button>
           </div>
         )}
+
+        {/* Card serial — decorative footer of the "ID card" */}
+        <div className="flex items-center justify-center pt-1">
+          {/* <span
+            className="font-mono text-[10px] tracking-[0.15em] opacity-35"
+            style={{ color: txtclr }}
+          >
+            {cardSerial}
+          </span> */}
+        </div>
       </div>
 
       {/* Footer */}
-      <footer className="text-center mt-8 pb-4 opacity-0 animate-[fadeIn_1s_ease-out_1.5s_forwards]">
+      <footer className="text-center mt-6 pb-4 opacity-0 animate-[fadeIn_1s_ease-out_1.5s_forwards]">
         <a
           href="https://pixiic.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-slate-500 text-sm font-medium hover:text-slate-800 transition-colors flex items-center gap-1 justify-center"
+          className="text-slate-500 text-xs font-medium hover:text-slate-800 transition-colors flex items-center gap-1 justify-center"
         >
           Powered by <span className="font-bold text-slate-700">Pixiic</span>
         </a>
@@ -575,16 +663,16 @@ END:VCARD`;
   );
 };
 
-const ContactButton = ({ href, icon, text, lightbg, txtclr, className }) => (
+const ContactButton = ({ href, icon, text, primaryColor, txtclr, className }) => (
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className={`${className} flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 hover:shadow-md`}
-    style={{ backgroundColor: lightbg, color: txtclr }}
+    className={`${className} flex flex-col items-center justify-center gap-2 py-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95`}
+    style={{ backgroundColor: primaryColor }}
   >
-    <FontAwesomeIcon icon={icon} className="h-6 w-6 opacity-90" />
-    <span className="text-xs font-semibold opacity-80">{text}</span>
+    <FontAwesomeIcon icon={icon} className="h-5 w-5 text-white" />
+    <span className="text-[11px] font-bold text-white/95 tracking-wide">{text}</span>
   </a>
 );
 

@@ -71,4 +71,73 @@ export const themes = {
     lightColor: "#e9c7a9ff",
   },
 
+  midnight_blue: {
+    primaryColor: "#3b82f6",
+    textColor: "#e2e8f0",
+    bgColor: "#0f172a",
+    lightColor: "#1e293b",
+  },
+
+  forest_night: {
+    primaryColor: "#10b981",
+    textColor: "#d1fae5",
+    bgColor: "#064e3b",
+    lightColor: "#065f46",
+  },
+
+  crimson_dark: {
+    primaryColor: "#ef4444",
+    textColor: "#fecaca",
+    bgColor: "#450a0a",
+    lightColor: "#7f1d1d",
+  },
+
+  royal_purple: {
+    primaryColor: "#a855f7",
+    textColor: "#e9d5ff",
+    bgColor: "#3b0764",
+    lightColor: "#581c87",
+  },
+
+  slate_gray: {
+    primaryColor: "#94a3b8",
+    textColor: "#f1f5f9",
+    bgColor: "#1e293b",
+    lightColor: "#334155",
+  },
+
+  peach_light: {
+    primaryColor: "#f97316",
+    textColor: "#c2410c",
+    bgColor: "#fff7ed",
+    lightColor: "#ffedd5",
+  },
+
+  mint_fresh: {
+    primaryColor: "#14b8a6",
+    textColor: "#0f766e",
+    bgColor: "#f0fdfa",
+    lightColor: "#ccfbf1",
+  },
+
+  lavender_light: {
+    primaryColor: "#8b5cf6",
+    textColor: "#6d28d9",
+    bgColor: "#f5f3ff",
+    lightColor: "#ede9fe",
+  },
+
+  rose_petal: {
+    primaryColor: "#f43f5e",
+    textColor: "#be123c",
+    bgColor: "#fff1f2",
+    lightColor: "#ffe4e6",
+  },
+
+  sunny_yellow: {
+    primaryColor: "#eab308",
+    textColor: "#a16207",
+    bgColor: "#fefce8",
+    lightColor: "#fef9c3",
+  },
 };

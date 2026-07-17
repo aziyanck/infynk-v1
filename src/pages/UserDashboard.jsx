@@ -16,6 +16,8 @@ import { themes } from "../services/themes"; // ➊ import the map
 import ThemeColorPicker from "../components/ThemeColorPicker";
 import Spinner from "../components/Spinner";
 import UserView from "../components/UserView";
+import UserView2 from "../components/UserView2";
+import UserView3 from "../components/UserView3";
 import imageCompression from "browser-image-compression";
 import heicConvert from "heic-convert";
 
@@ -210,6 +212,7 @@ const UserDashboard = () => {
   const [showThemePop, setShowThemePop] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [showPreviewThemePop, setShowPreviewThemePop] = useState(false);
+  const [previewTemplate, setPreviewTemplate] = useState(1);
 
   useEffect(() => {
     const close = (e) => e.target.closest(".relative") || setShowUserPop(false);
@@ -234,6 +237,13 @@ const UserDashboard = () => {
 
         if (profileData.color) {
           setThemeKey(profileData.color);
+        }
+
+        if (profileData.layout) {
+          setPreviewTemplate(
+            profileData.layout === "glassy" ? 2 :
+            profileData.layout === "bento" ? 3 : 1
+          );
         }
 
         // Split designation and company
@@ -407,6 +417,8 @@ const UserDashboard = () => {
         ? `${profile.designation};${companyName}`
         : profile.designation;
 
+      const layoutValue = previewTemplate === 2 ? "glassy" : previewTemplate === 3 ? "bento" : "classic";
+
       const updatedData = {
         ...restProfile,
         designation: combinedDesignation, // Override with combined string
@@ -435,6 +447,7 @@ const UserDashboard = () => {
         show_c_link5: visibility.c_link5,
         id: profile.id,
         color: themeKey,
+        layout: layoutValue,
       };
       // Ensure ID is present
       if (!updatedData.id) {
@@ -926,6 +939,34 @@ const UserDashboard = () => {
       {/* Preview Modal */}
       {showPreview && (
         <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
+          {/* Template Toggle */}
+          <div className="fixed top-6 left-6 z-[101] bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-lg flex border border-gray-200">
+            <button
+              onClick={() => setPreviewTemplate(1)}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                previewTemplate === 1 ? "bg-blue-600 text-white shadow-md" : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Classic
+            </button>
+            <button
+              onClick={() => setPreviewTemplate(2)}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                previewTemplate === 2 ? "bg-blue-600 text-white shadow-md" : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Glass
+            </button>
+            <button
+              onClick={() => setPreviewTemplate(3)}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                previewTemplate === 3 ? "bg-blue-600 text-white shadow-md" : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Bento
+            </button>
+          </div>
+
           {/* Theme Picker in Preview */}
           <div className="fixed top-6 right-20 z-[101]">
             <button
@@ -956,7 +997,14 @@ const UserDashboard = () => {
           >
             <X size={28} />
           </button>
-          <UserView user={previewUser} />
+
+          {previewTemplate === 1 ? (
+            <UserView user={previewUser} />
+          ) : previewTemplate === 2 ? (
+            <UserView2 user={previewUser} />
+          ) : (
+            <UserView3 user={previewUser} />
+          )}
 
           {/* Save Button in Preview */}
           <button
