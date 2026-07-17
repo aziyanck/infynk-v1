@@ -29,27 +29,27 @@ const RAZORPAY_KEY_ID = "rzp_live_SWWEjjUiISx5no";
 const PRICING_CONFIG = {
   "PVC Card": {
     plans: {
-      "1_year": 999,
-      "2_year": 1199,
-      "3_year": 1399,
+      "1_year": 1399,
+      "2_year": 1699,
+      "3_year": 1949,
     },
-    single_item: 150,
+    single_item: 230,
   },
   "Wooden Card": {
     plans: {
-      "1_year": 1499,
-      "2_year": 1699,
-      "3_year": 1899,
+      "1_year": 1799,
+      "2_year": 2099,
+      "3_year": 2349,
     },
-    single_item: 350,
+    single_item: 270,
   },
   "Metal Card": {
     plans: {
-      "1_year": 2199,
-      "2_year": 2349,
-      "3_year": 2499,
+      "1_year": 2599,
+      "2_year": 2899,
+      "3_year": 3149,
     },
-    single_item: 850,
+    single_item: 750,
   },
 };
 
