@@ -1,17 +1,26 @@
 import { useState, useEffect } from "react";
+import { ChevronDown, ChevronUp, Copy, Check } from "lucide-react";
 import { supabase } from "../../supabaseClient";
 import QRCode from "qrcode";
 import AssignRoute from "./AssignRoute";
-import QrDisplay from "./QrDisplay"; // <-- New component
+import QrDisplay from "./QrDisplay";
 import { removeRouteFromUser, renewRouteExpiry, deleteUserProfile, deleteAuthUser } from "../../services/adminService";
 
-const UserInfo = ({ user, onClose, setUsers }) => {
+const UserInfo = ({ user, payments = [], onClose, setUsers }) => {
     const [currentUser, setCurrentUser] = useState(user);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [qrCodeUrl, setQrCodeUrl] = useState(null); // <-- Store QR code
-
+    const [qrCodeUrl, setQrCodeUrl] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isRemovingRoute, setIsRemovingRoute] = useState(false);
+    const [showOrderDetails, setShowOrderDetails] = useState(false);
+    const [copiedField, setCopiedField] = useState(null);
+
+    const copyToClipboard = (text, field) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopiedField(field);
+            setTimeout(() => setCopiedField(null), 1500);
+        });
+    };
 
     const handleNullifyUser = async () => {
         if (!confirm("Are you sure you want to DELETE this user? This will remove their route, delete their profile, and REMOVE them from Supabase Auth.")) return;
@@ -150,23 +159,106 @@ const UserInfo = ({ user, onClose, setUsers }) => {
         }
     };
 
+    const userPayments = payments.filter(p => p.email === currentUser.email);
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg md:max-w-md w-full max-w-sm flex flex-col gap-2">
                 <div className="flex justify-between p-4 rounded-xl bg-gray-200">
                     <div>
                         <h1 className="text-xl font-semibold"><strong>{currentUser.name}</strong></h1>
-                        <p>{currentUser.email}</p>
+                        <div className="flex items-center gap-1.5">
+                            <p>{currentUser.email}</p>
+                            <button
+                                onClick={() => copyToClipboard(currentUser.email, 'email')}
+                                className="transition-colors"
+                                title="Copy email"
+                            >
+                                {copiedField === 'email' ? (
+                                    <Check size={14} className="text-green-500" />
+                                ) : (
+                                    <Copy size={14} className="text-gray-400 hover:text-gray-600" />
+                                )}
+                            </button>
+                        </div>
                     </div>
-                    <div className="h-full flex flex-col ">
-                        <p>
-                            <strong className="hidden md:inline">Joined:</strong>{" "}
-                            {currentUser.created_at
-                                ? new Date(currentUser.created_at).toLocaleDateString()
-                                : "—"}
-                        </p>
+                    <div className="flex flex-col items-end justify-between">
+                        <div className="text-right">
+                            <p>
+                                <strong className="hidden md:inline">Joined:</strong>{" "}
+                                {currentUser.created_at
+                                    ? new Date(currentUser.created_at).toLocaleDateString()
+                                    : "—"}
+                            </p>
+                        </div>
+                        {userPayments.length > 0 && (
+                            <button
+                                onClick={() => setShowOrderDetails(!showOrderDetails)}
+                                className="text-gray-500 hover:text-gray-700 transition-colors mt-2"
+                            >
+                                {showOrderDetails ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                            </button>
+                        )}
                     </div>
                 </div>
+
+                {showOrderDetails && userPayments.length > 0 && (
+                    <div className="bg-white border rounded-xl p-4 space-y-3">
+                        {userPayments.map((payment) => (
+                            <div key={payment.id} className="space-y-2 text-sm">
+                                <div className="flex justify-between items-start">
+                                    <span className="text-gray-500">Address:</span>
+                                    <div className="flex items-start gap-1.5">
+                                        <span className="text-gray-900 text-right max-w-[200px]">{payment.address || "N/A"}</span>
+                                        {payment.address && (
+                                            <button
+                                                onClick={() => copyToClipboard(payment.address, 'address')}
+                                                className="shrink-0 mt-0.5 transition-colors"
+                                                title="Copy address"
+                                            >
+                                                {copiedField === 'address' ? (
+                                                    <Check size={14} className="text-green-500" />
+                                                ) : (
+                                                    <Copy size={14} className="text-gray-400 hover:text-gray-600" />
+                                                )}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500">Card Type:</span>
+                                    <span className="text-gray-900">{payment.card_type || "N/A"}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500">Plan:</span>
+                                    <span className="text-gray-900">{payment.plan?.replace("_", " ").toUpperCase() || "N/A"}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500">Qty:</span>
+                                    <span className="text-gray-900">{payment.qty || 1}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500">Amount:</span>
+                                    <span className="text-gray-900 font-semibold">₹{(payment.amount || 0)?.toLocaleString("en-IN")}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500">Account:</span>
+                                    <span className="text-gray-900">{payment.account_type || "N/A"}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500">Date:</span>
+                                    <span className="text-gray-900">
+                                        {payment.created_at
+                                            ? new Date(payment.created_at).toLocaleDateString("en-IN", {
+                                                day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+                                              })
+                                            : "N/A"}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 <div className="flex flex-col gap-2 p-4 rounded-xl bg-gray-200">
                     <p><strong>Route ID:</strong> {currentUser.route_id || "—"}</p>

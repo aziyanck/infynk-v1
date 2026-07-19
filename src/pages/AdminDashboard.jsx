@@ -125,7 +125,8 @@ const AdminDashboard = () => {
           <div className="h-full overflow-y-auto p-6">
             <Users
               users={users}
-              setUsers={setUsers} // Allow local optimism or updates if needed
+              setUsers={setUsers}
+              payments={payments}
               loading={dataLoading}
               onRefresh={refreshData}
             />

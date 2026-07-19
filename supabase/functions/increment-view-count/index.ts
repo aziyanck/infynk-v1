@@ -22,8 +22,6 @@ serve(async (req) => {
 
     const { route_id } = await req.json();
 
-    console.log(`Incrementing view count for route_id: ${route_id}`);
-
     if (!route_id) {
       return new Response(JSON.stringify({ error: "Route ID is required" }), {
         status: 400,

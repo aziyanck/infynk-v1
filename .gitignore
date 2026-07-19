@@ -32,3 +32,5 @@ demo
 PixicData.txt
 PixicData.md
 testPaymentPage.jsx
+.agents
+supabase

@@ -6,6 +6,7 @@ import { supabase } from "../../supabaseClient";
 const Users = ({
   users: initialUsers = [],
   setUsers: setParentUsers,
+  payments = [],
   loading: parentLoading,
   onRefresh,
 }) => {
@@ -214,6 +215,7 @@ const Users = ({
         <UserList
           users={filteredUsers}
           setUsers={setUsers}
+          payments={payments}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           sortConfig={sortConfig}
