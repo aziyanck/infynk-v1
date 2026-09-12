@@ -343,6 +343,7 @@ const UserView = ({ user }) => {
       name: fullName,
       phone: contact.phone || "",
       email: contact.email || "",
+      website: formatUrl(socials.website, "https://") || "",
     };
 
     // 2. Detect User Agent (OS)
@@ -352,23 +353,15 @@ const UserView = ({ user }) => {
 
     // Helper functions
     const downloadVCF = (data) => {
-      // Use existing vCardUrl if available or generate fresh
-      // Using the user's snippet approach for VCF content generation if preferred,
-      // but we have `vCardData` from useMemo which is likely more robust.
-      // However, to strictly follow the "above code" snippet logic for the VCF structure:
-
-      const vcard = `BEGIN:VCARD
+      let vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${data.name}
 TEL:${data.phone}
-EMAIL:${data.email}
-END:VCARD`;
-      // Note: The existing vCardData might contain more info (socials, etc).
-      // If we strictly follow the user snippet, we lose that.
-      // I will use a hybrid approach: Use `vCardData` if we want full info,
-      // or the snippet content if "above code" is strict.
-      // Given "create ... by the above code", I will include the snippet logic but perhaps use vCardData for the actual content to not regress features?
-      // Actually, let's use the provided snippet logic for the *structure* of the download actions.
+EMAIL:${data.email}`;
+      if (data.website) {
+        vcard += `\nURL:${data.website}`;
+      }
+      vcard += `\nEND:VCARD`;
 
       const blob = new Blob([vcard], { type: "text/vcard" });
       const url = URL.createObjectURL(blob);
@@ -384,8 +377,8 @@ END:VCARD`;
     const downloadCSV = (data) => {
       const csvContent =
         "data:text/csv;charset=utf-8," +
-        "Name,Phone,Email\n" +
-        `"${data.name}","${data.phone}","${data.email}"`;
+        "Name,Phone,Email,Website\n" +
+        `"${data.name}","${data.phone}","${data.email}","${data.website}"`;
 
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");

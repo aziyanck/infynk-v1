@@ -196,12 +196,21 @@ const UserView2 = ({ user }) => {
 
   const handleSaveContact = (e) => {
     e.preventDefault();
-    const contactData = { name: fullName, phone: contact.phone || "", email: contact.email || "" };
+    const contactData = {
+      name: fullName,
+      phone: contact.phone || "",
+      email: contact.email || "",
+      website: formatUrl(socials.website, "https://") || "",
+    };
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     const isAndroid = /android/i.test(userAgent);
 
     const downloadVCF = (data) => {
-      const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${data.name}\nTEL:${data.phone}\nEMAIL:${data.email}\nEND:VCARD`;
+      let vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${data.name}\nTEL:${data.phone}\nEMAIL:${data.email}`;
+      if (data.website) {
+        vcard += `\nURL:${data.website}`;
+      }
+      vcard += `\nEND:VCARD`;
       const blob = new Blob([vcard], { type: "text/vcard" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -210,7 +219,7 @@ const UserView2 = ({ user }) => {
     };
 
     const downloadCSV = (data) => {
-      const csvContent = "data:text/csv;charset=utf-8," + "Name,Phone,Email\n" + `"${data.name}","${data.phone}","${data.email}"`;
+      const csvContent = "data:text/csv;charset=utf-8," + "Name,Phone,Email,Website\n" + `"${data.name}","${data.phone}","${data.email}","${data.website}"`;
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri); link.setAttribute("download", "contact.csv");
