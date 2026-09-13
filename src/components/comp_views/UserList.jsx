@@ -146,6 +146,7 @@ const UserList = ({
               <option value="">Default</option>
               <option value="route_id">ID</option>
               <option value="name">Name</option>
+              <option value="created_at">Joining Date</option>
             </select>
 
             <button

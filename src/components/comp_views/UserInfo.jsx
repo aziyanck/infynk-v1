@@ -101,8 +101,14 @@ const UserInfo = ({ user, payments = [], onClose, setUsers }) => {
     const generateQr = async (routeId) => {
         const urlToEncode = `https://pixiic.com/${routeId}`;
         try {
-            const qrDataUrl = await QRCode.toDataURL(urlToEncode); // Base64 QR code
-            setQrCodeUrl(qrDataUrl); // Open QrDisplay component
+            const qrDataUrl = await QRCode.toDataURL(urlToEncode, {
+                width: 1000,
+                margin: 2,
+                errorCorrectionLevel: "H",
+                quality: 1.0,
+                type: "image/png",
+            });
+            setQrCodeUrl(qrDataUrl);
         } catch (err) {
             console.error('Error generating QR code:', err);
         }
@@ -159,7 +165,19 @@ const UserInfo = ({ user, payments = [], onClose, setUsers }) => {
         }
     };
 
+    const calculateSubscriptionYears = (activationDate, expiryDate) => {
+        if (!activationDate || !expiryDate) return null;
+        const activated = new Date(activationDate);
+        const expiry = new Date(expiryDate);
+        const diffMs = expiry - activated;
+        const diffDays = diffMs / (1000 * 60 * 60 * 24);
+        const years = Math.round(diffDays / 365);
+        return years;
+    };
+
     const userPayments = payments.filter(p => p.email === currentUser.email);
+
+    const subscriptionYears = calculateSubscriptionYears(currentUser.activation_date, currentUser.expiry_date);
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
@@ -261,7 +279,14 @@ const UserInfo = ({ user, payments = [], onClose, setUsers }) => {
                 )}
 
                 <div className="flex flex-col gap-2 p-4 rounded-xl bg-gray-200">
-                    <p><strong>Route ID:</strong> {currentUser.route_id || "—"}</p>
+                    <div className="flex justify-between items-center">
+                        <p><strong>Route ID:</strong> {currentUser.route_id || "—"}</p>
+                        {subscriptionYears && (
+                            <p className="text-sm bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-medium">
+                                {subscriptionYears} Year{subscriptionYears > 1 ? "s" : ""}
+                            </p>
+                        )}
+                    </div>
                     <div className="flex justify-between items-center">
                         <p>
                             <strong className="hidden md:inline">Activated:</strong>{" "}
@@ -410,7 +435,7 @@ const UserInfo = ({ user, payments = [], onClose, setUsers }) => {
             )}
 
             {qrCodeUrl && (
-                <QrDisplay qrCodeUrl={qrCodeUrl} onClose={() => setQrCodeUrl(null)} />
+                <QrDisplay qrCodeUrl={qrCodeUrl} onClose={() => setQrCodeUrl(null)} routeId={currentUser.route_id} />
             )}
         </div>
     );

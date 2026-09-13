@@ -26,7 +26,7 @@ const Users = ({
   }, [initialUsers]);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({ key: "created_at", direction: "desc" });
 
   const [filters, setFilters] = useState({
     showUnassigned: false,
