@@ -16,6 +16,7 @@ const Users = ({
     email: "",
     password: "",
   });
+  const [sendEmail, setSendEmail] = useState(true);
   const [statusMsg, setStatusMsg] = useState("");
   // Local users state for filtering/sorting, initialized from props
   const [users, setUsers] = useState(initialUsers);
@@ -99,31 +100,62 @@ const Users = ({
   const handleAddUser = async (role = "user") => {
     setStatusMsg(`Creating ${role}...`);
 
-    const res = await fetch(
-      "https://yowckahgoxqfikadirov.supabase.co/functions/v1/create-user",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, role }),
-      }
-    );
+    const userPayload = { ...formData };
 
-    const result = await res.json();
-
-    if (!res.ok) {
-      setStatusMsg(`❌ ${result.error?.message || "Failed to create user"}`);
-    } else {
-      setStatusMsg(
-        `✅ ${role === "admin" ? "Admin" : "User"} created successfully!`
+    try {
+      const res = await fetch(
+        "https://yowckahgoxqfikadirov.supabase.co/functions/v1/create-user",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...userPayload, role }),
+        }
       );
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setStatusMsg(`❌ ${result.error?.message || "Failed to create user"}`);
+        return;
+      }
+
+      // If checkmark is selected, send credentials email via Edge Function
+      if (sendEmail) {
+        setStatusMsg("User created! Sending credentials email...");
+
+        const { data: emailData, error: emailError } = await supabase.functions.invoke(
+          "send-user-credentials",
+          {
+            body: {
+              name: userPayload.name,
+              email: userPayload.email,
+              password: userPayload.password,
+            },
+          }
+        );
+
+        if (emailError || !emailData?.success) {
+          console.error("Failed to send credentials email:", emailError || emailData?.message);
+          setStatusMsg("⚠️ User was created, but the credentials email could not be sent.");
+        } else {
+          setStatusMsg("✅ User created and credentials sent successfully!");
+        }
+      } else {
+        setStatusMsg(`✅ ${role === "admin" ? "Admin" : "User"} created successfully!`);
+      }
+
       setFormData({ name: "", email: "", password: "" });
+      setSendEmail(true);
 
       if (onRefresh) onRefresh();
 
       setTimeout(() => {
         setShowModal(false);
         setStatusMsg("");
-      }, 2000);
+      }, 3000);
+    } catch (err) {
+      console.error("Error in handleAddUser:", err);
+      setStatusMsg(`❌ ${err.message || "An unexpected error occurred"}`);
     }
   };
 
@@ -169,9 +201,19 @@ const Users = ({
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full mb-4 px-3 py-2 border rounded-md"
+                className="w-full mb-3 px-3 py-2 border rounded-md"
                 required
               />
+
+              <label className="flex items-center gap-2 mb-4 cursor-pointer text-sm text-gray-700 select-none">
+                <input
+                  type="checkbox"
+                  checked={sendEmail}
+                  onChange={(e) => setSendEmail(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
+                />
+                <span>Send credentials via email</span>
+              </label>
 
               {statusMsg && (
                 <p className="text-sm mb-3 text-center text-gray-700">
@@ -198,6 +240,7 @@ const Users = ({
                   onClick={() => {
                     setShowModal(false);
                     setFormData({ name: "", email: "", password: "" });
+                    setSendEmail(true);
                     setStatusMsg("");
                   }}
                   className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded"
