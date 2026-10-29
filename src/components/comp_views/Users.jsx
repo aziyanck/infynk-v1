@@ -136,7 +136,11 @@ const Users = ({
 
         if (emailError || !emailData?.success) {
           console.error("Failed to send credentials email:", emailError || emailData?.message);
-          setStatusMsg("⚠️ User was created, but the credentials email could not be sent.");
+          setStatusMsg(
+            `⚠️ User was created, but the credentials email could not be sent: ${
+              emailData?.message || emailError?.message || "Unknown error"
+            }`
+          );
         } else {
           setStatusMsg("✅ User created and credentials sent successfully!");
         }
