@@ -113,6 +113,7 @@ const UserView = ({ user }) => {
   // Handle legacy theme names if any exist in DB
   if (themeKey === "pixic_light") themeKey = "pixiic_light";
   if (themeKey === "pixic_dark") themeKey = "pixiic_dark";
+  if (themeKey === "gold") themeKey = "golden";
 
   const currentTheme = themes[themeKey] || themes.sky; // Fallback to sky if still undefined
 
@@ -621,6 +622,7 @@ EMAIL:${data.email}`;
               className="anim-save w-full text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 backgroundColor: primaryColor,
+                color: themeKey === "golden" ? "#000000" : undefined,
                 boxShadow: `0 10px 25px -8px ${mix(primaryColor, 60, "black")}`,
               }}
             >
@@ -656,17 +658,20 @@ EMAIL:${data.email}`;
   );
 };
 
-const ContactButton = ({ href, icon, text, primaryColor, txtclr, className }) => (
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    className={`${className} flex flex-col items-center justify-center gap-2 py-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95`}
-    style={{ backgroundColor: primaryColor }}
-  >
-    <FontAwesomeIcon icon={icon} className="h-5 w-5 text-white" />
-    <span className="text-[11px] font-bold text-white/95 tracking-wide">{text}</span>
-  </a>
-);
+const ContactButton = ({ href, icon, text, primaryColor, txtclr, className }) => {
+  const isGold = primaryColor === "#d4af37";
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${className} flex flex-col items-center justify-center gap-2 py-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95`}
+      style={{ backgroundColor: primaryColor }}
+    >
+      <FontAwesomeIcon icon={icon} className={`h-5 w-5 ${isGold ? "text-black" : "text-white"}`} />
+      <span className={`text-[11px] font-bold tracking-wide ${isGold ? "text-black/90" : "text-white/95"}`}>{text}</span>
+    </a>
+  );
+};
 
 export default UserView;

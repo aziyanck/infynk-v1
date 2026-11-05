@@ -107,6 +107,7 @@ const UserView = ({ user }) => {
   // Handle legacy theme names if any exist in DB
   if (themeKey === "pixic_light") themeKey = "pixiic_light";
   if (themeKey === "pixic_dark") themeKey = "pixiic_dark";
+  if (themeKey === "gold") themeKey = "golden";
 
   const currentTheme = themes[themeKey] || themes.sky; // Fallback to sky if still undefined
 

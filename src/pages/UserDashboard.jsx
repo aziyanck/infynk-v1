@@ -470,6 +470,7 @@ const UserDashboard = () => {
   let activeThemeKey = themeKey;
   if (activeThemeKey === "pixic_light") activeThemeKey = "pixiic_light";
   if (activeThemeKey === "pixic_dark") activeThemeKey = "pixiic_dark";
+  if (activeThemeKey === "gold") activeThemeKey = "golden";
 
   const currentTheme = themes[activeThemeKey] || themes.sky;
 

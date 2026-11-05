@@ -87,6 +87,7 @@ const UserView2 = ({ user }) => {
   let themeKey = user.color || "sky";
   if (themeKey === "pixic_light") themeKey = "pixiic_light";
   if (themeKey === "pixic_dark") themeKey = "pixiic_dark";
+  if (themeKey === "gold") themeKey = "golden";
   const currentTheme = themes[themeKey] || themes.sky;
 
   const bg = currentTheme.bgColor;

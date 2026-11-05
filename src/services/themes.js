@@ -15,6 +15,13 @@ export const themes = {
     lightColor: "#f5f5f5", // Very light gray
   },
 
+  golden: {
+    primaryColor: "#d4af37",
+    textColor: "#d4af37",
+    bgColor: "#000000",
+    lightColor: "#111111",
+  },
+
   violet: {
     primaryColor: "#9a24c1",
     textColor: "#9a24c1",
@@ -141,3 +148,12 @@ export const themes = {
     lightColor: "#fef9c3",
   },
 };
+
+// Alias gold to golden without duplicating in Object.keys
+Object.defineProperty(themes, "gold", {
+  get() {
+    return this.golden;
+  },
+  enumerable: false,
+  configurable: true,
+});
