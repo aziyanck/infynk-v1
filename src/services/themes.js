@@ -22,6 +22,20 @@ export const themes = {
     lightColor: "#111111",
   },
 
+  golden_dark: {
+    primaryColor: "#c5922c",
+    textColor: "#c5922c",
+    bgColor: "#000000",
+    lightColor: "#111111",
+  },
+
+  bronze: {
+    primaryColor: "#cd7f32",
+    textColor: "#cd7f32",
+    bgColor: "#000000",
+    lightColor: "#111111",
+  },
+
   violet: {
     primaryColor: "#9a24c1",
     textColor: "#9a24c1",
@@ -153,6 +167,14 @@ export const themes = {
 Object.defineProperty(themes, "gold", {
   get() {
     return this.golden;
+  },
+  enumerable: false,
+  configurable: true,
+});
+
+Object.defineProperty(themes, "dark_gold", {
+  get() {
+    return this.golden_dark;
   },
   enumerable: false,
   configurable: true,
